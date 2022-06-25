@@ -10,7 +10,7 @@ import ForgotPassword from "./ForgotPassword"
 import UpdateProfile from "./UpdateProfile"
 import Home from "./Home"
 // import Home from '../screens/Home'
-import CheckIn from '../pages/CheckIn'
+import CheckIn from '../screens/CheckIn'
 
 function App() {
   return (
