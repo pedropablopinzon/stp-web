@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Card, Button, Alert, Table } from "react-bootstrap";
+import { Card, Button, Table } from "react-bootstrap";
 import { Link, useHistory } from "react-router-dom";
 
 import { db } from "../firebase";
@@ -73,7 +73,10 @@ export default function CheckInOut() {
       .catch((error) => {
         console.error("Error adding document: ", error);
       });
-    history.push("/home");
+
+    fetchLogs(selectedProject.documentId, currentUser.uid).then((data) =>
+      setLogs(data)
+    );
   };
 
   const checkOut = () => {
@@ -100,6 +103,7 @@ export default function CheckInOut() {
       (element) => element.documentId === e.target.value
     );
     setSelectedProject(project[0]);
+
     fetchLogs(project[0].documentId, currentUser.uid).then((data) =>
       setLogs(data)
     );
@@ -146,7 +150,7 @@ export default function CheckInOut() {
               <td>{log.documentId}</td>
               <td>{log.email}</td>
               <td>{log.checkInAt}</td>
-              <td></td>
+              <td>{log.checkOutAt}</td>
             </tr>
           ))}
         </tbody>
