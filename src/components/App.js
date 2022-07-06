@@ -11,7 +11,7 @@ import ForgotPassword from "./ForgotPassword"
 import UpdateProfile from "./UpdateProfile"
 import Home from "./Home"
 // import Home from '../screens/Home'
-import CheckIn from '../screens/CheckIn'
+import CheckInOut from '../screens/CheckInOut'
 
 function App() {
   return (
@@ -27,7 +27,7 @@ function App() {
               {/* <PrivateRoute exact path="/" component={Dashboard} /> */}
               <PrivateRoute path="/update-profile" component={UpdateProfile} />
               <PrivateRoute path="/home" component={Home} />
-              <PrivateRoute path="/checkIn" component={CheckIn} />
+              <PrivateRoute path="/checkInOut" component={CheckInOut} />
               
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />

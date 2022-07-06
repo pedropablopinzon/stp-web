@@ -19,7 +19,7 @@ export default function Menu() {
             <Navbar.Brand href="/home">Controles</Navbar.Brand>
             <Nav className="me-auto">
               <Nav.Link href="/home">Home</Nav.Link>
-              <Nav.Link href="/checkIn">Check In</Nav.Link>
+              <Nav.Link href="/checkInOut">Check In - Check Out</Nav.Link>
               <Nav.Link href="/checkOut">Check Out</Nav.Link>
             </Nav>
           </Container>
@@ -28,7 +28,11 @@ export default function Menu() {
         <Card>
           <Card.Body>
             <h2 className="text-center mb-4">Menu</h2>
-            <MenuButton text="Check In" url="/checkIn" variant={"success"} />
+            <MenuButton
+              text="Check In - Check Out"
+              url="/checkInOut"
+              variant={"success"}
+            />
             <MenuButton text="Check Out" variant={"warning"} />
           </Card.Body>
         </Card>
