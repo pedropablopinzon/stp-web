@@ -28,20 +28,8 @@ export default function Menu() {
         <Card>
           <Card.Body>
             <h2 className="text-center mb-4">Menu</h2>
-            <table>
-              <tr>
-                <td>
-                  <MenuButton
-                    text="Check In"
-                    url="/checkIn"
-                    variant={"success"}
-                  />
-                </td>
-                <td>
-                  <MenuButton text="Check Out" variant={"warning"} />
-                </td>
-              </tr>
-            </table>
+            <MenuButton text="Check In" url="/checkIn" variant={"success"} />
+            <MenuButton text="Check Out" variant={"warning"} />
           </Card.Body>
         </Card>
       </header>

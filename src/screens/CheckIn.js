@@ -14,6 +14,7 @@ export default function CheckIn() {
         middle: "Mathison",
         last: "Turing",
         born: 1912,
+        createdAt: new Date(),
       })
       .then((docRef) => {
         console.log("Document written with ID: ", docRef.id);
