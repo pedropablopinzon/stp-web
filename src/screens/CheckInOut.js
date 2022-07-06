@@ -37,19 +37,25 @@ export default function CheckInOut() {
     const logs = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
-      if (data.checkInAt) {
-        let time = data.checkInAt;
-        const fireBaseTime = new Date(
-          time.seconds * 1000 + time.nanoseconds / 1000000
-        );
-        const date = fireBaseTime.toDateString();
-        const atTime = fireBaseTime.toLocaleTimeString();
-
-        data.checkInAt = fireBaseTime.toISOString();
-      }
+      data.checkInAt = fixDate(data.checkInAt);
+      data.checkOutAt = fixDate(data.checkOutAt);
       logs.push({ ...data, documentId: doc.ref.id });
     });
     return logs;
+  };
+
+  const fixDate = (value) => {
+    if (value) {
+
+      let time = value;
+      const fireBaseTime = new Date(
+        time.seconds * 1000 + time.nanoseconds / 1000000
+      );
+      const date = fireBaseTime.toDateString();
+      const atTime = fireBaseTime.toLocaleTimeString();
+  
+      return fireBaseTime.toISOString();
+    }
   };
 
   useEffect(() => {

@@ -27,13 +27,12 @@ export default function Menu() {
 
         <Card>
           <Card.Body>
-            <h2 className="text-center mb-4">Menu</h2>
-            <MenuButton
+            {/* <h2 className="text-center mb-4">Menu</h2> */}
+            {/* <MenuButton
               text="Check In - Check Out"
               url="/checkInOut"
               variant={"success"}
-            />
-            <MenuButton text="Check Out" variant={"warning"} />
+            /> */}
           </Card.Body>
         </Card>
       </header>
