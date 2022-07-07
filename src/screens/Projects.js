@@ -6,57 +6,56 @@ import { db } from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
 
 export default function Projects() {
+  const collectionName = "projects";
   const { currentUser } = useAuth();
+  const defaultDocument = {
+    documentId: null,
+    name: "",
+  };
 
   const [items, setItems] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
-  const [selectedProject, setSelectedProject] = useState({
-    documentId: null,
-    name: "",
-  });
-  const [deletedProject, setDeletedProject] = useState({
-    documentId: null,
-    name: "",
-  });
+  const [selectedDocument, setSelectedDocument] = useState(defaultDocument);
+  const [deletedDocument, setDeletedDocument] = useState(defaultDocument);
 
   const handleCloseModal = () => setShowModal(false);
   const handleCloseConfirm = () => setShowConfirm(false);
 
   const handleShowModal = () => {
-    setSelectedProject({ documentId: null, name: "" });
+    setSelectedDocument({ documentId: null, name: "" });
     setShowModal(true);
   };
 
-  const saveProject = () => {
-    if (selectedProject.documentId) {
-      updateProject(selectedProject);
+  const saveDocument = () => {
+    if (selectedDocument.documentId) {
+      updateDocument(selectedDocument);
     } else {
-      createProject(selectedProject);
+      addDocument(selectedDocument);
     }
     setShowModal(false);
-    fetchProjects().then((data) => setItems(data));
+    fetchDocuments().then((data) => setItems(data));
   };
 
-  const deleteProject = () => {
-    if (deletedProject.documentId) {
-      removeProject(deletedProject);
+  const removeDocument = () => {
+    if (deletedDocument.documentId) {
+      deleteDocument(deletedDocument);
       setShowConfirm(false);
-      fetchProjects().then((data) => setItems(data));
+      fetchDocuments().then((data) => setItems(data));
     }
   };
 
-  const fetchProjects = async () => {
+  const fetchDocuments = async () => {
     const querySnapshot = await db
-      .collection("projects")
+      .collection(collectionName)
       .where("status", "==", "ACTIVE")
       .get();
 
-    const projects = [];
+    const documents = [];
     querySnapshot.forEach((doc) => {
-      projects.push({ ...doc.data(), documentId: doc.ref.id });
+      documents.push({ ...doc.data(), documentId: doc.ref.id });
     });
-    projects.sort((a, b) => {
+    documents.sort((a, b) => {
       let fa = a.name.toLowerCase();
       let fb = b.name.toLowerCase();
 
@@ -68,13 +67,13 @@ export default function Projects() {
       }
       return 0;
     });
-    return projects;
+    return documents;
   };
 
-  const createProject = async (project) => {
-    db.collection("projects")
+  const addDocument = async (document) => {
+    db.collection(collectionName)
       .add({
-        name: project.name,
+        name: document.name,
         status: "ACTIVE",
         createdAt: new Date(),
         createdBy: currentUser.uid,
@@ -87,46 +86,46 @@ export default function Projects() {
       });
   };
 
-  const updateProject = async (project) => {
-    await db.collection("projects").doc(project.documentId).update({
-      name: project.name,
+  const updateDocument = async (document) => {
+    await db.collection(collectionName).doc(document.documentId).update({
+      name: document.name,
       updatedAt: new Date(),
       updatedBy: currentUser.uid,
     });
   };
 
-  const removeProject = async (project) => {
-    await db.collection("projects").doc(project.documentId).delete();
+  const deleteDocument = async (document) => {
+    await db.collection(collectionName).doc(document.documentId).delete();
   };
 
   const onInputChange = (event) => {
     const { name, value } = event.target;
 
-    setSelectedProject({ ...selectedProject, [name]: value });
+    setSelectedDocument({ ...selectedDocument, [name]: value });
   };
 
   useEffect(() => {
-    fetchProjects().then((data) => setItems(data));
+    fetchDocuments().then((data) => setItems(data));
   }, []);
 
   useEffect(() => {
-    if (selectedProject.documentId) {
+    if (selectedDocument.documentId) {
       setShowModal(true);
     }
-  }, [selectedProject]);
+  }, [selectedDocument]);
 
   useEffect(() => {
-    if (deletedProject.documentId) {
+    if (deletedDocument.documentId) {
       setShowConfirm(true);
     }
-  }, [deletedProject]);
+  }, [deletedDocument]);
 
   return (
     <>
       <Link to="/home" className="btn btn-primary">
         Home
       </Link>
-      <h1>Projects</h1>
+      <h1>Proyectos</h1>
 
       <Button variant="primary" onClick={handleShowModal}>
         Nuevo Proyecto
@@ -142,7 +141,7 @@ export default function Projects() {
             className="ml-3"
             type="text"
             name="name"
-            value={selectedProject.name}
+            value={selectedDocument.name}
             onChange={onInputChange}
           />
         </Modal.Body>
@@ -150,7 +149,7 @@ export default function Projects() {
           <Button variant="secondary" onClick={handleCloseModal}>
             Cerrar
           </Button>
-          <Button variant="primary" onClick={saveProject}>
+          <Button variant="primary" onClick={saveDocument}>
             Guardar
           </Button>
         </Modal.Footer>
@@ -160,12 +159,12 @@ export default function Projects() {
         <Modal.Header closeButton>
           <Modal.Title>Proyecto a Eliminar</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Nombre: {deletedProject.name}</Modal.Body>
+        <Modal.Body>Nombre: {deletedDocument.name}</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseConfirm}>
             Cerrar
           </Button>
-          <Button variant="danger" onClick={deleteProject}>
+          <Button variant="danger" onClick={removeDocument}>
             Eliminar
           </Button>
         </Modal.Footer>
@@ -188,7 +187,7 @@ export default function Projects() {
               <td>
                 <Button
                   variant="primary"
-                  onClick={() => setSelectedProject(item)}
+                  onClick={() => setSelectedDocument(item)}
                 >
                   Editar
                 </Button>
@@ -196,7 +195,7 @@ export default function Projects() {
               <td>
                 <Button
                   variant="danger"
-                  onClick={() => setDeletedProject(item)}
+                  onClick={() => setDeletedDocument(item)}
                 >
                   Eliminar
                 </Button>
