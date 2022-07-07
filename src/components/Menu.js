@@ -20,7 +20,7 @@ export default function Menu() {
             <Nav className="me-auto">
               <Nav.Link href="/home">Home</Nav.Link>
               <Nav.Link href="/checkInOut">Check In - Check Out</Nav.Link>
-              <Nav.Link href="/checkOut">Check Out</Nav.Link>
+              <Nav.Link href="/projects">Projects</Nav.Link>
             </Nav>
           </Container>
         </Navbar>
