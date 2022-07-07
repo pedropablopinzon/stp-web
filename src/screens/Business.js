@@ -15,6 +15,7 @@ export default function Business() {
     documentId: null,
     name: "",
     taxId: "",
+    address: "",
   };
 
   const [items, setItems] = useState([]);
@@ -77,8 +78,9 @@ export default function Business() {
   const addDocument = async (document) => {
     db.collection(collectionName)
       .add({
-        name: document.name,
-        taxId: document.taxId,
+        name: document.name ?? "",
+        taxId: document.taxId ?? "",
+        address: document.address ?? "",
         status: "ACTIVE",
         createdAt: new Date(),
         createdBy: currentUser.uid,
@@ -92,12 +94,16 @@ export default function Business() {
   };
 
   const updateDocument = async (document) => {
-    await db.collection(collectionName).doc(document.documentId).update({
-      name: document.name,
-      taxId: document.taxId,
-      updatedAt: new Date(),
-      updatedBy: currentUser.uid,
-    });
+    await db
+      .collection(collectionName)
+      .doc(document.documentId)
+      .update({
+        name: document.name ?? "",
+        taxId: document.taxId ?? "",
+        address: document.address ?? "",
+        updatedAt: new Date(),
+        updatedBy: currentUser.uid,
+      });
   };
 
   const deleteDocument = async (document) => {
@@ -164,6 +170,16 @@ export default function Business() {
               onChange={onInputChange}
             />
           </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="disabledTextInput">DIRECCION</Form.Label>
+            <input
+              className="ml-3"
+              type="text"
+              name="address"
+              value={selectedDocument.address}
+              onChange={onInputChange}
+            />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
@@ -197,6 +213,7 @@ export default function Business() {
             <th>#</th>
             <th>Nombre</th>
             <th>NIT</th>
+            <th>DIRECCION</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -207,6 +224,7 @@ export default function Business() {
               <td>{item.documentId}</td>
               <td>{item.name}</td>
               <td>{item.taxId}</td>
+              <td>{item.address}</td>
               <td>{item.status}</td>
               <td>
                 <Button

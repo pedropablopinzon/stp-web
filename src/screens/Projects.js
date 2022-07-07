@@ -76,7 +76,7 @@ export default function Projects() {
   const addDocument = async (document) => {
     db.collection(collectionName)
       .add({
-        name: document.name,
+        name: document.name ?? "",
         status: "ACTIVE",
         createdAt: new Date(),
         createdBy: currentUser.uid,
@@ -90,11 +90,14 @@ export default function Projects() {
   };
 
   const updateDocument = async (document) => {
-    await db.collection(collectionName).doc(document.documentId).update({
-      name: document.name,
-      updatedAt: new Date(),
-      updatedBy: currentUser.uid,
-    });
+    await db
+      .collection(collectionName)
+      .doc(document.documentId)
+      .update({
+        name: document.name ?? "",
+        updatedAt: new Date(),
+        updatedBy: currentUser.uid,
+      });
   };
 
   const deleteDocument = async (document) => {
