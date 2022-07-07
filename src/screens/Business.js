@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Table, Modal, Form } from 'react-bootstrap';
 
-import { db } from '../firebase';
+import { fetchDocuments, addDocument, updateDocument, deleteDocument } from '../modules/db';
+import { sortItems, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
 
@@ -33,79 +34,48 @@ export default function Business() {
     setShowModal(true);
   };
 
-  const saveDocument = () => {
+  const saveDocument = async () => {
     if (selectedDocument.documentId) {
-      updateDocument(selectedDocument);
+      const document = {
+        name: selectedDocument.name ?? '',
+        taxId: selectedDocument.taxId ?? '',
+        address: selectedDocument.address ?? '',
+        updatedAt: new Date(),
+        updatedBy: currentUser.uid,
+      };
+      updateDocument(collectionName, selectedDocument.documentId, document);
+
+      const updatedItems = updateItem(items, selectedDocument.documentId, document);
+
+      setItems(updatedItems);
     } else {
-      addDocument(selectedDocument);
+      const document = {
+        name: selectedDocument.name ?? '',
+        taxId: selectedDocument.taxId ?? '',
+        address: selectedDocument.address ?? '',
+        status: 'ACTIVE',
+        createdAt: new Date(),
+        createdBy: currentUser.uid,
+      };
+      const result = await addDocument(collectionName, document);
+      document.documentId = result.id;
+
+      addItem(items, document);
+
+      setItems(items);
     }
     setShowModal(false);
-    fetchDocuments().then((data) => setItems(data));
   };
 
   const removeDocument = () => {
     if (deletedDocument.documentId) {
-      deleteDocument(deletedDocument);
+      deleteDocument(collectionName, deletedDocument.documentId);
+
+      const newItems = deleteItem(items, deletedDocument.documentId);
+
+      setItems(newItems);
       setShowConfirm(false);
-      fetchDocuments().then((data) => setItems(data));
     }
-  };
-
-  const fetchDocuments = async () => {
-    const querySnapshot = await db.collection(collectionName).where('status', '==', 'ACTIVE').get();
-
-    const documents = [];
-    querySnapshot.forEach((doc) => {
-      documents.push({ ...doc.data(), documentId: doc.ref.id });
-    });
-    documents.sort((a, b) => {
-      let fa = a.name.toLowerCase();
-      let fb = b.name.toLowerCase();
-
-      if (fa < fb) {
-        return -1;
-      }
-      if (fa > fb) {
-        return 1;
-      }
-      return 0;
-    });
-    return documents;
-  };
-
-  const addDocument = async (document) => {
-    db.collection(collectionName)
-      .add({
-        name: document.name ?? '',
-        taxId: document.taxId ?? '',
-        address: document.address ?? '',
-        status: 'ACTIVE',
-        createdAt: new Date(),
-        createdBy: currentUser.uid,
-      })
-      .then((docRef) => {
-        console.log('Document written with ID: ', docRef.id);
-      })
-      .catch((error) => {
-        console.error('Error adding document: ', error);
-      });
-  };
-
-  const updateDocument = async (document) => {
-    await db
-      .collection(collectionName)
-      .doc(document.documentId)
-      .update({
-        name: document.name ?? '',
-        taxId: document.taxId ?? '',
-        address: document.address ?? '',
-        updatedAt: new Date(),
-        updatedBy: currentUser.uid,
-      });
-  };
-
-  const deleteDocument = async (document) => {
-    await db.collection(collectionName).doc(document.documentId).delete();
   };
 
   const onInputChange = (event) => {
@@ -115,7 +85,10 @@ export default function Business() {
   };
 
   useEffect(() => {
-    fetchDocuments().then((data) => setItems(data));
+    fetchDocuments(collectionName).then((data) => {
+      sortItems(data);
+      setItems(data);
+    });
   }, []);
 
   useEffect(() => {
