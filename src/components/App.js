@@ -13,6 +13,7 @@ import Home from "./Home";
 // import Home from '../screens/Home'
 import CheckInOut from "../screens/CheckInOut";
 import Projects from "../screens/Projects";
+import Business from "../screens/Business";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
               <PrivateRoute path="/home" component={Home} />
               <PrivateRoute path="/checkInOut" component={CheckInOut} />
               <PrivateRoute path="/projects" component={Projects} />
+              <PrivateRoute path="/business" component={Business} />
 
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />

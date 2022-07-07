@@ -5,15 +5,16 @@ import { Button, Table, Modal, Form } from "react-bootstrap";
 import { db } from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
 
-export default function Projects() {
-  const collectionName = "projects";
-  const title = "Proyectos";
-  const titleSingular = "Proyecto";
+export default function Business() {
+  const collectionName = "business";
+  const title = "Empresas";
+  const titleSingular = "Empresa";
 
   const { currentUser } = useAuth();
   const defaultDocument = {
     documentId: null,
     name: "",
+    taxId: "",
   };
 
   const [items, setItems] = useState([]);
@@ -77,6 +78,7 @@ export default function Projects() {
     db.collection(collectionName)
       .add({
         name: document.name,
+        taxId: document.taxId,
         status: "ACTIVE",
         createdAt: new Date(),
         createdBy: currentUser.uid,
@@ -92,6 +94,7 @@ export default function Projects() {
   const updateDocument = async (document) => {
     await db.collection(collectionName).doc(document.documentId).update({
       name: document.name,
+      taxId: document.taxId,
       updatedAt: new Date(),
       updatedBy: currentUser.uid,
     });
@@ -151,6 +154,16 @@ export default function Projects() {
               onChange={onInputChange}
             />
           </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="disabledTextInput">NIT</Form.Label>
+            <input
+              className="ml-3"
+              type="text"
+              name="taxId"
+              value={selectedDocument.taxId}
+              onChange={onInputChange}
+            />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
@@ -183,6 +196,7 @@ export default function Projects() {
             <th></th>
             <th>#</th>
             <th>Nombre</th>
+            <th>NIT</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -192,6 +206,7 @@ export default function Projects() {
               <td>{index + 1}</td>
               <td>{item.documentId}</td>
               <td>{item.name}</td>
+              <td>{item.taxId}</td>
               <td>{item.status}</td>
               <td>
                 <Button

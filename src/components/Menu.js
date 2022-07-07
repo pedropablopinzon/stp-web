@@ -19,8 +19,9 @@ export default function Menu() {
             <Navbar.Brand href="/home">Controles</Navbar.Brand>
             <Nav className="me-auto">
               <Nav.Link href="/home">Home</Nav.Link>
-              <Nav.Link href="/checkInOut">Check In - Check Out</Nav.Link>
-              <Nav.Link href="/projects">Projects</Nav.Link>
+              <Nav.Link href="/business">Empresas</Nav.Link>
+              <Nav.Link href="/projects">Proyectos</Nav.Link>
+              <Nav.Link href="/checkInOut">Marcar</Nav.Link>
             </Nav>
           </Container>
         </Navbar>
