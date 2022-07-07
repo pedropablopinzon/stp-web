@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button, Table, Modal, Form } from 'react-bootstrap';
 
-import { db } from '../firebase';
-import { addDocument, updateDocument, deleteDocument } from '../modules/db';
-import { sortItems, addItem, updateItem,deleteItem } from '../modules/utils';
+import { fetchDocuments, addDocument, updateDocument, deleteDocument } from '../modules/db';
+import { sortItems, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
 
@@ -66,22 +65,11 @@ export default function Projects() {
     if (deletedDocument.documentId) {
       deleteDocument(collectionName, deletedDocument.documentId);
 
-      const newItems = deleteItem(items,deletedDocument.documentId);
+      const newItems = deleteItem(items, deletedDocument.documentId);
+
       setItems(newItems);
       setShowConfirm(false);
-      // fetchDocuments().then((data) => setItems(data));
     }
-  };
-
-  const fetchDocuments = async () => {
-    const querySnapshot = await db.collection(collectionName).where('status', '==', 'ACTIVE').get();
-
-    const documents = [];
-    querySnapshot.forEach((doc) => {
-      documents.push({ ...doc.data(), documentId: doc.ref.id });
-    });
-    sortItems(documents);
-    return documents;
   };
 
   const onInputChange = (event) => {
@@ -91,7 +79,10 @@ export default function Projects() {
   };
 
   useEffect(() => {
-    fetchDocuments().then((data) => setItems(data));
+    fetchDocuments(collectionName).then((data) => {
+      sortItems(data);
+      setItems(data);
+    });
   }, []);
 
   useEffect(() => {

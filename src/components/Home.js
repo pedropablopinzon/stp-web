@@ -1,29 +1,29 @@
-import React, { useState } from "react";
-import { Card, Button, Alert } from "react-bootstrap";
-import { Link, useHistory } from "react-router-dom"
+import React, { useState } from 'react';
+import { Card, Button } from 'react-bootstrap';
+import { useHistory } from 'react-router-dom';
 
-import { useAuth } from "../contexts/AuthContext";
-import Menu from './Menu'
+import { useAuth } from '../contexts/AuthContext';
+import Menu from './Menu';
 
 export default function Home() {
-    const [error, setError] = useState("")
+  const [error, setError] = useState('');
   const { currentUser, logout } = useAuth();
-  const history = useHistory()
-  
+  const history = useHistory();
+
   async function handleLogout() {
-    setError("")
+    setError('');
 
     try {
-      await logout()
-      history.push("/login")
+      await logout();
+      history.push('/login');
     } catch {
-      setError("Failed to log out")
+      setError('Failed to log out');
     }
   }
 
   return (
     <>
-    <Menu />
+      <Menu />
       <Card>
         <Card.Body>
           {/* <h2 className="text-center mb-4">Home</h2> */}
