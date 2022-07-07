@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Button, Table, Modal, Form } from "react-bootstrap";
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button, Table, Modal, Form } from 'react-bootstrap';
 
-import { db } from "../firebase";
-import { useAuth } from "../contexts/AuthContext";
+import { db } from '../firebase';
+import { useAuth } from '../contexts/AuthContext';
+import { ConfirmDelete } from '../components/ConfirmDelete';
 
 export default function Projects() {
-  const collectionName = "projects";
-  const title = "Proyectos";
-  const titleSingular = "Proyecto";
+  const collectionName = 'projects';
+  const title = 'Proyectos';
+  const titleSingular = 'Proyecto';
 
   const { currentUser } = useAuth();
   const defaultDocument = {
     documentId: null,
-    name: "",
+    name: '',
   };
 
   const [items, setItems] = useState([]);
@@ -26,7 +27,7 @@ export default function Projects() {
   const handleCloseConfirm = () => setShowConfirm(false);
 
   const handleShowModal = () => {
-    setSelectedDocument({ documentId: null, name: "" });
+    setSelectedDocument({ documentId: null, name: '' });
     setShowModal(true);
   };
 
@@ -49,10 +50,7 @@ export default function Projects() {
   };
 
   const fetchDocuments = async () => {
-    const querySnapshot = await db
-      .collection(collectionName)
-      .where("status", "==", "ACTIVE")
-      .get();
+    const querySnapshot = await db.collection(collectionName).where('status', '==', 'ACTIVE').get();
 
     const documents = [];
     querySnapshot.forEach((doc) => {
@@ -76,16 +74,16 @@ export default function Projects() {
   const addDocument = async (document) => {
     db.collection(collectionName)
       .add({
-        name: document.name ?? "",
-        status: "ACTIVE",
+        name: document.name ?? '',
+        status: 'ACTIVE',
         createdAt: new Date(),
         createdBy: currentUser.uid,
       })
       .then((docRef) => {
-        console.log("Document written with ID: ", docRef.id);
+        console.log('Document written with ID: ', docRef.id);
       })
       .catch((error) => {
-        console.error("Error adding document: ", error);
+        console.error('Error adding document: ', error);
       });
   };
 
@@ -94,7 +92,7 @@ export default function Projects() {
       .collection(collectionName)
       .doc(document.documentId)
       .update({
-        name: document.name ?? "",
+        name: document.name ?? '',
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
       });
@@ -121,6 +119,8 @@ export default function Projects() {
   }, [selectedDocument]);
 
   useEffect(() => {
+    console.log('xx');
+    console.log(deletedDocument);
     if (deletedDocument.documentId) {
       setShowConfirm(true);
     }
@@ -146,13 +146,7 @@ export default function Projects() {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="disabledTextInput">Nombre</Form.Label>
-            <input
-              className="ml-3"
-              type="text"
-              name="name"
-              value={selectedDocument.name}
-              onChange={onInputChange}
-            />
+            <input className="ml-3" type="text" name="name" value={selectedDocument.name} onChange={onInputChange} />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -165,20 +159,13 @@ export default function Projects() {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showConfirm} onHide={handleCloseConfirm}>
-        <Modal.Header closeButton>
-          <Modal.Title>{titleSingular} a Eliminar</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Nombre: {deletedDocument.name}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseConfirm}>
-            Cerrar
-          </Button>
-          <Button variant="danger" onClick={removeDocument}>
-            Eliminar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <ConfirmDelete
+        show={showConfirm}
+        onHide={handleCloseConfirm}
+        handleAcceptConfirm={removeDocument}
+        title={`${titleSingular} a Eliminar`}
+        subtitle={`Nombre: ${deletedDocument.name}`}
+      />
 
       <Table striped bordered hover>
         <thead>
@@ -197,18 +184,12 @@ export default function Projects() {
               <td>{item.name}</td>
               <td>{item.status}</td>
               <td>
-                <Button
-                  variant="primary"
-                  onClick={() => setSelectedDocument(item)}
-                >
+                <Button variant="primary" onClick={() => setSelectedDocument(item)}>
                   Editar
                 </Button>
               </td>
               <td>
-                <Button
-                  variant="danger"
-                  onClick={() => setDeletedDocument(item)}
-                >
+                <Button variant="danger" onClick={() => setDeletedDocument(item)}>
                   Eliminar
                 </Button>
               </td>
