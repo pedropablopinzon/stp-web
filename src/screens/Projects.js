@@ -1,16 +1,50 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Card, Button, Table } from "react-bootstrap";
+import { Card, Button, Table, Modal } from "react-bootstrap";
 
 import { db } from "../firebase";
 import { useAuth } from "../contexts/AuthContext";
-import ModalProject from "../modals/ModalProject";
 
 export default function Projects() {
   const { currentUser } = useAuth();
 
   const [items, setItems] = useState([]);
-  const [show, setShow] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedProject, setSelectedProject] = useState({
+    documentId: null,
+    name: "",
+  });
+  const [deletedProject, setDeletedProject] = useState({
+    documentId: null,
+    name: "",
+  });
+
+  const handleCloseModal = () => setShowModal(false);
+  const handleCloseConfirm = () => setShowConfirm(false);
+
+  const handleShowModal = () => {
+    setSelectedProject({ documentId: null, name: "" });
+    setShowModal(true);
+  };
+
+  const saveProject = () => {
+    if (selectedProject.documentId) {
+      updateProject(selectedProject);
+    } else {
+      createProject(selectedProject);
+    }
+    setShowModal(false);
+    fetchProjects().then((data) => setItems(data));
+  };
+
+  const deleteProject = () => {
+    if (deletedProject.documentId) {
+      removeProject(deletedProject);
+      setShowConfirm(false);
+      fetchProjects().then((data) => setItems(data));
+    }
+  };
 
   const fetchProjects = async () => {
     const querySnapshot = await db
@@ -22,18 +56,19 @@ export default function Projects() {
     querySnapshot.forEach((doc) => {
       projects.push({ ...doc.data(), documentId: doc.ref.id });
     });
+    projects.sort((a, b) => {
+      let fa = a.name.toLowerCase();
+      let fb = b.name.toLowerCase();
+
+      if (fa < fb) {
+        return -1;
+      }
+      if (fa > fb) {
+        return 1;
+      }
+      return 0;
+    });
     return projects;
-  };
-
-  useEffect(() => {
-    fetchProjects().then((data) => setItems(data));
-  }, []);
-
-  const onSave = (project) => {
-    console.log(project);
-    createProject(project);
-    console.log("guardando....");
-    setShow(false);
   };
 
   const createProject = async (project) => {
@@ -50,9 +85,41 @@ export default function Projects() {
       .catch((error) => {
         console.error("Error adding document: ", error);
       });
-
-    fetchProjects().then((data) => setItems(data));
   };
+
+  const updateProject = async (project) => {
+    await db.collection("projects").doc(project.documentId).update({
+      name: project.name,
+      updatedAt: new Date(),
+      updatedBy: currentUser.uid,
+    });
+  };
+
+  const removeProject = async (project) => {
+    await db.collection("projects").doc(project.documentId).delete();
+  };
+
+  const onInputChange = (event) => {
+    const { name, value } = event.target;
+
+    setSelectedProject({ ...selectedProject, [name]: value });
+  };
+
+  useEffect(() => {
+    fetchProjects().then((data) => setItems(data));
+  }, []);
+
+  useEffect(() => {
+    if (selectedProject.documentId) {
+      setShowModal(true);
+    }
+  }, [selectedProject]);
+
+  useEffect(() => {
+    if (deletedProject.documentId) {
+      setShowConfirm(true);
+    }
+  }, [deletedProject]);
 
   return (
     <>
@@ -60,15 +127,49 @@ export default function Projects() {
         Home
       </Link>
       <h1>Projects</h1>
-      <button onClick={() => setShow(true)}>Nuevo Proyecto</button>
-      <ModalProject
-        title="My Modal"
-        onClose={() => setShow(false)}
-        show={show}
-        onSave={(data) => onSave(data)}
-      >
-        <p>This is modal body</p>
-      </ModalProject>
+
+      <Button variant="primary" onClick={handleShowModal}>
+        Nuevo Proyecto
+      </Button>
+
+      <Modal show={showModal} onHide={handleCloseModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Proyecto</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Nombre:
+          <input
+            className="ml-3"
+            type="text"
+            name="name"
+            value={selectedProject.name}
+            onChange={onInputChange}
+          />
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal}>
+            Cerrar
+          </Button>
+          <Button variant="primary" onClick={saveProject}>
+            Guardar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showConfirm} onHide={handleCloseConfirm}>
+        <Modal.Header closeButton>
+          <Modal.Title>Proyecto a Eliminar</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Nombre: {deletedProject.name}</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseConfirm}>
+            Cerrar
+          </Button>
+          <Button variant="danger" onClick={deleteProject}>
+            Eliminar
+          </Button>
+        </Modal.Footer>
+      </Modal>
 
       <Table striped bordered hover>
         <thead>
@@ -79,12 +180,27 @@ export default function Projects() {
           </tr>
         </thead>
         <tbody>
-          {items.map((log) => (
-            <tr key={log.documentId}>
-              <td>{log.documentId}</td>
-              <td>{log.name}</td>
-              <td>{log.status}</td>
-              <td></td>
+          {items.map((item) => (
+            <tr key={item.documentId}>
+              <td>{item.documentId}</td>
+              <td>{item.name}</td>
+              <td>{item.status}</td>
+              <td>
+                <Button
+                  variant="primary"
+                  onClick={() => setSelectedProject(item)}
+                >
+                  Editar
+                </Button>
+              </td>
+              <td>
+                <Button
+                  variant="danger"
+                  onClick={() => setDeletedProject(item)}
+                >
+                  Eliminar
+                </Button>
+              </td>
             </tr>
           ))}
         </tbody>
