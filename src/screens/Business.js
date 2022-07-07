@@ -1,21 +1,24 @@
-import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Button, Table, Modal, Form } from "react-bootstrap";
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Button, Modal, Form } from 'react-bootstrap';
 
-import { db } from "../firebase";
-import { useAuth } from "../contexts/AuthContext";
+import { fetchDocuments, addDocument, updateDocument, deleteDocument } from '../modules/db';
+import { sortItems, addItem, updateItem, deleteItem } from '../modules/utils';
+import { useAuth } from '../contexts/AuthContext';
+import { ConfirmDelete } from '../components/ConfirmDelete';
+import { BusinessTable } from '../components/tables/Business.table';
 
-export default function Business() {
-  const collectionName = "business";
-  const title = "Empresas";
-  const titleSingular = "Empresa";
+export const Business = () => {
+  const collectionName = 'business';
+  const title = 'Empresas';
+  const titleSingular = 'Empresa';
 
   const { currentUser } = useAuth();
   const defaultDocument = {
     documentId: null,
-    name: "",
-    taxId: "",
-    address: "",
+    name: '',
+    taxId: '',
+    address: '',
   };
 
   const [items, setItems] = useState([]);
@@ -28,86 +31,52 @@ export default function Business() {
   const handleCloseConfirm = () => setShowConfirm(false);
 
   const handleShowModal = () => {
-    setSelectedDocument({ documentId: null, name: "" });
+    setSelectedDocument({ documentId: null, name: '' });
     setShowModal(true);
   };
 
-  const saveDocument = () => {
+  const saveDocument = async () => {
     if (selectedDocument.documentId) {
-      updateDocument(selectedDocument);
+      const updateData = {
+        name: selectedDocument.name ?? '',
+        taxId: selectedDocument.taxId ?? '',
+        address: selectedDocument.address ?? '',
+        updatedAt: new Date(),
+        updatedBy: currentUser.uid,
+      };
+      updateDocument(collectionName, selectedDocument.documentId, updateData);
+
+      const updatedItems = updateItem(items, selectedDocument.documentId, updateData);
+
+      setItems(updatedItems);
     } else {
-      addDocument(selectedDocument);
+      const newData = {
+        name: selectedDocument.name ?? '',
+        taxId: selectedDocument.taxId ?? '',
+        address: selectedDocument.address ?? '',
+        status: 'ACTIVE',
+        createdAt: new Date(),
+        createdBy: currentUser.uid,
+      };
+      const result = await addDocument(collectionName, newData);
+      newData.documentId = result.id;
+
+      addItem(items, newData);
+
+      setItems(items);
     }
     setShowModal(false);
-    fetchDocuments().then((data) => setItems(data));
   };
 
   const removeDocument = () => {
     if (deletedDocument.documentId) {
-      deleteDocument(deletedDocument);
+      deleteDocument(collectionName, deletedDocument.documentId);
+
+      const newItems = deleteItem(items, deletedDocument.documentId);
+
+      setItems(newItems);
       setShowConfirm(false);
-      fetchDocuments().then((data) => setItems(data));
     }
-  };
-
-  const fetchDocuments = async () => {
-    const querySnapshot = await db
-      .collection(collectionName)
-      .where("status", "==", "ACTIVE")
-      .get();
-
-    const documents = [];
-    querySnapshot.forEach((doc) => {
-      documents.push({ ...doc.data(), documentId: doc.ref.id });
-    });
-    documents.sort((a, b) => {
-      let fa = a.name.toLowerCase();
-      let fb = b.name.toLowerCase();
-
-      if (fa < fb) {
-        return -1;
-      }
-      if (fa > fb) {
-        return 1;
-      }
-      return 0;
-    });
-    return documents;
-  };
-
-  const addDocument = async (document) => {
-    db.collection(collectionName)
-      .add({
-        name: document.name ?? "",
-        taxId: document.taxId ?? "",
-        address: document.address ?? "",
-        status: "ACTIVE",
-        createdAt: new Date(),
-        createdBy: currentUser.uid,
-      })
-      .then((docRef) => {
-        console.log("Document written with ID: ", docRef.id);
-      })
-      .catch((error) => {
-        console.error("Error adding document: ", error);
-      });
-  };
-
-  const updateDocument = async (document) => {
-    await db
-      .collection(collectionName)
-      .doc(document.documentId)
-      .update({
-        name: document.name ?? "",
-        taxId: document.taxId ?? "",
-        address: document.address ?? "",
-        updatedAt: new Date(),
-        updatedBy: currentUser.uid,
-      });
-  };
-
-  const deleteDocument = async (document) => {
-    await db.collection(collectionName).doc(document.documentId).delete();
   };
 
   const onInputChange = (event) => {
@@ -117,7 +86,10 @@ export default function Business() {
   };
 
   useEffect(() => {
-    fetchDocuments().then((data) => setItems(data));
+    fetchDocuments(collectionName).then((data) => {
+      sortItems(data);
+      setItems(data);
+    });
   }, []);
 
   useEffect(() => {
@@ -152,33 +124,15 @@ export default function Business() {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="disabledTextInput">Nombre</Form.Label>
-            <input
-              className="ml-3"
-              type="text"
-              name="name"
-              value={selectedDocument.name}
-              onChange={onInputChange}
-            />
+            <input className="ml-3" type="text" name="name" value={selectedDocument.name} onChange={onInputChange} />
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="disabledTextInput">NIT</Form.Label>
-            <input
-              className="ml-3"
-              type="text"
-              name="taxId"
-              value={selectedDocument.taxId}
-              onChange={onInputChange}
-            />
+            <input className="ml-3" type="text" name="taxId" value={selectedDocument.taxId} onChange={onInputChange} />
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="disabledTextInput">DIRECCION</Form.Label>
-            <input
-              className="ml-3"
-              type="text"
-              name="address"
-              value={selectedDocument.address}
-              onChange={onInputChange}
-            />
+            <input className="ml-3" type="text" name="address" value={selectedDocument.address} onChange={onInputChange} />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -191,61 +145,15 @@ export default function Business() {
         </Modal.Footer>
       </Modal>
 
-      <Modal show={showConfirm} onHide={handleCloseConfirm}>
-        <Modal.Header closeButton>
-          <Modal.Title>{titleSingular} a Eliminar</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>Nombre: {deletedDocument.name}</Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseConfirm}>
-            Cerrar
-          </Button>
-          <Button variant="danger" onClick={removeDocument}>
-            Eliminar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <ConfirmDelete
+        show={showConfirm}
+        onHide={handleCloseConfirm}
+        handleAcceptConfirm={removeDocument}
+        title={`${titleSingular} a Eliminar`}
+        subtitle={`Nombre: ${deletedDocument.name}`}
+      />
 
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th></th>
-            <th>#</th>
-            <th>Nombre</th>
-            <th>NIT</th>
-            <th>DIRECCION</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item, index) => (
-            <tr key={item.documentId}>
-              <td>{index + 1}</td>
-              <td>{item.documentId}</td>
-              <td>{item.name}</td>
-              <td>{item.taxId}</td>
-              <td>{item.address}</td>
-              <td>{item.status}</td>
-              <td>
-                <Button
-                  variant="primary"
-                  onClick={() => setSelectedDocument(item)}
-                >
-                  Editar
-                </Button>
-              </td>
-              <td>
-                <Button
-                  variant="danger"
-                  onClick={() => setDeletedDocument(item)}
-                >
-                  Eliminar
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <BusinessTable items={items} onEditDocument={setSelectedDocument} onDeleteDocument={setDeletedDocument} />
     </>
   );
-}
+};
