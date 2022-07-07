@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Table, Modal, Form } from 'react-bootstrap';
+import { Button, Modal, Form } from 'react-bootstrap';
 
 import { fetchDocuments, addDocument, updateDocument, deleteDocument } from '../modules/db';
 import { sortItems, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
+import { BusinessTable } from '../components/tables/Business.table';
 
-export default function Business() {
+export const Business = () => {
   const collectionName = 'business';
   const title = 'Empresas';
   const titleSingular = 'Empresa';
@@ -36,20 +37,20 @@ export default function Business() {
 
   const saveDocument = async () => {
     if (selectedDocument.documentId) {
-      const document = {
+      const updateData = {
         name: selectedDocument.name ?? '',
         taxId: selectedDocument.taxId ?? '',
         address: selectedDocument.address ?? '',
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
       };
-      updateDocument(collectionName, selectedDocument.documentId, document);
+      updateDocument(collectionName, selectedDocument.documentId, updateData);
 
-      const updatedItems = updateItem(items, selectedDocument.documentId, document);
+      const updatedItems = updateItem(items, selectedDocument.documentId, updateData);
 
       setItems(updatedItems);
     } else {
-      const document = {
+      const newData = {
         name: selectedDocument.name ?? '',
         taxId: selectedDocument.taxId ?? '',
         address: selectedDocument.address ?? '',
@@ -57,10 +58,10 @@ export default function Business() {
         createdAt: new Date(),
         createdBy: currentUser.uid,
       };
-      const result = await addDocument(collectionName, document);
-      document.documentId = result.id;
+      const result = await addDocument(collectionName, newData);
+      newData.documentId = result.id;
 
-      addItem(items, document);
+      addItem(items, newData);
 
       setItems(items);
     }
@@ -152,40 +153,7 @@ export default function Business() {
         subtitle={`Nombre: ${deletedDocument.name}`}
       />
 
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th></th>
-            <th>#</th>
-            <th>Nombre</th>
-            <th>NIT</th>
-            <th>DIRECCION</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item, index) => (
-            <tr key={item.documentId}>
-              <td>{index + 1}</td>
-              <td>{item.documentId}</td>
-              <td>{item.name}</td>
-              <td>{item.taxId}</td>
-              <td>{item.address}</td>
-              <td>{item.status}</td>
-              <td>
-                <Button variant="primary" onClick={() => setSelectedDocument(item)}>
-                  Editar
-                </Button>
-              </td>
-              <td>
-                <Button variant="danger" onClick={() => setDeletedDocument(item)}>
-                  Eliminar
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <BusinessTable items={items} onEditDocument={setSelectedDocument} onDeleteDocument={setDeletedDocument} />
     </>
   );
-}
+};

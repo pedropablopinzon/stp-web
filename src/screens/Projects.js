@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Button, Table, Modal, Form } from 'react-bootstrap';
+import { Button, Modal, Form } from 'react-bootstrap';
 
 import { fetchDocuments, addDocument, updateDocument, deleteDocument } from '../modules/db';
 import { sortItems, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
+import { ProjectsTable } from '../components/tables/Projects.table';
 
-export default function Projects() {
+export const Projects = () => {
   const collectionName = 'projects';
   const title = 'Proyectos';
   const titleSingular = 'Proyecto';
@@ -34,27 +35,27 @@ export default function Projects() {
 
   const saveDocument = async () => {
     if (selectedDocument.documentId) {
-      const document = {
+      const updateData = {
         name: selectedDocument.name ?? '',
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
       };
-      updateDocument(collectionName, selectedDocument.documentId, document);
+      updateDocument(collectionName, selectedDocument.documentId, updateData);
 
-      const updatedItems = updateItem(items, selectedDocument.documentId, document);
+      const updatedItems = updateItem(items, selectedDocument.documentId, updateData);
 
       setItems(updatedItems);
     } else {
-      const document = {
+      const newData = {
         name: selectedDocument.name ?? '',
         status: 'ACTIVE',
         createdAt: new Date(),
         createdBy: currentUser.uid,
       };
-      const result = await addDocument(collectionName, document);
-      document.documentId = result.id;
+      const result = await addDocument(collectionName, newData);
+      newData.documentId = result.id;
 
-      addItem(items, document);
+      addItem(items, newData);
 
       setItems(items);
     }
@@ -92,8 +93,6 @@ export default function Projects() {
   }, [selectedDocument]);
 
   useEffect(() => {
-    console.log('xx');
-    console.log(deletedDocument);
     if (deletedDocument.documentId) {
       setShowConfirm(true);
     }
@@ -140,36 +139,7 @@ export default function Projects() {
         subtitle={`Nombre: ${deletedDocument.name}`}
       />
 
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th></th>
-            <th>#</th>
-            <th>Nombre</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {items.map((item, index) => (
-            <tr key={item.documentId}>
-              <td>{index + 1}</td>
-              <td>{item.documentId}</td>
-              <td>{item.name}</td>
-              <td>{item.status}</td>
-              <td>
-                <Button variant="primary" onClick={() => setSelectedDocument(item)}>
-                  Editar
-                </Button>
-              </td>
-              <td>
-                <Button variant="danger" onClick={() => setDeletedDocument(item)}>
-                  Eliminar
-                </Button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
+      <ProjectsTable items={items} onEditDocument={setSelectedDocument} onDeleteDocument={setDeletedDocument} />
     </>
   );
-}
+};
