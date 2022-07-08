@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
-export const BusinessTable = ({ items, onEditDocument, onDeleteDocument }) => {
+import { IProject } from '../../interfaces/project.interface';
+
+export const ProjectsTable = (props: { items: IProject[]; onEditDocument: Function; onDeleteDocument: Function }) => {
   return (
     <>
       <Table striped bordered hover>
@@ -10,27 +12,23 @@ export const BusinessTable = ({ items, onEditDocument, onDeleteDocument }) => {
             <th></th>
             <th>#</th>
             <th>Nombre</th>
-            <th>NIT</th>
-            <th>DIRECCION</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          {items.map((item, index) => (
+          {props.items.map((item: IProject, index: number) => (
             <tr key={item.documentId}>
               <td>{index + 1}</td>
               <td>{item.documentId}</td>
               <td>{item.name}</td>
-              <td>{item.taxId}</td>
-              <td>{item.address}</td>
               <td>{item.status}</td>
               <td>
-                <Button variant="primary" onClick={() => onEditDocument(item)}>
+                <Button variant="primary" onClick={() => props.onEditDocument(item)}>
                   Editar
                 </Button>
               </td>
               <td>
-                <Button variant="danger" onClick={() => onDeleteDocument(item)}>
+                <Button variant="danger" onClick={() => props.onDeleteDocument(item)}>
                   Eliminar
                 </Button>
               </td>

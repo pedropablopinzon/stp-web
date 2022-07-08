@@ -1,21 +1,22 @@
-import React, { useContext, useState, useEffect } from "react";
-import { auth } from "../firebase";
+import React, { useContext, useState, useEffect } from 'react';
+import { auth } from '../firebase';
 
-const AuthContext = React.createContext();
+const AuthContext = React.createContext(null);
 
-export function useAuth() {
+export function useAuth(): any {
   return useContext(AuthContext);
 }
 
+// @ts-ignore
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState();
   const [loading, setLoading] = useState(true);
 
-  function signup(email, password) {
+  function signup(email: string, password: string) {
     return auth.createUserWithEmailAndPassword(email, password);
   }
 
-  function login(email, password) {
+  function login(email: string, password: string) {
     return auth.signInWithEmailAndPassword(email, password);
   }
 
@@ -23,20 +24,22 @@ export function AuthProvider({ children }) {
     return auth.signOut();
   }
 
-  function resetPassword(email) {
+  function resetPassword(email: string) {
     return auth.sendPasswordResetEmail(email);
   }
 
-  function updateEmail(email) {
+  function updateEmail(email: string) {
+    // @ts-ignore
     return currentUser.updateEmail(email);
   }
 
-  function updatePassword(password) {
+  function updatePassword(password: string) {
+    // @ts-ignore
     return currentUser.updatePassword(password);
   }
 
   useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
+    const unsubscribe = auth.onAuthStateChanged((user: any) => {
       setCurrentUser(user);
       setLoading(false);
     });
@@ -55,7 +58,10 @@ export function AuthProvider({ children }) {
   };
 
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      // @ts-ignore
+      value={value}
+    >
       {!loading && children}
     </AuthContext.Provider>
   );

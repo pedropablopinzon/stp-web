@@ -1,4 +1,4 @@
-export const sortItems = (documents) => {
+export const sortItems = (documents: any[]) => {
   documents.sort((a, b) => {
     let fa = a.name.toLowerCase();
     let fb = b.name.toLowerCase();
@@ -13,18 +13,18 @@ export const sortItems = (documents) => {
   });
 };
 
-export const updateItem = (items, documentId, document) => {
+export const updateItem = (items: any[], documentId: string, document: any) => {
   const updatedItems = items.map((obj) => (obj.documentId === documentId ? { ...obj, ...document } : obj));
   sortItems(updatedItems);
   return updatedItems;
 };
 
-export const addItem = (items, document) => {
+export const addItem = (items: any[], document: any) => {
   items.push(document);
   sortItems(items);
 };
 
-export const deleteItem = (items, documentId) => {
+export const deleteItem = (items: any[], documentId: string) => {
   return items.filter((obj, index, arr) => {
     return obj.documentId !== documentId;
   });
