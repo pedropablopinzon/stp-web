@@ -6,22 +6,20 @@ import { fetchDocuments, addDocument, updateDocument, deleteDocument } from '../
 import { sortItems, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
-import { BusinessTable } from '../components/tables/Business.table';
+import { ProjectsTable } from '../components/tables/Projects.table';
 
-export const Business = () => {
-  const collectionName = 'business';
-  const title = 'Empresas';
-  const titleSingular = 'Empresa';
+export const Projects = () => {
+  const collectionName = 'projects';
+  const title = 'Proyectos';
+  const titleSingular = 'Proyecto';
 
   const { currentUser } = useAuth();
   const defaultDocument = {
     documentId: null,
     name: '',
-    taxId: '',
-    address: '',
   };
 
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(defaultDocument);
@@ -39,8 +37,6 @@ export const Business = () => {
     if (selectedDocument.documentId) {
       const updateData = {
         name: selectedDocument.name ?? '',
-        taxId: selectedDocument.taxId ?? '',
-        address: selectedDocument.address ?? '',
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
       };
@@ -50,10 +46,14 @@ export const Business = () => {
 
       setItems(updatedItems);
     } else {
-      const newData = {
+      const newData: {
+        documentId?: string;
+        name: string;
+        status: string;
+        createdAt: Date;
+        createdBy: string;
+      } = {
         name: selectedDocument.name ?? '',
-        taxId: selectedDocument.taxId ?? '',
-        address: selectedDocument.address ?? '',
         status: 'ACTIVE',
         createdAt: new Date(),
         createdBy: currentUser.uid,
@@ -79,7 +79,7 @@ export const Business = () => {
     }
   };
 
-  const onInputChange = (event) => {
+  const onInputChange = (event: any) => {
     const { name, value } = event.target;
 
     setSelectedDocument({ ...selectedDocument, [name]: value });
@@ -126,14 +126,6 @@ export const Business = () => {
             <Form.Label htmlFor="disabledTextInput">Nombre</Form.Label>
             <input className="ml-3" type="text" name="name" value={selectedDocument.name} onChange={onInputChange} />
           </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="disabledTextInput">NIT</Form.Label>
-            <input className="ml-3" type="text" name="taxId" value={selectedDocument.taxId} onChange={onInputChange} />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label htmlFor="disabledTextInput">DIRECCION</Form.Label>
-            <input className="ml-3" type="text" name="address" value={selectedDocument.address} onChange={onInputChange} />
-          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
@@ -153,7 +145,7 @@ export const Business = () => {
         subtitle={`Nombre: ${deletedDocument.name}`}
       />
 
-      <BusinessTable items={items} onEditDocument={setSelectedDocument} onDeleteDocument={setDeletedDocument} />
+      <ProjectsTable items={items} onEditDocument={setSelectedDocument} onDeleteDocument={setDeletedDocument} />
     </>
   );
 };

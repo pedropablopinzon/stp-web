@@ -6,20 +6,33 @@ import { fetchDocuments, addDocument, updateDocument, deleteDocument } from '../
 import { sortItems, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
-import { ProjectsTable } from '../components/tables/Projects.table';
+import { BusinessTable } from '../components/tables/Business.table';
 
-export const Projects = () => {
-  const collectionName = 'projects';
-  const title = 'Proyectos';
-  const titleSingular = 'Proyecto';
+export const Business = () => {
+  const collectionName = 'business';
+  const title = 'Empresas';
+  const titleSingular = 'Empresa';
 
   const { currentUser } = useAuth();
-  const defaultDocument = {
+  const defaultDocument: {
+    documentId: string | null;
+    name: string;
+    taxId: string;
+    address: string;
+    status: string;
+    createdAt?: Date;
+    createdBy?: string;
+    updatedAt?: Date;
+    updatedBy?: string;
+  } = {
     documentId: null,
     name: '',
+    taxId: '',
+    address: '',
+    status: 'ACTIVE',
   };
 
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState(defaultDocument);
@@ -29,25 +42,46 @@ export const Projects = () => {
   const handleCloseConfirm = () => setShowConfirm(false);
 
   const handleShowModal = () => {
-    setSelectedDocument({ documentId: null, name: '' });
+    setSelectedDocument({ documentId: null, name: '', taxId: '', address: '', status: 'ACTIVE' });
     setShowModal(true);
   };
 
   const saveDocument = async () => {
     if (selectedDocument.documentId) {
-      const updateData = {
+      const updateData: {
+        documentId?: string | null;
+        name: string;
+        taxId: string;
+        address: string;
+        updatedAt: Date;
+        updatedBy: string;
+      } = {
         name: selectedDocument.name ?? '',
+        taxId: selectedDocument.taxId ?? '',
+        address: selectedDocument.address ?? '',
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
       };
       updateDocument(collectionName, selectedDocument.documentId, updateData);
 
-      const updatedItems = updateItem(items, selectedDocument.documentId, updateData);
+      const updatedItems: any[] = updateItem(items, selectedDocument.documentId, updateData);
 
       setItems(updatedItems);
     } else {
-      const newData = {
+      const newData: {
+        documentId?: string | null;
+        name: string;
+        taxId: string;
+        address: string;
+        status: string;
+        createdAt?: Date;
+        createdBy?: string;
+        updatedAt?: Date;
+        updatedBy?: string;
+      } = {
         name: selectedDocument.name ?? '',
+        taxId: selectedDocument.taxId ?? '',
+        address: selectedDocument.address ?? '',
         status: 'ACTIVE',
         createdAt: new Date(),
         createdBy: currentUser.uid,
@@ -73,7 +107,7 @@ export const Projects = () => {
     }
   };
 
-  const onInputChange = (event) => {
+  const onInputChange = (event: any) => {
     const { name, value } = event.target;
 
     setSelectedDocument({ ...selectedDocument, [name]: value });
@@ -120,6 +154,14 @@ export const Projects = () => {
             <Form.Label htmlFor="disabledTextInput">Nombre</Form.Label>
             <input className="ml-3" type="text" name="name" value={selectedDocument.name} onChange={onInputChange} />
           </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="disabledTextInput">NIT</Form.Label>
+            <input className="ml-3" type="text" name="taxId" value={selectedDocument.taxId} onChange={onInputChange} />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="disabledTextInput">DIRECCION</Form.Label>
+            <input className="ml-3" type="text" name="address" value={selectedDocument.address} onChange={onInputChange} />
+          </Form.Group>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
@@ -139,7 +181,7 @@ export const Projects = () => {
         subtitle={`Nombre: ${deletedDocument.name}`}
       />
 
-      <ProjectsTable items={items} onEditDocument={setSelectedDocument} onDeleteDocument={setDeletedDocument} />
+      <BusinessTable items={items} onEditDocument={setSelectedDocument} onDeleteDocument={setDeletedDocument} />
     </>
   );
 };

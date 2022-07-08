@@ -4,15 +4,15 @@ import { CollectionIcon, UserCircleIcon, BookOpenIcon } from '@heroicons/react/o
 
 import PageHeading from '../components/ui/PageHeading';
 
-function PageCardLink({ title, url, icon }) {
+function PageCardLink(props: { title: string; url: string; icon: any }) {
   return (
-    <Link className="flex flex-col w-48 p-4 place-items-center bg-neutral rounded-box hover:text-primary" to={url}>
-      {React.createElement(icon, {
+    <Link className="flex flex-col w-48 p-4 place-items-center bg-neutral rounded-box hover:text-primary" to={props.url}>
+      {React.createElement(props.icon, {
         className: 'h-36 w-36',
         'aria-hidden': 'true',
       })}
 
-      <h3 className="text-lg font-bold">{title} </h3>
+      <h3 className="text-lg font-bold">{props.title} </h3>
     </Link>
   );
 }

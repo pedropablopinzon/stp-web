@@ -1,40 +1,37 @@
-import React, { useEffect, useState } from "react";
-import { Card, Button, Table } from "react-bootstrap";
-import { Link, useHistory } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import { Card, Button, Table } from 'react-bootstrap';
+import { Link, useHistory } from 'react-router-dom';
 
-import { db } from "../firebase";
-import { useAuth } from "../contexts/AuthContext";
+import { db } from '../firebase';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function CheckInOut() {
   const history = useHistory();
   const { currentUser } = useAuth();
 
-  const [items, setItems] = useState([]);
-  const [logs, setLogs] = useState([]);
-  const [selectedProject, setSelectedProject] = useState(null);
+  const [items, setItems] = useState<any[]>([]);
+  const [logs, setLogs] = useState<any[]>([]);
+  const [selectedProject, setSelectedProject] = useState<any | null>(null);
 
   const fetchProjects = async () => {
-    const querySnapshot = await db
-      .collection("projects")
-      .where("status", "==", "ACTIVE")
-      .get();
+    const querySnapshot = await db.collection('projects').where('status', '==', 'ACTIVE').get();
 
-    const projects = [];
+    const projects: any[] = [];
     querySnapshot.forEach((doc) => {
       projects.push({ ...doc.data(), documentId: doc.ref.id });
     });
     return projects;
   };
 
-  const fetchLogs = async (projectId, userId) => {
+  const fetchLogs = async (projectId: string, userId: string) => {
     const querySnapshot = await db
-      .collection("logCheckInOut")
-      .where("projectId", "==", projectId)
-      .where("userId", "==", userId)
-      .where("checkOut", "==", false)
+      .collection('logCheckInOut')
+      .where('projectId', '==', projectId)
+      .where('userId', '==', userId)
+      .where('checkOut', '==', false)
       .get();
 
-    const logs = [];
+    const logs: any[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       data.checkInAt = fixDate(data.checkInAt);
@@ -44,16 +41,13 @@ export default function CheckInOut() {
     return logs;
   };
 
-  const fixDate = (value) => {
+  const fixDate = (value: any) => {
     if (value) {
-
       let time = value;
-      const fireBaseTime = new Date(
-        time.seconds * 1000 + time.nanoseconds / 1000000
-      );
-      const date = fireBaseTime.toDateString();
-      const atTime = fireBaseTime.toLocaleTimeString();
-  
+      const fireBaseTime = new Date(time.seconds * 1000 + time.nanoseconds / 1000000);
+      // const date = fireBaseTime.toDateString();
+      // const atTime = fireBaseTime.toLocaleTimeString();
+
       return fireBaseTime.toISOString();
     }
   };
@@ -63,7 +57,7 @@ export default function CheckInOut() {
   }, []);
 
   const checkIn = async () => {
-    db.collection("logCheckInOut")
+    db.collection('logCheckInOut')
       .add({
         projectId: selectedProject.documentId,
         userId: currentUser.uid,
@@ -74,19 +68,17 @@ export default function CheckInOut() {
         checkInAt: new Date(),
       })
       .then((docRef) => {
-        console.log("Document written with ID: ", docRef.id);
+        console.log('Document written with ID: ', docRef.id);
       })
       .catch((error) => {
-        console.error("Error adding document: ", error);
+        console.error('Error adding document: ', error);
       });
 
-    fetchLogs(selectedProject.documentId, currentUser.uid).then((data) =>
-      setLogs(data)
-    );
+    fetchLogs(selectedProject.documentId, currentUser.uid).then((data) => setLogs(data));
   };
 
   const checkOut = () => {
-    db.collection("logCheckInOut")
+    db.collection('logCheckInOut')
       .doc(logs[0].documentId)
       .update({
         checkOut: true,
@@ -94,25 +86,23 @@ export default function CheckInOut() {
         updatedBy: currentUser.uid,
         checkOutAt: new Date(),
       })
-      .then((docRef) => {
-        console.log("Document written with ID: ", docRef.id);
+      .then((docRef: any) => {
+        if (docRef) {
+          console.log('Document written with ID: ', docRef.id);
+        }
       })
       .catch((error) => {
-        console.error("Error adding document: ", error);
+        console.error('Error adding document: ', error);
       });
 
-    history.push("/home");
+    history.push('/home');
   };
 
-  const handleProjectChange = (e) => {
-    const project = items.filter(
-      (element) => element.documentId === e.target.value
-    );
+  const handleProjectChange = (e: any) => {
+    const project = items.filter((element) => element.documentId === e.target.value);
     setSelectedProject(project[0]);
 
-    fetchLogs(project[0].documentId, currentUser.uid).then((data) =>
-      setLogs(data)
-    );
+    fetchLogs(project[0].documentId, currentUser.uid).then((data) => setLogs(data));
   };
 
   return (
@@ -126,14 +116,8 @@ export default function CheckInOut() {
           <strong>Email:</strong> {currentUser.email}
         </Card.Body>
       </Card>
-      <select
-        className="dropdown-toggle btn btn-info"
-        onChange={handleProjectChange}
-      >
-        <option value="⬇️ Seleccione un Proyecto ⬇️">
-          {" "}
-          -- Seleccione un Proyecto --{" "}
-        </option>
+      <select className="dropdown-toggle btn btn-info" onChange={handleProjectChange}>
+        <option value="⬇️ Seleccione un Proyecto ⬇️"> -- Seleccione un Proyecto -- </option>
         {items.map((project) => (
           <option value={project.documentId} key={project.documentId}>
             {project.name}
@@ -162,11 +146,7 @@ export default function CheckInOut() {
         </tbody>
       </Table>
 
-      <Button
-        variant="success"
-        onClick={checkIn}
-        disabled={logs.length !== 0 || !selectedProject}
-      >
+      <Button variant="success" onClick={checkIn} disabled={logs.length !== 0 || !selectedProject}>
         Check In
       </Button>
       <Button variant="danger" onClick={checkOut} disabled={logs.length === 0}>
