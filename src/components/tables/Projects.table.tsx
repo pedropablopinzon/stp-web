@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
-export const ProjectsTable = (props: { items: any[]; onEditDocument: Function; onDeleteDocument: Function }) => {
+import { IProject } from '../../interfaces/project.interface';
+
+export const ProjectsTable = (props: { items: IProject[]; onEditDocument: Function; onDeleteDocument: Function }) => {
   return (
     <>
       <Table striped bordered hover>
@@ -14,7 +16,7 @@ export const ProjectsTable = (props: { items: any[]; onEditDocument: Function; o
           </tr>
         </thead>
         <tbody>
-          {props.items.map((item, index) => (
+          {props.items.map((item: IProject, index: number) => (
             <tr key={item.documentId}>
               <td>{index + 1}</td>
               <td>{item.documentId}</td>

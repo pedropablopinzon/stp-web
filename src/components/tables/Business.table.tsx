@@ -1,7 +1,9 @@
 import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
-export const BusinessTable = (props: { items: any[]; onEditDocument: Function; onDeleteDocument: Function }) => {
+import { IBusiness } from '../../interfaces/business.interface';
+
+export const BusinessTable = (props: { items: IBusiness[]; onEditDocument: Function; onDeleteDocument: Function }) => {
   return (
     <>
       <Table striped bordered hover>
@@ -11,12 +13,12 @@ export const BusinessTable = (props: { items: any[]; onEditDocument: Function; o
             <th>#</th>
             <th>Nombre</th>
             <th>NIT</th>
-            <th>DIRECCION</th>
+            <th>Direccion</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          {props.items.map((item: any, index: any) => (
+          {props.items.map((item: IBusiness, index: number) => (
             <tr key={item.documentId}>
               <td>{index + 1}</td>
               <td>{item.documentId}</td>
