@@ -7,6 +7,7 @@ import { sortItems, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
 import { ProjectsTable } from '../components/tables/Projects.table';
+import { IProject } from '../interfaces/project.interface';
 
 export const Projects = () => {
   const collectionName = 'projects';
@@ -14,28 +15,29 @@ export const Projects = () => {
   const titleSingular = 'Proyecto';
 
   const { currentUser } = useAuth();
-  const defaultDocument = {
+  const defaultDocument: IProject = {
     documentId: null,
     name: '',
+    status: 'ACTIVE',
   };
 
-  const [items, setItems] = useState<any[]>([]);
-  const [showModal, setShowModal] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [selectedDocument, setSelectedDocument] = useState(defaultDocument);
-  const [deletedDocument, setDeletedDocument] = useState(defaultDocument);
+  const [items, setItems] = useState<IProject[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showConfirm, setShowConfirm] = useState<boolean>(false);
+  const [selectedDocument, setSelectedDocument] = useState<IProject>(defaultDocument);
+  const [deletedDocument, setDeletedDocument] = useState<IProject>(defaultDocument);
 
   const handleCloseModal = () => setShowModal(false);
   const handleCloseConfirm = () => setShowConfirm(false);
 
   const handleShowModal = () => {
-    setSelectedDocument({ documentId: null, name: '' });
+    setSelectedDocument({ documentId: null, name: '', status: 'ACTIVE' });
     setShowModal(true);
   };
 
   const saveDocument = async () => {
     if (selectedDocument.documentId) {
-      const updateData = {
+      const updateData: IProject = {
         name: selectedDocument.name ?? '',
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
@@ -46,13 +48,7 @@ export const Projects = () => {
 
       setItems(updatedItems);
     } else {
-      const newData: {
-        documentId?: string;
-        name: string;
-        status: string;
-        createdAt: Date;
-        createdBy: string;
-      } = {
+      const newData: IProject = {
         name: selectedDocument.name ?? '',
         status: 'ACTIVE',
         createdAt: new Date(),

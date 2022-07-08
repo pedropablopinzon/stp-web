@@ -7,6 +7,7 @@ import { sortItems, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
 import { BusinessTable } from '../components/tables/Business.table';
+import { IBusiness } from '../interfaces/business.interface';
 
 export const Business = () => {
   const collectionName = 'business';
@@ -14,17 +15,7 @@ export const Business = () => {
   const titleSingular = 'Empresa';
 
   const { currentUser } = useAuth();
-  const defaultDocument: {
-    documentId: string | null;
-    name: string;
-    taxId: string;
-    address: string;
-    status: string;
-    createdAt?: Date;
-    createdBy?: string;
-    updatedAt?: Date;
-    updatedBy?: string;
-  } = {
+  const defaultDocument: IBusiness = {
     documentId: null,
     name: '',
     taxId: '',
@@ -32,11 +23,11 @@ export const Business = () => {
     status: 'ACTIVE',
   };
 
-  const [items, setItems] = useState<any[]>([]);
-  const [showModal, setShowModal] = useState(false);
-  const [showConfirm, setShowConfirm] = useState(false);
-  const [selectedDocument, setSelectedDocument] = useState(defaultDocument);
-  const [deletedDocument, setDeletedDocument] = useState(defaultDocument);
+  const [items, setItems] = useState<IBusiness[]>([]);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [showConfirm, setShowConfirm] = useState<boolean>(false);
+  const [selectedDocument, setSelectedDocument] = useState<IBusiness>(defaultDocument);
+  const [deletedDocument, setDeletedDocument] = useState<IBusiness>(defaultDocument);
 
   const handleCloseModal = () => setShowModal(false);
   const handleCloseConfirm = () => setShowConfirm(false);
@@ -48,14 +39,7 @@ export const Business = () => {
 
   const saveDocument = async () => {
     if (selectedDocument.documentId) {
-      const updateData: {
-        documentId?: string | null;
-        name: string;
-        taxId: string;
-        address: string;
-        updatedAt: Date;
-        updatedBy: string;
-      } = {
+      const updateData: IBusiness = {
         name: selectedDocument.name ?? '',
         taxId: selectedDocument.taxId ?? '',
         address: selectedDocument.address ?? '',
@@ -68,17 +52,7 @@ export const Business = () => {
 
       setItems(updatedItems);
     } else {
-      const newData: {
-        documentId?: string | null;
-        name: string;
-        taxId: string;
-        address: string;
-        status: string;
-        createdAt?: Date;
-        createdBy?: string;
-        updatedAt?: Date;
-        updatedBy?: string;
-      } = {
+      const newData: IBusiness = {
         name: selectedDocument.name ?? '',
         taxId: selectedDocument.taxId ?? '',
         address: selectedDocument.address ?? '',
