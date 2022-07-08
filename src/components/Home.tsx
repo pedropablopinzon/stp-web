@@ -17,6 +17,7 @@ export default function Home() {
       await logout();
       history.push('/login');
     } catch {
+      console.log(error);
       setError('Failed to log out');
     }
   }

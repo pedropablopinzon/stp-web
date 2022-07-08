@@ -1,16 +1,8 @@
 import React from "react";
 import { Card, Navbar, Nav, Container } from "react-bootstrap";
 
-import { useAuth } from "../contexts/AuthContext";
-import MenuButton from "./MenuButton";
 
 export default function Menu() {
-  const { currentUser, logout } = useAuth();
-
-  function sayHello() {
-    alert("You clicked me!");
-  }
-
   return (
     <>
       <header>
