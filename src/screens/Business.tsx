@@ -40,9 +40,9 @@ export const Business = () => {
   const saveDocument = async () => {
     if (selectedDocument.documentId) {
       const updateData: IBusiness = {
-        name: selectedDocument.name ?? '',
-        taxId: selectedDocument.taxId ?? '',
-        address: selectedDocument.address ?? '',
+        name: selectedDocument.name,
+        taxId: selectedDocument.taxId,
+        address: selectedDocument.address,
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
       };
@@ -53,9 +53,9 @@ export const Business = () => {
       setItems(updatedItems);
     } else {
       const newData: IBusiness = {
-        name: selectedDocument.name ?? '',
-        taxId: selectedDocument.taxId ?? '',
-        address: selectedDocument.address ?? '',
+        name: selectedDocument.name,
+        taxId: selectedDocument.taxId,
+        address: selectedDocument.address,
         status: 'ACTIVE',
         createdAt: new Date(),
         createdBy: currentUser.uid,

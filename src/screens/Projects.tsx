@@ -38,7 +38,7 @@ export const Projects = () => {
   const saveDocument = async () => {
     if (selectedDocument.documentId) {
       const updateData: IProject = {
-        name: selectedDocument.name ?? '',
+        name: selectedDocument.name,
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
       };
@@ -49,7 +49,7 @@ export const Projects = () => {
       setItems(updatedItems);
     } else {
       const newData: IProject = {
-        name: selectedDocument.name ?? '',
+        name: selectedDocument.name,
         status: 'ACTIVE',
         createdAt: new Date(),
         createdBy: currentUser.uid,
