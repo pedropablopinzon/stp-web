@@ -2,7 +2,15 @@ import React from 'react';
 import { Nav, Navbar, NavLink } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
+import { useAuth } from '../../contexts/AuthContext';
+
 export const Navigationbar = () => {
+  const { currentUser } = useAuth();
+
+  if (!currentUser) {
+    return <></>;
+  }
+
   return (
     <>
       <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
