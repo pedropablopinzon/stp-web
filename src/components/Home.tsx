@@ -24,7 +24,6 @@ export default function Home() {
 
   return (
     <>
-      <Menu />
       <Card>
         <Card.Body>
           {/* <h2 className="text-center mb-4">Home</h2> */}

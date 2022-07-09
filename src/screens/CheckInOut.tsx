@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { addDocument, updateDocument } from '../modules/db';
 import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
 import { IProject } from '../interfaces/project.interface';
+import { fixDate } from '../modules/utils';
 
 export default function CheckInOut() {
   const history = useHistory();
@@ -47,14 +48,6 @@ export default function CheckInOut() {
     return logs;
   };
 
-  const fixDate = (value: any) => {
-    if (value) {
-      let time = value;
-      const fireBaseTime = new Date(time.seconds * 1000 + time.nanoseconds / 1000000);
-
-      return fireBaseTime.toISOString();
-    }
-  };
 
   useEffect(() => {
     fetchProjects().then((data) => setProjects(data));
@@ -102,10 +95,6 @@ export default function CheckInOut() {
 
   return (
     <>
-      <Link to="/home" className="btn btn-primary w-100 mt-3">
-        Home
-      </Link>
-
       <Card>
         <Card.Body>
           <strong>Email:</strong> {currentUser.email}
@@ -132,12 +121,16 @@ export default function CheckInOut() {
         <tbody>
           {logs.map((log: ILogCheckInOut) => {
             const checkInAt = log.checkInAt;
-            const checkOutAt = log.checkOutAt;
+            let checkOutAt: Date | string | undefined = log.checkOutAt;
+            if (!checkOutAt) {
+              checkOutAt = '';
+            }
             return (
               <tr key={log.documentId}>
                 <td>{log.documentId}</td>
                 <td>{log.email}</td>
                 <td>{checkInAt!.toString()}</td>
+                <td>{checkOutAt!.toString()}</td>
               </tr>
             );
           })}

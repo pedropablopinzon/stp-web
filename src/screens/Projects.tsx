@@ -102,9 +102,6 @@ export const Projects = () => {
 
   return (
     <>
-      <Link to="/home" className="btn btn-primary">
-        Home
-      </Link>
       <h1>
         {title} ({items.length})
       </h1>

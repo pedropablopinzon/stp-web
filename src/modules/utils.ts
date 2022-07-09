@@ -29,3 +29,13 @@ export const deleteItem = (items: any[], documentId: string) => {
     return obj.documentId !== documentId;
   });
 };
+
+export const fixDate = (value: any): string => {
+  if (value) {
+    let time = value;
+    const fireBaseTime = new Date(time.seconds * 1000 + time.nanoseconds / 1000000);
+
+    return fireBaseTime.toISOString();
+  }
+  return '';
+};
