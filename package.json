@@ -1,6 +1,6 @@
 {
-  "name": "firebase-react-auth",
-  "version": "0.1.0",
+  "name": "stp-web",
+  "version": "0.0.1",
   "private": true,
   "dependencies": {
     "@heroicons/react": "^1.0.6",

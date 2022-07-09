@@ -67,3 +67,14 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
 # stp-web
+
+## update app version
+
+npm version patch
+npm run version
+
+If I want to add execute rights to this file I would execute:
+chmod 755 version.sh
+and that permissions portion would become rwxr-xr-x. I can now execute this file if I want to by running ./version.sh
+
+npm version patch
