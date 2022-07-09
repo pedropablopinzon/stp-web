@@ -32,6 +32,7 @@ export const Profile = () => {
           <Card.Footer>
             <strong>Email:</strong> {currentUser.email}
           </Card.Footer>
+          <ProfileImage photoURL="" width="200px" height="200px" />
           {/* <h2 className="text-center mb-4">Home</h2> */}
           <Link to="/update-profile" className="btn btn-primary w-100 mt-3">
             Update Profile
@@ -41,7 +42,7 @@ export const Profile = () => {
           </Link>
         </Card.Body>
       </Card>
-      <ProfileImage photoURL='' />
+
       <div className="w-100 text-center mt-2">
         <Button variant="link" onClick={handleLogout}>
           Log Out

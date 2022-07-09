@@ -50,7 +50,7 @@ export const UpdateProfile = () => {
 
     Promise.all(promises)
       .then(() => {
-        history.push('/');
+        history.push('/profile');
       })
       .catch(() => {
         setError('Failed to update account');
@@ -92,13 +92,15 @@ export const UpdateProfile = () => {
               />
             </Form.Group>
             <Form.Group id="photoURL">
-              <ProfileImage photoURL={photoURL} />
+              <ProfileImage photoURL={photoURL} width="200px" height="200px" />
             </Form.Group>
             <Button disabled={loading} className="w-100" type="submit">
               Update Profile
             </Button>
           </Form>
-          <Storage onFileUploaded={fileUploaded} />
+          <div className="mt-3">
+            <Storage onFileUploaded={fileUploaded} />
+          </div>
         </Card.Body>
       </Card>
 

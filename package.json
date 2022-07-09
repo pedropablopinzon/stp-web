@@ -3,6 +3,9 @@
   "version": "0.0.4",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^6.1.1",
+    "@fortawesome/free-solid-svg-icons": "^6.1.1",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@heroicons/react": "^1.0.6",
     "bootstrap": "^4.6.1",
     "firebase": "^9.9.0",
@@ -41,6 +44,7 @@
     ]
   },
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^6.1.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
     "@testing-library/user-event": "^7.2.1",

@@ -4,12 +4,10 @@ import { Link, useHistory } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
 
-export const ProfileImage = (props: { photoURL: string }) => {
+export const ProfileImage = (props: { photoURL: string; width: string; height: string }) => {
   const [error, setError] = useState('');
   const { currentUser, logout } = useAuth();
   const history = useHistory();
-
-  console.log(currentUser.photoURL);
 
   async function handleLogout() {
     setError('');
@@ -57,10 +55,10 @@ export const ProfileImage = (props: { photoURL: string }) => {
     },
 
     avatarHolderImg: {
-      width: '50px',
-      height: '50px',
-      'object-fit': 'cover',
-      'border-radius': '50%',
+      width: props.width.length === 0 ? '50px' : props.width,
+      height: props.height.length === 0 ? '50px' : props.height,
+      objectFit: 'cover',
+      borderRadius: '50%',
     },
   };
 
@@ -75,7 +73,6 @@ export const ProfileImage = (props: { photoURL: string }) => {
     <>
       <img
         style={styles.avatarHolderImg}
-        // src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1820405/profile/profile-512.jpg?1533058950"
         src={photoURL}
         alt="Albert Einstein"
       />
