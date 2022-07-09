@@ -40,6 +40,7 @@ export const Projects = () => {
         name: selectedDocument.name,
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
+        updatedByEmail: currentUser.email,
       };
       updateDocument(collectionName, selectedDocument.documentId, updateData);
 
@@ -52,6 +53,7 @@ export const Projects = () => {
         status: 'ACTIVE',
         createdAt: new Date(),
         createdBy: currentUser.uid,
+        createdByEmail: currentUser.email,
       };
       const result = await addDocument(collectionName, newData);
       newData.documentId = result.id;

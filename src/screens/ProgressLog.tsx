@@ -53,6 +53,7 @@ export const ProgressLog = () => {
         imagesUrl: selectedDocument.imagesUrl,
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
+        updatedByEmail: currentUser.email,
       };
       updateDocument(collectionName, selectedDocument.documentId, updateData);
 
@@ -65,11 +66,11 @@ export const ProgressLog = () => {
         projectName: workingProjectName!,
         comment: selectedDocument.comment,
         imagesUrl: selectedDocument.imagesUrl,
-        createdByEmail: currentUser.email,
         status: 'ACTIVE',
         createdAt: new Date(),
         createdAtNumber: new Date().getTime(),
         createdBy: currentUser.uid,
+        createdByEmail: currentUser.email,
       };
       const result = await addDocument(collectionName, newData);
       newData.documentId = result.id;

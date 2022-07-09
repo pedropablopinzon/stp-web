@@ -25,17 +25,19 @@ export const Home = () => {
     <>
       <Card>
         <Card.Body>
+          <Card.Subtitle>
+            <strong>Name:</strong> {currentUser.displayName}
+          </Card.Subtitle>
+          <Card.Footer>
+            <strong>Email:</strong> {currentUser.email}
+          </Card.Footer>
           {/* <h2 className="text-center mb-4">Home</h2> */}
-          <strong>Name:</strong> {currentUser.displayName}
-          <br />
-          <strong>Email:</strong> {currentUser.email}
           <Link to="/update-profile" className="btn btn-primary w-100 mt-3">
             Update Profile
           </Link>
           <Link to="/update-password" className="btn btn-warning w-100 mt-3">
             Update Password
           </Link>
-
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2">

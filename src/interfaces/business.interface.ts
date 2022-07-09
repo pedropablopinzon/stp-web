@@ -10,6 +10,8 @@ export interface IBusiness {
   status?: Status;
   createdAt?: Date;
   createdBy?: string;
+  createdByEmail?: string;
   updatedAt?: Date;
   updatedBy?: string;
+  updatedByEmail?: string;
 }

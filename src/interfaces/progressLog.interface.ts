@@ -7,12 +7,13 @@ export interface IProgressLog {
   projectName?: string;
   comment?: string;
   imagesUrl?: string[];
-  createdByEmail?: string;
 
   status?: Status;
   createdAt?: Date;
   createdAtNumber?: number;
   createdBy?: string;
+  createdByEmail?: string;
   updatedAt?: Date;
   updatedBy?: string;
+  updatedByEmail?: string;
 }

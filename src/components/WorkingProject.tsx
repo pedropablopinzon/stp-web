@@ -12,10 +12,15 @@ export const WorkingProject = () => {
 
   return (
     <>
-      <Card style={{ width: '18rem' }}>
+      <Card>
         <Card.Body>
           <Card.Title>Proyecto: {workingProjectName}</Card.Title>
-          <Card.Subtitle>Email: {currentUser.email}</Card.Subtitle>
+          <Card.Subtitle>
+            <strong>Name:</strong> {currentUser.displayName}
+          </Card.Subtitle>
+          <Card.Footer>
+            <strong>Email:</strong> {currentUser.email}
+          </Card.Footer>
         </Card.Body>
       </Card>
     </>

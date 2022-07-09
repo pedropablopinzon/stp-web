@@ -68,6 +68,7 @@ export const CheckInOut = () => {
       email: currentUser.email,
       createdAt: new Date(),
       createdBy: currentUser.uid,
+      createdByEmail: currentUser.email,
       checkInAt: new Date(),
     };
 
@@ -90,6 +91,7 @@ export const CheckInOut = () => {
       checkOut: true,
       updatedAt: new Date(),
       updatedBy: currentUser.uid,
+      updatedByEmail: currentUser.email,
       checkOutAt: new Date(),
     };
 

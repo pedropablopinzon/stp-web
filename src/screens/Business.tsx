@@ -44,6 +44,7 @@ export const Business = () => {
         address: selectedDocument.address,
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
+        updatedByEmail: currentUser.email,
       };
       updateDocument(collectionName, selectedDocument.documentId, updateData);
 
@@ -58,6 +59,7 @@ export const Business = () => {
         status: 'ACTIVE',
         createdAt: new Date(),
         createdBy: currentUser.uid,
+        createdByEmail: currentUser.email,
       };
       const result = await addDocument(collectionName, newData);
       newData.documentId = result.id;

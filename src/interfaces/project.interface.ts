@@ -8,6 +8,8 @@ export interface IProject {
   status?: Status;
   createdAt?: Date;
   createdBy?: string;
+  createdByEmail?: string;
   updatedAt?: Date;
   updatedBy?: string;
+  updatedByEmail?: string;
 }

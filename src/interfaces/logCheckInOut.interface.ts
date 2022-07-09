@@ -10,6 +10,8 @@ export interface ILogCheckInOut {
 
   createdAt?: Date;
   createdBy?: string;
+  createdByEmail?: string;
   updatedAt?: Date;
   updatedBy?: string;
+  updatedByEmail?: string;
 }

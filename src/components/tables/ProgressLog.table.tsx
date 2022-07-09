@@ -15,6 +15,7 @@ export const ProgressLogTable = (props: { items: IProgressLog[]; onEditDocument:
             <th>Creado</th>
             <th>Proyecto</th>
             <th>Comentario</th>
+            <th>Imagenes</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -29,6 +30,7 @@ export const ProgressLogTable = (props: { items: IProgressLog[]; onEditDocument:
                 <td>{createdAt!.toString()}</td>
                 <td>{item.projectName}</td>
                 <td>{item.comment}</td>
+                <td>{item.imagesUrl!.length!}</td>
                 <td>{item.status}</td>
                 <td>
                   <Button variant="primary" onClick={() => props.onEditDocument(item)}>
