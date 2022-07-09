@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
-import { IBusiness } from '../../interfaces/business.interface';
+import { IProgressLog } from '../../interfaces/progressLog.interface';
 import { fixDate } from '../../modules/utils';
 
-export const BusinessTable = (props: { items: IBusiness[]; onEditDocument: Function; onDeleteDocument: Function }) => {
+export const ProgressLogTable = (props: { items: IProgressLog[]; onEditDocument: Function; onDeleteDocument: Function }) => {
   return (
     <>
       <Table striped bordered hover>
@@ -13,14 +13,14 @@ export const BusinessTable = (props: { items: IBusiness[]; onEditDocument: Funct
             <th></th>
             <th>#</th>
             <th>Creado</th>
-            <th>Nombre</th>
-            <th>NIT</th>
-            <th>Direccion</th>
+            <th>Proyecto</th>
+            <th>Comentario</th>
+            <th>Imagenes</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          {props.items.map((item: IBusiness, index: number) => {
+          {props.items.map((item: IProgressLog, index: number) => {
             let createdAt: Date | string | undefined = fixDate(item.createdAt);
 
             return (
@@ -28,9 +28,9 @@ export const BusinessTable = (props: { items: IBusiness[]; onEditDocument: Funct
                 <td>{index + 1}</td>
                 <td>{item.documentId}</td>
                 <td>{createdAt!.toString()}</td>
-                <td>{item.name}</td>
-                <td>{item.taxId}</td>
-                <td>{item.address}</td>
+                <td>{item.projectName}</td>
+                <td>{item.comment}</td>
+                <td>{item.imagesUrl!.length!}</td>
                 <td>{item.status}</td>
                 <td>
                   <Button variant="primary" onClick={() => props.onEditDocument(item)}>

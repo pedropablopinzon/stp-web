@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Button, Modal, Form } from 'react-bootstrap';
 
 import { fetchDocuments, addDocument, updateDocument, deleteDocument } from '../modules/db';
-import { sortItems, addItem, updateItem, deleteItem } from '../modules/utils';
+import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
 import { ProjectsTable } from '../components/tables/Projects.table';
@@ -31,7 +30,7 @@ export const Projects = () => {
   const handleCloseConfirm = () => setShowConfirm(false);
 
   const handleShowModal = () => {
-    setSelectedDocument({ documentId: null, name: '', status: 'ACTIVE' });
+    setSelectedDocument(defaultDocument);
     setShowModal(true);
   };
 
@@ -41,6 +40,7 @@ export const Projects = () => {
         name: selectedDocument.name,
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
+        updatedByEmail: currentUser.email,
       };
       updateDocument(collectionName, selectedDocument.documentId, updateData);
 
@@ -53,6 +53,7 @@ export const Projects = () => {
         status: 'ACTIVE',
         createdAt: new Date(),
         createdBy: currentUser.uid,
+        createdByEmail: currentUser.email,
       };
       const result = await addDocument(collectionName, newData);
       newData.documentId = result.id;
@@ -83,7 +84,7 @@ export const Projects = () => {
 
   useEffect(() => {
     fetchDocuments(collectionName).then((data) => {
-      sortItems(data);
+      sortItemsString(data, 'name');
       setItems(data);
     });
   }, []);
@@ -102,9 +103,6 @@ export const Projects = () => {
 
   return (
     <>
-      <Link to="/home" className="btn btn-primary">
-        Home
-      </Link>
       <h1>
         {title} ({items.length})
       </h1>
@@ -120,7 +118,13 @@ export const Projects = () => {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="disabledTextInput">Nombre</Form.Label>
-            <input className="ml-3" type="text" name="name" value={selectedDocument.name} onChange={onInputChange} />
+            <Form.Control
+              type="text"
+              placeholder="Ingrese el Nombre del proyecto"
+              name="name"
+              value={selectedDocument.name}
+              onChange={onInputChange}
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

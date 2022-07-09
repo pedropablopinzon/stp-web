@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Button, Modal, Form } from 'react-bootstrap';
 
 import { fetchDocuments, addDocument, updateDocument, deleteDocument } from '../modules/db';
-import { sortItems, addItem, updateItem, deleteItem } from '../modules/utils';
+import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
 import { BusinessTable } from '../components/tables/Business.table';
@@ -33,7 +32,7 @@ export const Business = () => {
   const handleCloseConfirm = () => setShowConfirm(false);
 
   const handleShowModal = () => {
-    setSelectedDocument({ documentId: null, name: '', taxId: '', address: '', status: 'ACTIVE' });
+    setSelectedDocument(defaultDocument);
     setShowModal(true);
   };
 
@@ -45,6 +44,7 @@ export const Business = () => {
         address: selectedDocument.address,
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
+        updatedByEmail: currentUser.email,
       };
       updateDocument(collectionName, selectedDocument.documentId, updateData);
 
@@ -59,6 +59,7 @@ export const Business = () => {
         status: 'ACTIVE',
         createdAt: new Date(),
         createdBy: currentUser.uid,
+        createdByEmail: currentUser.email,
       };
       const result = await addDocument(collectionName, newData);
       newData.documentId = result.id;
@@ -89,7 +90,7 @@ export const Business = () => {
 
   useEffect(() => {
     fetchDocuments(collectionName).then((data) => {
-      sortItems(data);
+      sortItemsString(data);
       setItems(data);
     });
   }, []);
@@ -108,9 +109,6 @@ export const Business = () => {
 
   return (
     <>
-      <Link to="/home" className="btn btn-primary">
-        Home
-      </Link>
       <h1>
         {title} ({items.length})
       </h1>
@@ -126,15 +124,33 @@ export const Business = () => {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="disabledTextInput">Nombre</Form.Label>
-            <input className="ml-3" type="text" name="name" value={selectedDocument.name} onChange={onInputChange} />
+            <Form.Control
+              type="text"
+              placeholder="Ingrese el Nombre de la empresa"
+              name="name"
+              value={selectedDocument.name}
+              onChange={onInputChange}
+            />
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="disabledTextInput">NIT</Form.Label>
-            <input className="ml-3" type="text" name="taxId" value={selectedDocument.taxId} onChange={onInputChange} />
+            <Form.Control
+              type="text"
+              placeholder="Ingrese el NIT de la empresa"
+              name="taxId"
+              value={selectedDocument.taxId}
+              onChange={onInputChange}
+            />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label htmlFor="disabledTextInput">DIRECCION</Form.Label>
-            <input className="ml-3" type="text" name="address" value={selectedDocument.address} onChange={onInputChange} />
+            <Form.Label htmlFor="disabledTextInput">Direccion</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese la Direccion de la empresa"
+              name="address"
+              value={selectedDocument.address}
+              onChange={onInputChange}
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

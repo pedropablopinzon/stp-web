@@ -1,14 +1,17 @@
 import { Status } from '../types/status.types';
 
-export interface IBusiness {
+export interface IExpenseRecord {
   documentId?: string | null;
 
-  name: string;
-  taxId: string;
-  address: string;
+  projectId?: string;
+  projectName?: string;
+  amount?: number;
+  comment?: string;
+  imagesUrl?: string[];
 
   status?: Status;
   createdAt?: Date;
+  createdAtNumber?: number;
   createdBy?: string;
   createdByEmail?: string;
   updatedAt?: Date;

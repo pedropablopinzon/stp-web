@@ -21,6 +21,11 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
+    localStorage.setItem('workingLogCheckInOutId', '');
+    localStorage.setItem('workingProjectId', '');
+    localStorage.setItem('workingProjectName', '');
+    localStorage.setItem('workingProjectCheckInAt', '');
+
     return auth.signOut();
   }
 
@@ -36,6 +41,11 @@ export function AuthProvider({ children }) {
   function updatePassword(password: string) {
     // @ts-ignore
     return currentUser.updatePassword(password);
+  }
+
+  function updateProfile(displayName: string) {
+    // @ts-ignore
+    return currentUser.updateProfile({ displayName });
   }
 
   useEffect(() => {
@@ -55,6 +65,7 @@ export function AuthProvider({ children }) {
     resetPassword,
     updateEmail,
     updatePassword,
+    updateProfile,
   };
 
   return (
