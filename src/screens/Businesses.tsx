@@ -30,7 +30,6 @@ export const Businesses = () => {
     name: '',
     taxId: '',
     address: '',
-    businessArray: [],
     businessId: '',
     status: 'ACTIVE',
   };
@@ -70,7 +69,6 @@ export const Businesses = () => {
         name: selectedDocument.name,
         taxId: selectedDocument.taxId,
         address: selectedDocument.address,
-        businessArray: [],
         businessId: '',
         status: 'ACTIVE',
         createdAt: new Date(),
@@ -78,7 +76,6 @@ export const Businesses = () => {
         createdByEmail: currentUser.email,
       };
       const docRef = await getDocumentReference(collectionName);
-      newBusinessData.businessArray!.push(docRef.id);
       newBusinessData.businessId = docRef.id;
 
       const resultBusiness = await setDocument(docRef, newBusinessData);

@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { useAuth } from '../../contexts/AuthContext';
 import { ProfileImage } from '../ProfileImage';
+import { IconSvg } from '../IconSvg';
 
 export const Navigationbar = () => {
   const { currentUser } = useAuth();
@@ -14,33 +15,33 @@ export const Navigationbar = () => {
 
   return (
     <>
-      <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
+      <Navbar collapseOnSelect expand="sm" bg="light" variant="light">
         <Navbar.Toggle aria-controls="navbarScroll" data-bs-target="#navbarScroll" />
         <Navbar.Collapse id="navbarScroll">
           <Nav>
             <NavLink eventKey="1" as={Link} to="/">
-              <i className="fas fa-home fa-2xl mr-2"></i>
-              Home
+              <IconSvg photoURL={'house-solid.svg'} width="50px" height="50px" />
+              {' Home'}
             </NavLink>
             <NavLink eventKey="2" as={Link} to="/businesses">
-              <i className="fas fa-building fa-2xl mr-2"></i>
-              Empresas
+              <IconSvg photoURL={'building-solid.svg'} width="50px" height="50px" />
+              {' Empresas'}
             </NavLink>
             <NavLink eventKey="3" as={Link} to="/projects">
-              <i className="fas fa-sitemap fa-2xl mr-2"></i>
-              Proyectos
+              <IconSvg photoURL={'sitemap-solid.svg'} width="50px" height="50px" />
+              {' Proyectos'}
             </NavLink>
             <NavLink eventKey="4" as={Link} to="/checkInOut">
-              <i className="fas fa-check-to-slot fa-2xl mr-2"></i>
-              Marcar
+              <IconSvg photoURL={'check-to-slot-solid.svg'} width="50px" height="50px" />
+              {' Marcar'}
             </NavLink>
             <NavLink eventKey="5" as={Link} to="/progressLog">
-              <i className="fas fa-list-check fa-2xl mr-2"></i>
-              Progreso
+              <IconSvg photoURL={'list-check-solid.svg'} width="50px" height="50px" />
+              {' Progreso'}
             </NavLink>
             <NavLink eventKey="6" as={Link} to="/expenseRecord">
-              <i className="fas fa-money-bill-trend-up fa-2xl mr-2"></i>
-              Gastos
+              <IconSvg photoURL={'money-bill-trend-up-solid.svg'} width="50px" height="50px" />
+              {' Gastos'}
             </NavLink>
             <NavLink eventKey="7" as={Link} to="/profile">
               <ProfileImage photoURL={''} width="50px" height="50px" />

@@ -6,7 +6,6 @@ export interface IBusiness {
   name: string;
   taxId: string;
   address: string;
-  businessArray?: string[];
   businessId?: string;
 
   status?: Status;
