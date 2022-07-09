@@ -1,10 +1,10 @@
 import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
-import { IProgressLog } from '../../interfaces/progressLog.interface';
+import { IExpenseRecord } from '../../interfaces/expenseRecord.interface';
 import { fixDate } from '../../modules/utils';
 
-export const ProgressLogTable = (props: { items: IProgressLog[]; onEditDocument: Function; onDeleteDocument: Function }) => {
+export const ExpenseRecordTable = (props: { items: IExpenseRecord[]; onEditDocument: Function; onDeleteDocument: Function }) => {
   return (
     <>
       <Table striped bordered hover>
@@ -14,13 +14,14 @@ export const ProgressLogTable = (props: { items: IProgressLog[]; onEditDocument:
             <th>#</th>
             <th>Creado</th>
             <th>Proyecto</th>
+            <th>Monto</th>
             <th>Comentario</th>
             <th>Imagenes</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          {props.items.map((item: IProgressLog, index: number) => {
+          {props.items.map((item: IExpenseRecord, index: number) => {
             let createdAt: Date | string | undefined = fixDate(item.createdAt);
 
             return (
@@ -29,6 +30,7 @@ export const ProgressLogTable = (props: { items: IProgressLog[]; onEditDocument:
                 <td>{item.documentId}</td>
                 <td>{createdAt!.toString()}</td>
                 <td>{item.projectName}</td>
+                <td>{item.amount}</td>
                 <td>{item.comment}</td>
                 <td>{item.imagesUrl!.length!}</td>
                 <td>{item.status}</td>

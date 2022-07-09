@@ -21,6 +21,11 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
+    localStorage.setItem('workingLogCheckInOutId', '');
+    localStorage.setItem('workingProjectId', '');
+    localStorage.setItem('workingProjectName', '');
+    localStorage.setItem('workingProjectCheckInAt', '');
+
     return auth.signOut();
   }
 

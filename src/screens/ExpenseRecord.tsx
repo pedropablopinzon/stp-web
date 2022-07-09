@@ -5,21 +5,22 @@ import { addDocument, updateDocument, deleteDocument } from '../modules/db';
 import { addItem, updateItem, deleteItem, sortItems } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
-import { IProgressLog } from '../interfaces/progressLog.interface';
-import { ProgressLogTable } from '../components/tables/ProgressLog.table';
+import { IExpenseRecord } from '../interfaces/expenseRecord.interface';
+import { ExpenseRecordTable } from '../components/tables/ExpenseRecord.table';
 import { db } from '../firebase';
 import { WorkingProject } from '../components/WorkingProject';
 import { Storage } from '../components/Storage';
 import { CarouselImages } from '../components/CarouselImages';
 
 export const ExpenseRecord = () => {
-  const collectionName = 'progressLog';
-  const title = 'Progreso';
-  const titleSingular = 'Progreso';
+  const collectionName = 'expenseRecord';
+  const title = 'Gastos';
+  const titleSingular = 'Gasto';
 
   const { currentUser } = useAuth();
-  const defaultDocument: IProgressLog = {
+  const defaultDocument: IExpenseRecord = {
     documentId: null,
+    amount: 0,
     comment: '',
     imagesUrl: [],
     status: 'ACTIVE',
@@ -32,11 +33,11 @@ export const ExpenseRecord = () => {
     workingProjectId = '';
   }
 
-  const [items, setItems] = useState<IProgressLog[]>([]);
+  const [items, setItems] = useState<IExpenseRecord[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
-  const [selectedDocument, setSelectedDocument] = useState<IProgressLog>(defaultDocument);
-  const [deletedDocument, setDeletedDocument] = useState<IProgressLog>(defaultDocument);
+  const [selectedDocument, setSelectedDocument] = useState<IExpenseRecord>(defaultDocument);
+  const [deletedDocument, setDeletedDocument] = useState<IExpenseRecord>(defaultDocument);
 
   const handleCloseModal = () => setShowModal(false);
   const handleCloseConfirm = () => setShowConfirm(false);
@@ -48,7 +49,8 @@ export const ExpenseRecord = () => {
 
   const saveDocument = async () => {
     if (selectedDocument.documentId) {
-      const updateData: IProgressLog = {
+      const updateData: IExpenseRecord = {
+        amount: selectedDocument.amount,
         comment: selectedDocument.comment,
         imagesUrl: selectedDocument.imagesUrl,
         updatedAt: new Date(),
@@ -61,9 +63,10 @@ export const ExpenseRecord = () => {
 
       setItems(updatedItems);
     } else {
-      const newData: IProgressLog = {
+      const newData: IExpenseRecord = {
         projectId: workingProjectId!,
         projectName: workingProjectName!,
+        amount: selectedDocument.amount,
         comment: selectedDocument.comment,
         imagesUrl: selectedDocument.imagesUrl,
         status: 'ACTIVE',
@@ -159,6 +162,10 @@ export const ExpenseRecord = () => {
           <Modal.Title>{titleSingular}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
+        <Form.Group className="mb-3">
+            <Form.Label>Monto</Form.Label>
+            <Form.Control type="number" name="amount" value={selectedDocument.amount} onChange={onInputChange} />
+          </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Comentario</Form.Label>
             <Form.Control as="textarea" rows={3} name="comment" value={selectedDocument.comment} onChange={onInputChange} />
@@ -181,10 +188,10 @@ export const ExpenseRecord = () => {
         onHide={handleCloseConfirm}
         handleAcceptConfirm={removeDocument}
         title={`${titleSingular} a Eliminar`}
-        subtitle={`Comentario: ${deletedDocument.comment}`}
+        subtitle={`Monto: ${deletedDocument.amount} - Comentario: ${deletedDocument.comment}`}
       />
 
-      <ProgressLogTable items={items} onEditDocument={setSelectedDocument} onDeleteDocument={setDeletedDocument} />
+      <ExpenseRecordTable items={items} onEditDocument={setSelectedDocument} onDeleteDocument={setDeletedDocument} />
     </>
   );
 };
