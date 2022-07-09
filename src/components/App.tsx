@@ -18,6 +18,7 @@ import { Business } from '../screens/Business';
 import { ProgressLog } from '../screens/ProgressLog';
 import { ExpenseRecord } from '../screens/ExpenseRecord';
 import { Navigationbar } from './ui/Navigationbar';
+import { AppVersion } from './AppVersion';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
               <Route path="/login" component={Login} />
               <Route path="/forgot-password" component={ForgotPassword} />
             </Switch>
+            <AppVersion />
           </AuthProvider>
         </Router>
         {/* </div> */}
