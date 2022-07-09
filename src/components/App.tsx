@@ -15,6 +15,7 @@ import Home from './Home';
 import CheckInOut from '../screens/CheckInOut';
 import { Projects } from '../screens/Projects';
 import { Business } from '../screens/Business';
+import { ProgressLog } from '../screens/ProgressLog';
 import Navigationbar from './ui/Navigationbar';
 
 function App() {
@@ -23,24 +24,25 @@ function App() {
       {/* <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}> */}
       <Container>
         {/* <div className="w-100" style={{ maxWidth: '400px' }}> */}
-          <Router>
-            <AuthProvider>
-              <Navigationbar/>
-              <Switch>
-                <PrivateRoute exact path="/" component={Home} />
-                {/* <PrivateRoute exact path="/" component={Dashboard} /> */}
-                <PrivateRoute path="/update-profile" component={UpdateProfile} />
-                <PrivateRoute path="/home" component={Home} />
-                <PrivateRoute path="/checkInOut" component={CheckInOut} />
-                <PrivateRoute path="/projects" component={Projects} />
-                <PrivateRoute path="/business" component={Business} />
+        <Router>
+          <AuthProvider>
+            <Navigationbar />
+            <Switch>
+              <PrivateRoute exact path="/" component={Home} />
+              {/* <PrivateRoute exact path="/" component={Dashboard} /> */}
+              <PrivateRoute path="/update-profile" component={UpdateProfile} />
+              <PrivateRoute path="/home" component={Home} />
+              <PrivateRoute path="/checkInOut" component={CheckInOut} />
+              <PrivateRoute path="/projects" component={Projects} />
+              <PrivateRoute path="/business" component={Business} />
+              <PrivateRoute path="/progressLog" component={ProgressLog} />
 
-                <Route path="/signup" component={Signup} />
-                <Route path="/login" component={Login} />
-                <Route path="/forgot-password" component={ForgotPassword} />
-              </Switch>
-            </AuthProvider>
-          </Router>
+              <Route path="/signup" component={Signup} />
+              <Route path="/login" component={Login} />
+              <Route path="/forgot-password" component={ForgotPassword} />
+            </Switch>
+          </AuthProvider>
+        </Router>
         {/* </div> */}
       </Container>
     </>

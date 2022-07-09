@@ -1,6 +1,7 @@
 export interface ILogCheckInOut {
   documentId?: string;
   projectId?: string;
+  projectName?: string;
   userId?: string;
   checkOut?: boolean;
   email?: string;

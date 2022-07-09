@@ -18,8 +18,11 @@ const Navigationbar = () => {
             <NavLink eventKey="3" as={Link} to="/projects">
               Proyectos
             </NavLink>
-            <NavLink eventKey="3" as={Link} to="/checkInOut">
+            <NavLink eventKey="4" as={Link} to="/checkInOut">
               Marcar
+            </NavLink>
+            <NavLink eventKey="5" as={Link} to="/progressLog">
+              Progreso
             </NavLink>
           </Nav>
         </Navbar.Collapse>

@@ -48,7 +48,6 @@ export default function CheckInOut() {
     return logs;
   };
 
-
   useEffect(() => {
     fetchProjects().then((data) => setProjects(data));
   }, []);
@@ -57,6 +56,8 @@ export default function CheckInOut() {
     const data: ILogCheckInOut = {
       // @ts-ignore
       projectId: selectedProject.documentId,
+      // @ts-ignore
+      projectName: selectedProject.name,
       userId: currentUser.uid,
       checkOut: false,
       email: currentUser.email,
@@ -65,7 +66,13 @@ export default function CheckInOut() {
       checkInAt: new Date(),
     };
 
-    await addDocument('logCheckInOut', data);
+    const result = await addDocument('logCheckInOut', data);
+
+    localStorage.setItem('workingProjectId', result.id);
+    // @ts-ignore
+    localStorage.setItem('workingProjectName', data.projectName);
+    // @ts-ignore
+    localStorage.setItem('workingProjectCheckInAt', data.checkInAt);
 
     // @ts-ignore
     fetchLogs(selectedProject.documentId, currentUser.uid).then((data) => setLogs(data));
