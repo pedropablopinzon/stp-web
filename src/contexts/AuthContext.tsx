@@ -38,6 +38,11 @@ export function AuthProvider({ children }) {
     return currentUser.updatePassword(password);
   }
 
+  function updateProfile(displayName: string) {
+    // @ts-ignore
+    return currentUser.updateProfile({ displayName });
+  }
+
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user: any) => {
       setCurrentUser(user);
@@ -55,6 +60,7 @@ export function AuthProvider({ children }) {
     resetPassword,
     updateEmail,
     updatePassword,
+    updateProfile,
   };
 
   return (

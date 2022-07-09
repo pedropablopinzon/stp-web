@@ -2,7 +2,7 @@ import React from 'react';
 import { Nav, Navbar, NavLink } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const Navigationbar = () => {
+export const Navigationbar = () => {
   return (
     <>
       <Navbar collapseOnSelect expand="sm" bg="dark" variant="dark">
@@ -30,5 +30,3 @@ const Navigationbar = () => {
     </>
   );
 };
-
-export default Navigationbar;

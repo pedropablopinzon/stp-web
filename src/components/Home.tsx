@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
 
-export default function Home() {
+export const Home = () => {
   const [error, setError] = useState('');
   const { currentUser, logout } = useAuth();
   const history = useHistory();
@@ -26,7 +26,16 @@ export default function Home() {
       <Card>
         <Card.Body>
           {/* <h2 className="text-center mb-4">Home</h2> */}
+          <strong>Name:</strong> {currentUser.displayName}
+          <br />
           <strong>Email:</strong> {currentUser.email}
+          <Link to="/update-profile" className="btn btn-primary w-100 mt-3">
+            Update Profile
+          </Link>
+          <Link to="/update-password" className="btn btn-warning w-100 mt-3">
+            Update Password
+          </Link>
+
         </Card.Body>
       </Card>
       <div className="w-100 text-center mt-2">
@@ -36,4 +45,4 @@ export default function Home() {
       </div>
     </>
   );
-}
+};

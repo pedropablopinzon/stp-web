@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button, Table } from 'react-bootstrap';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
@@ -9,7 +9,7 @@ import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
 import { IProject } from '../interfaces/project.interface';
 import { fixDate } from '../modules/utils';
 
-export default function CheckInOut() {
+export const CheckInOut = () => {
   const history = useHistory();
   const { currentUser } = useAuth();
 
@@ -162,4 +162,4 @@ export default function CheckInOut() {
       </Button>
     </>
   );
-}
+};

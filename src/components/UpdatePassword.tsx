@@ -4,31 +4,31 @@ import { Link, useHistory } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
 
-export const UpdateProfile = () => {
+export const UpdatePassword = () => {
   const displayNameRef = useRef();
   const emailRef = useRef();
-  const { currentUser, updateEmail, updateProfile } = useAuth();
+  const passwordRef = useRef();
+  const passwordConfirmRef = useRef();
+  const { currentUser, updatePassword } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const history = useHistory();
 
   function handleSubmit(e: any) {
     e.preventDefault();
+    // @ts-ignore
+    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
+      return setError('Passwords do not match');
+    }
 
     const promises = [];
     setLoading(true);
     setError('');
 
     // @ts-ignore
-    if (emailRef.current.value !== currentUser.email) {
+    if (passwordRef.current.value) {
       // @ts-ignore
-      promises.push(updateEmail(emailRef.current.value));
-    }
-
-    // @ts-ignore
-    if (displayNameRef.current.value !== currentUser.displayName) {
-      // @ts-ignore
-      promises.push(updateProfile(displayNameRef.current.value));
+      promises.push(updatePassword(passwordRef.current.value));
     }
 
     Promise.all(promises)
@@ -70,8 +70,26 @@ export const UpdateProfile = () => {
                 defaultValue={currentUser.email}
               />
             </Form.Group>
-            <Button disabled={loading} className="w-100" type="submit">
-              Update Profile
+            <Form.Group id="password">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                // @ts-ignore
+                ref={passwordRef}
+                placeholder="Leave blank to keep the same"
+              />
+            </Form.Group>
+            <Form.Group id="password-confirm">
+              <Form.Label>Password Confirmation</Form.Label>
+              <Form.Control
+                type="password"
+                // @ts-ignore
+                ref={passwordConfirmRef}
+                placeholder="Leave blank to keep the same"
+              />
+            </Form.Group>
+            <Button disabled={loading} className="w-100 btn-warning" type="submit">
+              Update Password
             </Button>
           </Form>
         </Card.Body>
