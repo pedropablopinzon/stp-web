@@ -27,10 +27,10 @@ export const updateItem = (
 ) => {
   const updatedItems = items.map((obj) => (obj.documentId === documentId ? { ...obj, ...document } : obj));
   if (fieldSortType === 'string') {
-    sortItemsString(items, fieldSort);
+    sortItemsString(updatedItems, fieldSort);
   }
   if (fieldSortType === 'number') {
-    sortItems(items, fieldSort, sortType);
+    sortItems(updatedItems, fieldSort, sortType);
   }
   return updatedItems;
 };

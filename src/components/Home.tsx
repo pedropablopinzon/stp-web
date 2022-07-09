@@ -3,7 +3,6 @@ import { Card, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
-import Menu from './Menu';
 
 export default function Home() {
   const [error, setError] = useState('');

@@ -5,11 +5,7 @@ export const CarouselImages = (props: { items: any }) => {
   const itemDefault =
     props.items.length === 0 ? (
       <Carousel.Item>
-        <img
-          className="d-block w-100"
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/ac/No_image_available.svg/1024px-No_image_available.svg.png"
-          alt="No Image"
-        />
+        <img className="d-block w-100" src={require('../assets/images/no_image.png')} alt="No Image" />
       </Carousel.Item>
     ) : null;
   return (

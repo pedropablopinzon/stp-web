@@ -82,7 +82,7 @@ export const Projects = () => {
 
   useEffect(() => {
     fetchDocuments(collectionName).then((data) => {
-      sortItemsString(data);
+      sortItemsString(data, 'name');
       setItems(data);
     });
   }, []);
@@ -116,7 +116,13 @@ export const Projects = () => {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="disabledTextInput">Nombre</Form.Label>
-            <input className="ml-3" type="text" name="name" value={selectedDocument.name} onChange={onInputChange} />
+            <Form.Control
+              type="text"
+              placeholder="Ingrese el Nombre del proyecto"
+              name="name"
+              value={selectedDocument.name}
+              onChange={onInputChange}
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>

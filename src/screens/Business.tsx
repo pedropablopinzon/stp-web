@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Button, Modal, Form } from 'react-bootstrap';
 
 import { fetchDocuments, addDocument, updateDocument, deleteDocument } from '../modules/db';
@@ -123,15 +122,33 @@ export const Business = () => {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="disabledTextInput">Nombre</Form.Label>
-            <input className="ml-3" type="text" name="name" value={selectedDocument.name} onChange={onInputChange} />
+            <Form.Control
+              type="text"
+              placeholder="Ingrese el Nombre de la empresa"
+              name="name"
+              value={selectedDocument.name}
+              onChange={onInputChange}
+            />
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label htmlFor="disabledTextInput">NIT</Form.Label>
-            <input className="ml-3" type="text" name="taxId" value={selectedDocument.taxId} onChange={onInputChange} />
+            <Form.Control
+              type="text"
+              placeholder="Ingrese el NIT de la empresa"
+              name="taxId"
+              value={selectedDocument.taxId}
+              onChange={onInputChange}
+            />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label htmlFor="disabledTextInput">DIRECCION</Form.Label>
-            <input className="ml-3" type="text" name="address" value={selectedDocument.address} onChange={onInputChange} />
+            <Form.Label htmlFor="disabledTextInput">Direccion</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese la Direccion de la empresa"
+              name="address"
+              value={selectedDocument.address}
+              onChange={onInputChange}
+            />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
