@@ -1,6 +1,6 @@
 {
   "name": "stp-web",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "dependencies": {
     "@heroicons/react": "^1.0.6",
