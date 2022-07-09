@@ -1,44 +1,46 @@
-import React, { useRef, useState } from "react"
-import { Form, Button, Card, Alert } from "react-bootstrap"
-import { useAuth } from "../contexts/AuthContext"
-import { Link, useHistory } from "react-router-dom"
+import React, { useRef, useState } from 'react';
+import { Form, Button, Card, Alert } from 'react-bootstrap';
+import { Link, useHistory } from 'react-router-dom';
 
-export default function UpdateProfile() {
-  const emailRef = useRef()
-  const passwordRef = useRef()
-  const passwordConfirmRef = useRef()
-  const { currentUser, updatePassword, updateEmail } = useAuth()
-  const [error, setError] = useState("")
-  const [loading, setLoading] = useState(false)
-  const history = useHistory()
+import { useAuth } from '../contexts/AuthContext';
 
-  function handleSubmit(e) {
-    e.preventDefault()
+export const UpdatePassword = () => {
+  const displayNameRef = useRef();
+  const emailRef = useRef();
+  const passwordRef = useRef();
+  const passwordConfirmRef = useRef();
+  const { currentUser, updatePassword } = useAuth();
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const history = useHistory();
+
+  function handleSubmit(e: any) {
+    e.preventDefault();
+    // @ts-ignore
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError("Passwords do not match")
+      return setError('Passwords do not match');
     }
 
-    const promises = []
-    setLoading(true)
-    setError("")
+    const promises = [];
+    setLoading(true);
+    setError('');
 
-    if (emailRef.current.value !== currentUser.email) {
-      promises.push(updateEmail(emailRef.current.value))
-    }
+    // @ts-ignore
     if (passwordRef.current.value) {
-      promises.push(updatePassword(passwordRef.current.value))
+      // @ts-ignore
+      promises.push(updatePassword(passwordRef.current.value));
     }
 
     Promise.all(promises)
       .then(() => {
-        history.push("/")
+        history.push('/');
       })
       .catch(() => {
-        setError("Failed to update account")
+        setError('Failed to update account');
       })
       .finally(() => {
-        setLoading(false)
-      })
+        setLoading(false);
+      });
   }
 
   return (
@@ -48,10 +50,21 @@ export default function UpdateProfile() {
           <h2 className="text-center mb-4">Update Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
+            <Form.Group id="displayName">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="text"
+                // @ts-ignore
+                ref={displayNameRef}
+                required
+                defaultValue={currentUser.displayName}
+              />
+            </Form.Group>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
               <Form.Control
                 type="email"
+                // @ts-ignore
                 ref={emailRef}
                 required
                 defaultValue={currentUser.email}
@@ -61,6 +74,7 @@ export default function UpdateProfile() {
               <Form.Label>Password</Form.Label>
               <Form.Control
                 type="password"
+                // @ts-ignore
                 ref={passwordRef}
                 placeholder="Leave blank to keep the same"
               />
@@ -69,12 +83,13 @@ export default function UpdateProfile() {
               <Form.Label>Password Confirmation</Form.Label>
               <Form.Control
                 type="password"
+                // @ts-ignore
                 ref={passwordConfirmRef}
                 placeholder="Leave blank to keep the same"
               />
             </Form.Group>
-            <Button disabled={loading} className="w-100" type="submit">
-              Update
+            <Button disabled={loading} className="w-100 btn-warning" type="submit">
+              Update Password
             </Button>
           </Form>
         </Card.Body>
@@ -83,5 +98,5 @@ export default function UpdateProfile() {
         <Link to="/">Cancel</Link>
       </div>
     </>
-  )
-}
+  );
+};
