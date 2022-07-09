@@ -14,7 +14,7 @@ import { UpdatePassword } from './UpdatePassword';
 import { Home } from './Home';
 import { CheckInOut } from '../screens/CheckInOut';
 import { Projects } from '../screens/Projects';
-import { Business } from '../screens/Business';
+import { Businesses } from '../screens/Businesses';
 import { ProgressLog } from '../screens/ProgressLog';
 import { ExpenseRecord } from '../screens/ExpenseRecord';
 import { Navigationbar } from './ui/Navigationbar';
@@ -37,7 +37,7 @@ function App() {
               <PrivateRoute path="/home" component={Home} />
               <PrivateRoute path="/checkInOut" component={CheckInOut} />
               <PrivateRoute path="/projects" component={Projects} />
-              <PrivateRoute path="/business" component={Business} />
+              <PrivateRoute path="/businesses" component={Businesses} />
               <PrivateRoute path="/progressLog" component={ProgressLog} />
               <PrivateRoute path="/expenseRecord" component={ExpenseRecord} />
 

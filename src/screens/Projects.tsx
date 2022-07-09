@@ -7,9 +7,10 @@ import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
 import { ProjectsTable } from '../components/tables/Projects.table';
 import { IProject } from '../interfaces/project.interface';
+import { Collections } from '../enums/collections';
 
 export const Projects = () => {
-  const collectionName = 'projects';
+  const collectionName = Collections.projects;
   const title = 'Proyectos';
   const titleSingular = 'Proyecto';
 

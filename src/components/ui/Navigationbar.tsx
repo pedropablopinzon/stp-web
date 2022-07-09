@@ -20,7 +20,7 @@ export const Navigationbar = () => {
             <NavLink eventKey="1" as={Link} to="/">
               Home
             </NavLink>
-            <NavLink eventKey="2" as={Link} to="/business">
+            <NavLink eventKey="2" as={Link} to="/businesses">
               Empresas
             </NavLink>
             <NavLink eventKey="3" as={Link} to="/projects">

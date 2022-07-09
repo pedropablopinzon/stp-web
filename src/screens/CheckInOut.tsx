@@ -8,8 +8,10 @@ import { addDocument, updateDocument } from '../modules/db';
 import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
 import { IProject } from '../interfaces/project.interface';
 import { fixDate } from '../modules/utils';
+import { Collections } from '../enums/collections';
 
 export const CheckInOut = () => {
+  const collectionName = Collections.logCheckInOut;
   const history = useHistory();
   const { currentUser } = useAuth();
 
@@ -24,7 +26,7 @@ export const CheckInOut = () => {
 
   const fetchProjects = async () => {
     const querySnapshot = await db
-      .collection('projects')
+      .collection(Collections.projects)
       .where('status', '==', 'ACTIVE')
       .get();
 
@@ -37,7 +39,7 @@ export const CheckInOut = () => {
 
   const fetchLogs = async (projectId: string, userId: string) => {
     const querySnapshot = await db
-      .collection('logCheckInOut')
+      .collection(collectionName)
       .where('projectId', '==', projectId)
       .where('userId', '==', userId)
       .where('checkOut', '==', false)
@@ -72,7 +74,7 @@ export const CheckInOut = () => {
       checkInAt: new Date(),
     };
 
-    const result = await addDocument('logCheckInOut', data);
+    const result = await addDocument(collectionName, data);
 
     localStorage.setItem('workingLogCheckInOutId', result.id);
     // @ts-ignore
@@ -96,7 +98,7 @@ export const CheckInOut = () => {
     };
 
     // @ts-ignore
-    await updateDocument('logCheckInOut', logs[0].documentId, data);
+    await updateDocument(collectionName, logs[0].documentId, data);
 
     localStorage.setItem('workingProjectId', '');
     localStorage.setItem('workingProjectName', '');
