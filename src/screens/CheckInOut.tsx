@@ -17,6 +17,11 @@ export default function CheckInOut() {
   const [logs, setLogs] = useState<ILogCheckInOut[]>([]);
   const [selectedProject, setSelectedProject] = useState<IProject | null>(null);
 
+  let workingProjectId = localStorage.getItem('workingProjectId');
+  if (!workingProjectId) {
+    workingProjectId = '';
+  }
+
   const fetchProjects = async () => {
     const querySnapshot = await db
       .collection('projects')
@@ -68,7 +73,9 @@ export default function CheckInOut() {
 
     const result = await addDocument('logCheckInOut', data);
 
-    localStorage.setItem('workingProjectId', result.id);
+    localStorage.setItem('workingLogCheckInOutId', result.id);
+    // @ts-ignore
+    localStorage.setItem('workingProjectId', data.projectId);
     // @ts-ignore
     localStorage.setItem('workingProjectName', data.projectName);
     // @ts-ignore
@@ -88,6 +95,9 @@ export default function CheckInOut() {
 
     // @ts-ignore
     await updateDocument('logCheckInOut', logs[0].documentId, data);
+
+    localStorage.setItem('workingProjectId', '');
+    localStorage.setItem('workingProjectName', '');
 
     history.push('/home');
   };
@@ -144,7 +154,7 @@ export default function CheckInOut() {
         </tbody>
       </Table>
 
-      <Button variant="success" onClick={checkIn} disabled={logs.length !== 0 || !selectedProject}>
+      <Button variant="success" onClick={checkIn} disabled={logs.length !== 0 || !selectedProject || workingProjectId.length !== 0}>
         Check In
       </Button>
       <Button variant="danger" onClick={checkOut} disabled={logs.length === 0}>

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
 import { Button, Modal, Form } from 'react-bootstrap';
 
 import { fetchDocuments, addDocument, updateDocument, deleteDocument } from '../modules/db';
-import { sortItems, addItem, updateItem, deleteItem } from '../modules/utils';
+import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
 import { ProjectsTable } from '../components/tables/Projects.table';
@@ -83,7 +82,7 @@ export const Projects = () => {
 
   useEffect(() => {
     fetchDocuments(collectionName).then((data) => {
-      sortItems(data);
+      sortItemsString(data);
       setItems(data);
     });
   }, []);

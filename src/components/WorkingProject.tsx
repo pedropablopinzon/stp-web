@@ -14,8 +14,8 @@ export const WorkingProject = () => {
     <>
       <Card style={{ width: '18rem' }}>
         <Card.Body>
-          <Card.Title>{workingProjectName}</Card.Title>
-          <Card.Subtitle>{currentUser.email}</Card.Subtitle>
+          <Card.Title>Proyecto: {workingProjectName}</Card.Title>
+          <Card.Subtitle>Email: {currentUser.email}</Card.Subtitle>
         </Card.Body>
       </Card>
     </>

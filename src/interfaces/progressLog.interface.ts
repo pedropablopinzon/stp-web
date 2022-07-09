@@ -3,7 +3,7 @@ import { Status } from '../types/status.types';
 export interface IProgressLog {
   documentId?: string | null;
 
-  projectId: string;
+  projectId?: string;
   projectName?: string;
   comment?: string;
   imageUrl?: string;
@@ -11,6 +11,7 @@ export interface IProgressLog {
 
   status?: Status;
   createdAt?: Date;
+  createdAtNumber?: number;
   createdBy?: string;
   updatedAt?: Date;
   updatedBy?: string;
