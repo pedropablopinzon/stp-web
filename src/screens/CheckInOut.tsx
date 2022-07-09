@@ -21,6 +21,7 @@ export const CheckInOut = () => {
   const [projects, setProjects] = useState<IProject[]>([]);
   const [logs, setLogs] = useState<ILogCheckInOut[]>([]);
   const [selectedProject, setSelectedProject] = useState<IProject | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string>('selectProject');
 
   const fetchLogs = async (projectId: string, userId: string) => {
     const querySnapshot = await db
@@ -45,6 +46,9 @@ export const CheckInOut = () => {
       fetchProjects(workingBusinessId).then((data) => {
         sortItemsString(data, 'name');
         setProjects(data);
+        if (workingProjectId.length > 0) {
+          setSelectedProjectId(workingProjectId);
+        }
       });
     }
   }, []);
@@ -102,23 +106,29 @@ export const CheckInOut = () => {
     const project = projects.filter((element) => element.documentId === e.target.value);
     setSelectedProject(project[0]);
 
-    // @ts-ignore
-    fetchLogs(project[0].documentId, currentUser.uid).then((data) => {
-      setLogs(data);
-      if (data.length > 0) {
-        if (workingProjectId.length === 0) {
-          // @ts-ignore
-          localStorage.setItem('workingLogCheckInOutId', data[0].documentId);
-          // @ts-ignore
-          localStorage.setItem('workingProjectId', data[0].projectId);
-          // @ts-ignore
-          localStorage.setItem('workingProjectName', data[0].projectName);
-          // @ts-ignore
-          localStorage.setItem('workingProjectCheckInAt', data[0].checkInAt);
-        }
-      }
-    });
+    setSelectedProjectId(e.target.value);
   };
+
+  useEffect(() => {
+    if (selectedProjectId.length > 0) {
+      // @ts-ignore
+      fetchLogs(selectedProjectId, currentUser.uid).then((data) => {
+        setLogs(data);
+        if (data.length > 0) {
+          if (workingProjectId.length === 0) {
+            // @ts-ignore
+            localStorage.setItem('workingLogCheckInOutId', data[0].documentId);
+            // @ts-ignore
+            localStorage.setItem('workingProjectId', data[0].projectId);
+            // @ts-ignore
+            localStorage.setItem('workingProjectName', data[0].projectName);
+            // @ts-ignore
+            localStorage.setItem('workingProjectCheckInAt', data[0].checkInAt);
+          }
+        }
+      });
+    }
+  }, [selectedProjectId]);
 
   return (
     <>
@@ -127,8 +137,8 @@ export const CheckInOut = () => {
           <strong>Email:</strong> {currentUser.email}
         </Card.Body>
       </Card>
-      <select className="dropdown-toggle btn btn-info" onChange={handleProjectChange}>
-        <option value="⬇️ Seleccione un Proyecto ⬇️"> -- Seleccione un Proyecto -- </option>
+      <select className="dropdown-toggle btn btn-info" onChange={handleProjectChange} value={selectedProjectId}>
+        <option value="selectProject"> -- Seleccione un Proyecto -- </option>
         {projects.map((project: IProject) => (
           // @ts-ignore
           <option value={project.documentId} key={project.documentId}>
