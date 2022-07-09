@@ -72,3 +72,17 @@ export const fetchBusinesses = async (businessesByUser: IBusinessUser[]) => {
   });
   return documents;
 };
+
+export const fetchProjects = async (businessId: string) => {
+  const querySnapshot = await db
+    .collection(Collections.projects)
+    .where('status', '==', 'ACTIVE')
+    .where('businessId', '==', businessId)
+    .get();
+
+  const documents: any[] = [];
+  querySnapshot.forEach((doc) => {
+    documents.push({ ...doc.data(), documentId: doc.ref.id });
+  });
+  return documents;
+};

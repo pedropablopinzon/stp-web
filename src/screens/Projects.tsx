@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 
-import { fetchDocuments, addDocument, updateDocument, deleteDocument } from '../modules/db';
+import { addDocument, updateDocument, deleteDocument, fetchProjects } from '../modules/db';
 import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
@@ -18,8 +18,12 @@ export const Projects = () => {
   const defaultDocument: IProject = {
     documentId: null,
     name: '',
+    businessId: '',
+    businessName: '',
     status: 'ACTIVE',
   };
+  const workingBusinessId: string = localStorage.getItem('workingBusinessId') || '';
+  const workingBusinessName: string = localStorage.getItem('workingBusinessName') || '';
 
   const [items, setItems] = useState<IProject[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -51,6 +55,8 @@ export const Projects = () => {
     } else {
       const newData: IProject = {
         name: selectedDocument.name,
+        businessId: workingBusinessId,
+        businessName: workingBusinessName,
         status: 'ACTIVE',
         createdAt: new Date(),
         createdBy: currentUser.uid,
@@ -84,10 +90,12 @@ export const Projects = () => {
   };
 
   useEffect(() => {
-    fetchDocuments(collectionName).then((data) => {
-      sortItemsString(data, 'name');
-      setItems(data);
-    });
+    if (workingBusinessId.length > 0) {
+      fetchProjects(workingBusinessId).then((data) => {
+        sortItemsString(data, 'name');
+        setItems(data);
+      });
+    }
   }, []);
 
   useEffect(() => {
@@ -108,7 +116,7 @@ export const Projects = () => {
         {title} ({items.length})
       </h1>
 
-      <Button variant="primary" onClick={handleShowModal}>
+      <Button variant="primary" onClick={handleShowModal} disabled={workingBusinessId.length === 0}>
         Nuevo {titleSingular}
       </Button>
 

@@ -11,11 +11,8 @@ import { sortItemsString } from '../modules/utils';
 export const WorkingBusiness = () => {
   const { currentUser } = useAuth();
 
-  let workingBusinessId = localStorage.getItem('workingBusinessId');
-  const workingBusinessName = localStorage.getItem('workingBusinessName');
-  if (!workingBusinessId) {
-    workingBusinessId = '';
-  }
+  const workingBusinessId: string = localStorage.getItem('workingBusinessId') || '';
+  const workingBusinessName: string = localStorage.getItem('workingBusinessName') || '';
 
   const [items, setItems] = useState<IBusiness[]>([]);
   const [businessesByUser, setBusinessesByUser] = useState<IBusinessUser[]>([]);
@@ -55,7 +52,8 @@ export const WorkingBusiness = () => {
     <>
       <Card>
         <Card.Body>
-          <Card.Title>{'Empresa: '}
+          <Card.Title>
+            {'Empresa: '}
             <select className="dropdown-toggle btn btn-info" onChange={handleBusinessChange} value={selectedBusinessId}>
               <option value="selectBusiness"> -- Seleccione una Empresa -- </option>
               {items.map((business: IBusiness) => (
@@ -64,7 +62,8 @@ export const WorkingBusiness = () => {
                   {business.name}
                 </option>
               ))}
-            </select></Card.Title>
+            </select>
+          </Card.Title>
           <Link to="/businesses" className="btn btn-primary w-100 mt-3">
             Agregar una Nueva Empresa
           </Link>

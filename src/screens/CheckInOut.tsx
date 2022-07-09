@@ -4,38 +4,23 @@ import { useHistory } from 'react-router-dom';
 
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
-import { addDocument, updateDocument } from '../modules/db';
+import { addDocument, fetchProjects, updateDocument } from '../modules/db';
 import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
 import { IProject } from '../interfaces/project.interface';
-import { fixDate } from '../modules/utils';
+import { fixDate, sortItemsString } from '../modules/utils';
 import { Collections } from '../enums/collections';
 
 export const CheckInOut = () => {
   const collectionName = Collections.logCheckInOut;
   const history = useHistory();
   const { currentUser } = useAuth();
+  const workingBusinessId: string = localStorage.getItem('workingBusinessId') || '';
+  const workingBusinessName: string = localStorage.getItem('workingBusinessName') || '';
+  const workingProjectId: string = localStorage.getItem('workingProjectId') || '';
 
   const [projects, setProjects] = useState<IProject[]>([]);
   const [logs, setLogs] = useState<ILogCheckInOut[]>([]);
   const [selectedProject, setSelectedProject] = useState<IProject | null>(null);
-
-  let workingProjectId = localStorage.getItem('workingProjectId');
-  if (!workingProjectId) {
-    workingProjectId = '';
-  }
-
-  const fetchProjects = async () => {
-    const querySnapshot = await db
-      .collection(Collections.projects)
-      .where('status', '==', 'ACTIVE')
-      .get();
-
-    const projects: IProject[] = [];
-    querySnapshot.forEach((doc) => {
-      projects.push({ ...doc.data(), documentId: doc.ref.id });
-    });
-    return projects;
-  };
 
   const fetchLogs = async (projectId: string, userId: string) => {
     const querySnapshot = await db
@@ -56,7 +41,12 @@ export const CheckInOut = () => {
   };
 
   useEffect(() => {
-    fetchProjects().then((data) => setProjects(data));
+    if (workingBusinessId.length > 0) {
+      fetchProjects(workingBusinessId).then((data) => {
+        sortItemsString(data, 'name');
+        setProjects(data);
+      });
+    }
   }, []);
 
   const checkIn = async () => {
@@ -68,6 +58,8 @@ export const CheckInOut = () => {
       userId: currentUser.uid,
       checkOut: false,
       email: currentUser.email,
+      businessId: workingBusinessId,
+      businessName: workingBusinessName,
       createdAt: new Date(),
       createdBy: currentUser.uid,
       createdByEmail: currentUser.email,
@@ -111,7 +103,21 @@ export const CheckInOut = () => {
     setSelectedProject(project[0]);
 
     // @ts-ignore
-    fetchLogs(project[0].documentId, currentUser.uid).then((data) => setLogs(data));
+    fetchLogs(project[0].documentId, currentUser.uid).then((data) => {
+      setLogs(data);
+      if (data.length > 0) {
+        if (workingProjectId.length === 0) {
+          // @ts-ignore
+          localStorage.setItem('workingLogCheckInOutId', data[0].documentId);
+          // @ts-ignore
+          localStorage.setItem('workingProjectId', data[0].projectId);
+          // @ts-ignore
+          localStorage.setItem('workingProjectName', data[0].projectName);
+          // @ts-ignore
+          localStorage.setItem('workingProjectCheckInAt', data[0].checkInAt);
+        }
+      }
+    });
   };
 
   return (
