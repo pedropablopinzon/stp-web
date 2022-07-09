@@ -30,7 +30,7 @@ export const Projects = () => {
   const handleCloseConfirm = () => setShowConfirm(false);
 
   const handleShowModal = () => {
-    setSelectedDocument({ documentId: null, name: '', status: 'ACTIVE' });
+    setSelectedDocument(defaultDocument);
     setShowModal(true);
   };
 

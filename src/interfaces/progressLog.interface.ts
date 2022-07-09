@@ -6,7 +6,7 @@ export interface IProgressLog {
   projectId?: string;
   projectName?: string;
   comment?: string;
-  imageUrl?: string;
+  imagesUrl?: string[];
   createdByEmail?: string;
 
   status?: Status;

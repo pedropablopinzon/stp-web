@@ -33,7 +33,7 @@ export const Business = () => {
   const handleCloseConfirm = () => setShowConfirm(false);
 
   const handleShowModal = () => {
-    setSelectedDocument({ documentId: null, name: '', taxId: '', address: '', status: 'ACTIVE' });
+    setSelectedDocument(defaultDocument);
     setShowModal(true);
   };
 

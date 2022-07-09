@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 
 import { addDocument, updateDocument, deleteDocument } from '../modules/db';
-import { sortItemsString, addItem, updateItem, deleteItem, sortItems } from '../modules/utils';
+import { addItem, updateItem, deleteItem, sortItems } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
-import { ProjectsTable } from '../components/tables/Projects.table';
 import { IProgressLog } from '../interfaces/progressLog.interface';
 import { ProgressLogTable } from '../components/tables/ProgressLog.table';
 import { db } from '../firebase';
 import { WorkingProject } from '../components/WorkingProject';
+import { Storage } from '../components/Storage';
+import { CarouselImages } from '../components/CarouselImages';
 
 export const ProgressLog = () => {
   const collectionName = 'progressLog';
@@ -20,8 +21,10 @@ export const ProgressLog = () => {
   const defaultDocument: IProgressLog = {
     documentId: null,
     comment: '',
+    imagesUrl: [],
     status: 'ACTIVE',
   };
+
   let workingProjectId = localStorage.getItem('workingProjectId');
   const workingProjectName = localStorage.getItem('workingProjectName');
   const workingProjectCheckInAt = localStorage.getItem('workingProjectCheckInAt');
@@ -39,7 +42,7 @@ export const ProgressLog = () => {
   const handleCloseConfirm = () => setShowConfirm(false);
 
   const handleShowModal = () => {
-    setSelectedDocument({ documentId: null, comment: '', status: 'ACTIVE' });
+    setSelectedDocument(defaultDocument);
     setShowModal(true);
   };
 
@@ -47,6 +50,7 @@ export const ProgressLog = () => {
     if (selectedDocument.documentId) {
       const updateData: IProgressLog = {
         comment: selectedDocument.comment,
+        imagesUrl: selectedDocument.imagesUrl,
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
       };
@@ -60,6 +64,7 @@ export const ProgressLog = () => {
         projectId: workingProjectId!,
         projectName: workingProjectName!,
         comment: selectedDocument.comment,
+        imagesUrl: selectedDocument.imagesUrl,
         createdByEmail: currentUser.email,
         status: 'ACTIVE',
         createdAt: new Date(),
@@ -107,6 +112,12 @@ export const ProgressLog = () => {
     return documents;
   };
 
+  const fileUploaded = (url: string) => {
+    // @ts-ignore
+    selectedDocument.imagesUrl.push(url);
+    setSelectedDocument({ ...selectedDocument });
+  };
+
   useEffect(() => {
     fetchDocuments(collectionName).then((data) => {
       sortItems(data, 'createdAtNumber', 'desc');
@@ -151,6 +162,8 @@ export const ProgressLog = () => {
             <Form.Label>Comentario</Form.Label>
             <Form.Control as="textarea" rows={3} name="comment" value={selectedDocument.comment} onChange={onInputChange} />
           </Form.Group>
+          <Storage onFileUploaded={fileUploaded} />
+          <CarouselImages items={selectedDocument.imagesUrl} />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
