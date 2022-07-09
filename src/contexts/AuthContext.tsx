@@ -21,6 +21,8 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
+    localStorage.setItem('workingBusinessId', '');
+    localStorage.setItem('workingBusinessName', '');
     localStorage.setItem('workingLogCheckInOutId', '');
     localStorage.setItem('workingProjectId', '');
     localStorage.setItem('workingProjectName', '');

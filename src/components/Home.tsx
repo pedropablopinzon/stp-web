@@ -3,6 +3,7 @@ import { Card, Button } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
+import { WorkingBusiness } from './WorkingBusiness';
 
 export const Home = () => {
   const [error, setError] = useState('');
@@ -33,6 +34,7 @@ export const Home = () => {
           </Card.Footer>
         </Card.Body>
       </Card>
+      <WorkingBusiness />
       <div className="w-100 text-center mt-2">
         <Button variant="link" onClick={handleLogout}>
           Log Out

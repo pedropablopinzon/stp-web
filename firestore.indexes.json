@@ -27,7 +27,7 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "businesId",
+          "fieldPath": "businessId",
           "order": "ASCENDING"
         }
       ]

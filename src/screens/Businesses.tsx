@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 
 import {
-  fetchDocuments,
   addDocument,
   updateDocument,
   deleteDocument,
@@ -39,7 +38,7 @@ export const Businesses = () => {
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const [selectedDocument, setSelectedDocument] = useState<IBusiness>(defaultDocument);
   const [deletedDocument, setDeletedDocument] = useState<IBusiness>(defaultDocument);
-  const [businessesByUser, setBusinessesByUser] = useState<string[]>([]);
+  const [businessesByUser, setBusinessesByUser] = useState<IBusinessUser[]>([]);
 
   const handleCloseModal = () => setShowModal(false);
   const handleCloseConfirm = () => setShowConfirm(false);
@@ -121,15 +120,8 @@ export const Businesses = () => {
     setSelectedDocument({ ...selectedDocument, [name]: value });
   };
 
-  // useEffect(() => {
-  //   fetchDocuments(collectionName).then((data) => {
-  //     sortItemsString(data);
-  //     setItems(data);
-  //   });
-  // }, []);
-
   useEffect(() => {
-    getBusinessesByUser(currentUser.uid).then((data: string[]) => {
+    getBusinessesByUser(currentUser.uid).then((data: IBusinessUser[]) => {
       setBusinessesByUser(data);
     });
   }, []);

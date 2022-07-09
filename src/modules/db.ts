@@ -1,5 +1,6 @@
 import { Collections } from '../enums/collections';
 import { db } from '../firebase';
+import { IBusinessUser } from '../interfaces/businessUser.interface';
 
 export const getDocumentReference = async (collectionName: string) => {
   return await db.collection(collectionName).doc();
@@ -54,7 +55,7 @@ export const getBusinessesByUser = async (userId: string) => {
   return documents;
 };
 
-export const fetchBusinesses = async (businessesByUser: any[]) => {
+export const fetchBusinesses = async (businessesByUser: IBusinessUser[]) => {
   const querySnapshot = await db
     .collection(Collections.businesses)
     .where('status', '==', 'ACTIVE')
