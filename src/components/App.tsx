@@ -16,6 +16,7 @@ import { CheckInOut } from '../screens/CheckInOut';
 import { Projects } from '../screens/Projects';
 import { Business } from '../screens/Business';
 import { ProgressLog } from '../screens/ProgressLog';
+import { ExpenseRecord } from '../screens/ExpenseRecord';
 import { Navigationbar } from './ui/Navigationbar';
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
               <PrivateRoute path="/projects" component={Projects} />
               <PrivateRoute path="/business" component={Business} />
               <PrivateRoute path="/progressLog" component={ProgressLog} />
+              <PrivateRoute path="/expenseRecord" component={ExpenseRecord} />
 
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />

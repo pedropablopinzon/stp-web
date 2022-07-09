@@ -3,7 +3,6 @@ import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 import { storage } from '../firebase';
 
-
 export const Storage = (props: { onFileUploaded: Function }) => {
   // State to store uploaded file
   const [file, setFile] = useState('');
@@ -20,9 +19,10 @@ export const Storage = (props: { onFileUploaded: Function }) => {
     if (!file) {
       alert('Please upload an image first!');
     }
+    const fileNumber = new Date().getTime();
 
     // @ts-ignore
-    const storageRef = ref(storage, `/files/${file.name}`);
+    const storageRef = ref(storage, `/files/${fileNumber}_${file.name}`);
 
     // progress can be paused and resumed. It also exposes progress updates.
     // Receives the storage reference and the file to upload.
@@ -52,7 +52,9 @@ export const Storage = (props: { onFileUploaded: Function }) => {
     <>
       <div>
         <input type="file" onChange={handleChange} accept="/image/*" />
-        <button onClick={handleUpload} disabled={file.length === 0}>Upload to Firebase</button>
+        <button onClick={handleUpload} disabled={file.length === 0}>
+          Upload to Firebase
+        </button>
         <p>{percent} "% done"</p>
       </div>
     </>
