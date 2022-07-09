@@ -35,6 +35,9 @@ export const Navigationbar = () => {
             <NavLink eventKey="6" as={Link} to="/expenseRecord">
               Gastos
             </NavLink>
+            <NavLink eventKey="7" as={Link} to="/profile">
+              Perfil
+            </NavLink>
           </Nav>
         </Navbar.Collapse>
       </Navbar>

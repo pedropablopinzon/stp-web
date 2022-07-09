@@ -43,9 +43,9 @@ export function AuthProvider({ children }) {
     return currentUser.updatePassword(password);
   }
 
-  function updateProfile(displayName: string) {
+  function updateProfile(data: any) {
     // @ts-ignore
-    return currentUser.updateProfile({ displayName });
+    return currentUser.updateProfile(data);
   }
 
   useEffect(() => {

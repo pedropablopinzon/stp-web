@@ -6,19 +6,20 @@ import Signup from './Signup';
 import { AuthProvider } from '../contexts/AuthContext';
 
 // import { Dashboard } from './Dashboard';
+import { AppVersion } from './AppVersion';
 import { Login } from './Login';
 import { PrivateRoute } from './PrivateRoute';
 import { ForgotPassword } from './ForgotPassword';
 import { UpdateProfile } from './UpdateProfile';
 import { UpdatePassword } from './UpdatePassword';
 import { Home } from './Home';
+import { Navigationbar } from './ui/Navigationbar';
 import { CheckInOut } from '../screens/CheckInOut';
 import { Projects } from '../screens/Projects';
 import { Businesses } from '../screens/Businesses';
 import { ProgressLog } from '../screens/ProgressLog';
 import { ExpenseRecord } from '../screens/ExpenseRecord';
-import { Navigationbar } from './ui/Navigationbar';
-import { AppVersion } from './AppVersion';
+import { Profile } from '../screens/Profile';
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
               <PrivateRoute path="/businesses" component={Businesses} />
               <PrivateRoute path="/progressLog" component={ProgressLog} />
               <PrivateRoute path="/expenseRecord" component={ExpenseRecord} />
+              <PrivateRoute path="/profile" component={Profile} />
 
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />
