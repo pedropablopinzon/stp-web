@@ -17,7 +17,13 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "use:dev": "export ENV_STP=\"dev\" && firebase use $ENV_STP && echo $ENV_STP && npm run use:env",
+    "use:staging": "export ENV_STP=\"staging\" && firebase use $ENV_STP && echo $ENV_STP && npm run use:env",
+    "use:prod": "export ENV_STP=\"prod\" && firebase use $ENV_STP && echo $ENV_STP && npm run use:env",
+    "use:env": "cp config/$ENV_STP/.env .env",
+    "build:dev": "env-cmd -f config/dev/.env npm run build && firebase deploy -P dev",
+    "build:prod": "env-cmd -f config/prod/.env npm run build && firebase deploy -P prod"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -42,6 +48,7 @@
     "@types/node": "^18.0.3",
     "@types/react": "^18.0.15",
     "@types/react-dom": "^18.0.6",
-    "@types/react-router-dom": "^5.3.3"
+    "@types/react-router-dom": "^5.3.3",
+    "env-cmd": "^10.1.0"
   }
 }
