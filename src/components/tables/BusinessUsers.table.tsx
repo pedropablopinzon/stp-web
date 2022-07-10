@@ -1,16 +1,10 @@
 import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
-import { IBusiness } from '../../interfaces/business.interface';
+import { IBusinessUser } from '../../interfaces/businessUser.interface';
 import { fixDate } from '../../modules/utils';
 
-export const BusinessTable = (props: {
-  items: IBusiness[];
-  onEditDocument: Function;
-  onDeleteDocument: Function;
-  onAddInvitation: Function;
-  onUsersDocument: Function;
-}) => {
+export const BusinessUsersTable = (props: { items: IBusinessUser[]; onEditDocument: Function; onDeleteDocument: Function }) => {
   return (
     <>
       <Table striped bordered hover>
@@ -20,13 +14,12 @@ export const BusinessTable = (props: {
             <th>#</th>
             <th>Creado</th>
             <th>Nombre</th>
-            <th>NIT</th>
-            <th>Direccion</th>
+            <th>Rol</th>
             <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          {props.items.map((item: IBusiness, index: number) => {
+          {props.items.map((item: IBusinessUser, index: number) => {
             let createdAt: Date | string | undefined = fixDate(item.createdAt);
 
             return (
@@ -34,15 +27,9 @@ export const BusinessTable = (props: {
                 <td>{index + 1}</td>
                 <td>{item.documentId}</td>
                 <td>{createdAt!.toString()}</td>
-                <td>{item.name}</td>
-                <td>{item.taxId}</td>
-                <td>{item.address}</td>
+                <td>{item.userName}</td>
+                <td>{item.rolId}</td>
                 <td>{item.status}</td>
-                <td>
-                  <Button variant="primary" onClick={() => props.onUsersDocument(item)}>
-                    Usuarios
-                  </Button>
-                </td>
                 <td>
                   <Button variant="primary" onClick={() => props.onEditDocument(item)}>
                     Editar
@@ -51,11 +38,6 @@ export const BusinessTable = (props: {
                 <td>
                   <Button variant="danger" onClick={() => props.onDeleteDocument(item)}>
                     Eliminar
-                  </Button>
-                </td>
-                <td>
-                  <Button variant="primary" onClick={() => props.onAddInvitation(item)}>
-                    Invitar Usuario
                   </Button>
                 </td>
               </tr>

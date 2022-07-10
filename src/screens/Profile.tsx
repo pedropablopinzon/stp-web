@@ -17,7 +17,7 @@ export const Profile = () => {
       await logout();
       history.push('/login');
     } catch {
-      console.log(error);
+      console.error(error);
       setError('Failed to log out');
     }
   }

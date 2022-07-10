@@ -20,6 +20,7 @@ import { Businesses } from '../screens/Businesses';
 import { ProgressLog } from '../screens/ProgressLog';
 import { ExpenseRecord } from '../screens/ExpenseRecord';
 import { Profile } from '../screens/Profile';
+import { BusinessUsers } from '../screens/BusinessUsers';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
               <PrivateRoute path="/progressLog" component={ProgressLog} />
               <PrivateRoute path="/expenseRecord" component={ExpenseRecord} />
               <PrivateRoute path="/profile" component={Profile} />
+              <PrivateRoute path="/businessUsers/:businessId/" component={BusinessUsers} />
 
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />

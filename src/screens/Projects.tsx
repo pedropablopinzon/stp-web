@@ -31,8 +31,15 @@ export const Projects = () => {
   const [selectedDocument, setSelectedDocument] = useState<IProject>(defaultDocument);
   const [deletedDocument, setDeletedDocument] = useState<IProject>(defaultDocument);
 
-  const handleCloseModal = () => setShowModal(false);
-  const handleCloseConfirm = () => setShowConfirm(false);
+  const handleCloseModal = () => {
+    setSelectedDocument(defaultDocument);
+    setShowModal(false);
+  };
+
+  const handleCloseConfirm = () => {
+    setDeletedDocument(defaultDocument);
+    setShowConfirm(false);
+  };
 
   const handleShowModal = () => {
     setSelectedDocument(defaultDocument);
