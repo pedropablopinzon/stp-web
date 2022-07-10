@@ -4,12 +4,10 @@ import { StatusInvitation } from '../types/status.types';
 export interface IInvitation {
   documentId?: string | null;
 
-  businessId: string;
-  businessName: string;
-  // userId: string;
-  // userName: string;
-  email: string;
-  rolId: Rol;
+  businessId?: string;
+  businessName?: string;
+  email?: string;
+  rolId?: Rol;
 
   status?: StatusInvitation;
   createdAt?: Date;

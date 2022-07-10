@@ -4,7 +4,7 @@ import { Button, Table } from 'react-bootstrap';
 import { IInvitation } from '../../interfaces/invitation.interface';
 import { fixDate } from '../../modules/utils';
 
-export const InvitationsTable = (props: { items: IInvitation[]; onEditDocument: Function; onDeleteDocument: Function }) => {
+export const InvitationsTable = (props: { items: IInvitation[]; onAcceptInvitation: Function; onRejectInvitation: Function }) => {
   return (
     <>
       <Table striped bordered hover>
@@ -31,13 +31,13 @@ export const InvitationsTable = (props: { items: IInvitation[]; onEditDocument: 
                 <td>{item.rolId}</td>
                 <td>{item.status}</td>
                 <td>
-                  <Button variant="primary" onClick={() => props.onEditDocument(item)}>
-                    Editar
+                  <Button variant="primary" onClick={() => props.onAcceptInvitation(item)}>
+                    Aceptar
                   </Button>
                 </td>
                 <td>
-                  <Button variant="danger" onClick={() => props.onDeleteDocument(item)}>
-                    Eliminar
+                  <Button variant="danger" onClick={() => props.onRejectInvitation(item)}>
+                    Rechazar
                   </Button>
                 </td>
               </tr>

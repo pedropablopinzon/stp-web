@@ -156,7 +156,15 @@ export const addInvitation = async (
     subtitle: '',
   };
 
+  if (email.length === 0) {
+    result.status = false;
+    result.message = `Enter an Email`;
+    result.variant = 'Warning';
+    return result;
+  }
+
   const businessUsers: any[] = await fetchBusinessUsersByEmail(businessId, email);
+
   if (businessUsers.length > 0) {
     result.status = false;
     result.message = `The email (${email}) is already assigned to the business`;
@@ -183,4 +191,15 @@ export const addInvitation = async (
   result.documentId = resultInvitation.id;
 
   return result;
+};
+
+export const rejectInvitation = async (currentUser: any, documentId: string) => {
+  const updateData: IInvitation = {
+    status: 'REJECTED',
+    updatedAt: new Date(),
+    updatedBy: currentUser.uid,
+    updatedByEmail: currentUser.email,
+  };
+
+  return await updateDocument(Collections.invitations, documentId, updateData);
 };
