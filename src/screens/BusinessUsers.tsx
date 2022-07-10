@@ -9,6 +9,8 @@ import { ConfirmDelete } from '../components/ConfirmDelete';
 import { Collections } from '../enums/collections';
 import { IBusinessUser } from '../interfaces/businessUser.interface';
 import { BusinessUsersTable } from '../components/tables/BusinessUsers.table';
+import { SelectRol } from '../components/SelectRol';
+import { Rol } from '../types/rol.types';
 
 export const BusinessUsers = () => {
   // @ts-ignore
@@ -23,6 +25,7 @@ export const BusinessUsers = () => {
     documentId: null,
     userName: '',
     businessId: '',
+    rolId: 'OWNER',
     status: 'ACTIVE',
   };
 
@@ -31,6 +34,7 @@ export const BusinessUsers = () => {
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const [selectedDocument, setSelectedDocument] = useState<IBusinessUser>(defaultDocument);
   const [deletedDocument, setDeletedDocument] = useState<IBusinessUser>(defaultDocument);
+  const [selectedRolId, setSelectedRolId] = useState<Rol>('OWNER');
 
   const handleCloseModal = () => {
     setSelectedDocument(defaultDocument);
@@ -50,19 +54,22 @@ export const BusinessUsers = () => {
   const saveDocument = async () => {
     if (selectedDocument.documentId) {
       const updateData: IBusinessUser = {
-        userName: selectedDocument.userName,
+        // userName: selectedDocument.userName,
+        rolId: selectedDocument.rolId,
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
         updatedByEmail: currentUser.email,
       };
       updateDocument(collectionName, selectedDocument.documentId, updateData);
 
-      const updatedItems = updateItem(items, selectedDocument.documentId, updateData);
+      const updatedItems = updateItem(items, selectedDocument.documentId, updateData, 'userName');
 
       setItems(updatedItems);
     } else {
       const newData: IBusinessUser = {
+        email: currentUser.email,
         userName: selectedDocument.userName,
+        rolId: selectedDocument.rolId,
         businessId: businessId,
         status: 'ACTIVE',
         createdAt: new Date(),
@@ -72,7 +79,7 @@ export const BusinessUsers = () => {
       const result = await addDocument(collectionName, newData);
       newData.documentId = result.id;
 
-      addItem(items, newData);
+      addItem(items, newData, 'userName');
 
       setItems(items);
     }
@@ -96,6 +103,10 @@ export const BusinessUsers = () => {
     setSelectedDocument({ ...selectedDocument, [name]: value });
   };
 
+  const onSelectedRol = (value: Rol) => {
+    setSelectedRolId(value);
+  };
+
   useEffect(() => {
     if (businessId.length > 0) {
       fetchBusinessUsers(businessId).then((data) => {
@@ -117,6 +128,12 @@ export const BusinessUsers = () => {
     }
   }, [deletedDocument]);
 
+  useEffect(() => {
+    if (selectedRolId.length > 0) {
+      setSelectedDocument({ ...selectedDocument, rolId: selectedRolId });
+    }
+  }, [selectedRolId]);
+
   return (
     <>
       <h1>
@@ -136,12 +153,27 @@ export const BusinessUsers = () => {
             <Form.Label htmlFor="disabledTextInput">Nombre</Form.Label>
             <Form.Control
               type="text"
-              placeholder="Ingrese el Nombre del proyecto"
+              placeholder="Ingrese el Nombre del usuario"
               name="userName"
               value={selectedDocument.userName}
               onChange={onInputChange}
             />
           </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label htmlFor="disabledTextInput">Email</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Ingrese el Email del usuario"
+              name="email"
+              value={selectedDocument.email}
+              onChange={onInputChange}
+            />
+          </Form.Group>
+          <SelectRol
+            onSelectedRol={onSelectedRol}
+            // @ts-ignore
+            rolId={selectedDocument.rolId}
+          />
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal}>
