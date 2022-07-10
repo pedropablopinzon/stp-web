@@ -4,7 +4,12 @@ import { Button, Table } from 'react-bootstrap';
 import { IBusiness } from '../../interfaces/business.interface';
 import { fixDate } from '../../modules/utils';
 
-export const BusinessTable = (props: { items: IBusiness[]; onEditDocument: Function; onDeleteDocument: Function }) => {
+export const BusinessTable = (props: {
+  items: IBusiness[];
+  onEditDocument: Function;
+  onDeleteDocument: Function;
+  onAddInvitation: Function;
+}) => {
   return (
     <>
       <Table striped bordered hover>
@@ -40,6 +45,11 @@ export const BusinessTable = (props: { items: IBusiness[]; onEditDocument: Funct
                 <td>
                   <Button variant="danger" onClick={() => props.onDeleteDocument(item)}>
                     Eliminar
+                  </Button>
+                </td>
+                <td>
+                  <Button variant="primary" onClick={() => props.onAddInvitation(item)}>
+                    Invitar Usuario
                   </Button>
                 </td>
               </tr>

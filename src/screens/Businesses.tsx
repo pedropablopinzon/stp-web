@@ -18,6 +18,7 @@ import { BusinessTable } from '../components/tables/Business.table';
 import { IBusiness } from '../interfaces/business.interface';
 import { Collections } from '../enums/collections';
 import { IBusinessUser } from '../interfaces/businessUser.interface';
+import { AddInvitation } from '../components/AddInvitation';
 
 export const Businesses = () => {
   const collectionName = Collections.businesses;
@@ -40,9 +41,21 @@ export const Businesses = () => {
   const [selectedDocument, setSelectedDocument] = useState<IBusiness>(defaultDocument);
   const [deletedDocument, setDeletedDocument] = useState<IBusiness>(defaultDocument);
   const [businessesByUser, setBusinessesByUser] = useState<IBusinessUser[]>([]);
+  const [showAddInvitation, setShowAddInvitation] = useState<boolean>(false);
+  const [selectedDocumentAddInvitation, setSelectedDocumentAddInvitation] = useState<IBusiness>(defaultDocument);
 
-  const handleCloseModal = () => setShowModal(false);
-  const handleCloseConfirm = () => setShowConfirm(false);
+  const handleCloseModal = () => {
+    setSelectedDocument(defaultDocument);
+    setShowModal(false);
+  };
+  const handleCloseAddInvitation = () => {
+    setSelectedDocumentAddInvitation(defaultDocument);
+    setShowAddInvitation(false);
+  };
+  const handleCloseConfirm = () => {
+    setDeletedDocument(defaultDocument);
+    setShowConfirm(false);
+  };
 
   const handleShowModal = () => {
     setSelectedDocument(defaultDocument);
@@ -143,6 +156,12 @@ export const Businesses = () => {
   }, [selectedDocument]);
 
   useEffect(() => {
+    if (selectedDocumentAddInvitation.documentId) {
+      setShowAddInvitation(true);
+    }
+  }, [selectedDocumentAddInvitation]);
+
+  useEffect(() => {
     if (deletedDocument.documentId) {
       setShowConfirm(true);
     }
@@ -204,6 +223,8 @@ export const Businesses = () => {
         </Modal.Footer>
       </Modal>
 
+      <AddInvitation show={showAddInvitation} onHide={handleCloseAddInvitation} business={selectedDocumentAddInvitation} />
+
       <ConfirmDelete
         show={showConfirm}
         onHide={handleCloseConfirm}
@@ -212,7 +233,12 @@ export const Businesses = () => {
         subtitle={`Nombre: ${deletedDocument.name}`}
       />
 
-      <BusinessTable items={items} onEditDocument={setSelectedDocument} onDeleteDocument={setDeletedDocument} />
+      <BusinessTable
+        items={items}
+        onEditDocument={setSelectedDocument}
+        onDeleteDocument={setDeletedDocument}
+        onAddInvitation={setSelectedDocumentAddInvitation}
+      />
     </>
   );
 };
