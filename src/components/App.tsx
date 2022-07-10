@@ -43,7 +43,7 @@ function App() {
               <PrivateRoute path="/progressLog" component={ProgressLog} />
               <PrivateRoute path="/expenseRecord" component={ExpenseRecord} />
               <PrivateRoute path="/profile" component={Profile} />
-              <PrivateRoute path="/businessUsers/:id/" component={BusinessUsers} />
+              <PrivateRoute path="/businessUsers/:businessId/" component={BusinessUsers} />
 
               <Route path="/signup" component={Signup} />
               <Route path="/login" component={Login} />

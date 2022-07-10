@@ -4,11 +4,11 @@ import { Status } from '../types/status.types';
 export interface IBusinessUser {
   documentId?: string | null;
 
-  businessId: string;
-  userId: string;
-  rolId: Rol;
-  email: string;
-  userName: string;
+  businessId?: string;
+  userId?: string;
+  rolId?: Rol;
+  email?: string;
+  userName?: string;
 
   status?: Status;
   createdAt?: Date;

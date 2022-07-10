@@ -93,6 +93,20 @@ export const fetchProjects = async (businessId: string) => {
   return documents;
 };
 
+export const fetchBusinessUsers = async (businessId: string) => {
+  const querySnapshot = await db
+    .collection(Collections.businessUsers)
+    .where('status', '==', 'ACTIVE')
+    .where('businessId', '==', businessId)
+    .get();
+
+  const documents: any[] = [];
+  querySnapshot.forEach((doc) => {
+    documents.push({ ...doc.data(), documentId: doc.ref.id });
+  });
+  return documents;
+};
+
 export const fetchBusinessUsersByEmail = async (businessId: string, email: string) => {
   const querySnapshot = await db
     .collection(Collections.businessUsers)
