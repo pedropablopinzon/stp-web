@@ -5,11 +5,14 @@ import { useAuth } from '../contexts/AuthContext';
 import { IBusiness } from '../interfaces/business.interface';
 import { IResult } from '../interfaces/result.interface';
 import { addInvitation } from '../modules/db';
+import { Rol } from '../types/rol.types';
+import { SelectRol } from './SelectRol';
 
 export const AddInvitation = (props: { show: boolean; onHide: Function; business?: IBusiness; onSendInvitation: Function }) => {
   const { currentUser } = useAuth();
 
   const [email, setEmail] = useState<string>('');
+  const [selectedRolId, setSelectedRolId] = useState<Rol>('OWNER');
 
   const onInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -19,9 +22,13 @@ export const AddInvitation = (props: { show: boolean; onHide: Function; business
 
   const sendInvitation = async () => {
     // @ts-ignore
-    const result: IResult = await addInvitation(currentUser, email, 'OWNER', props.business.documentId, props.business.name);
+    const result: IResult = await addInvitation(currentUser, email, selectedRolId, props.business.documentId, props.business.name);
     setEmail('');
     props.onSendInvitation(result);
+  };
+
+  const onSelectedRol = (value: Rol) => {
+    setSelectedRolId(value);
   };
 
   return (
@@ -39,6 +46,7 @@ export const AddInvitation = (props: { show: boolean; onHide: Function; business
             <Form.Label htmlFor="disabledTextInput">Email</Form.Label>
             <Form.Control type="email" placeholder="Ingrese el Email del usuario" name="email" value={email} onChange={onInputChange} />
           </Form.Group>
+          <SelectRol onSelectedRol={onSelectedRol} rolId={selectedRolId} />
         </Modal.Body>
         <Modal.Footer>
           <Button
