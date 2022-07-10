@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
 import { IProject } from '../../interfaces/project.interface';
-import { fixDate } from '../../modules/utils';
+import { fixDate, showDetailedData } from '../../modules/utils';
 
 export const ProjectsTable = (props: { items: IProject[]; onEditDocument: Function; onDeleteDocument: Function }) => {
   return (
@@ -11,10 +11,10 @@ export const ProjectsTable = (props: { items: IProject[]; onEditDocument: Functi
         <thead>
           <tr>
             <th></th>
-            <th>#</th>
-            <th>Creado</th>
+            {showDetailedData() && <th>#</th>}
+            {showDetailedData() && <th>Creado</th>}
             <th>Nombre</th>
-            <th>Status</th>
+            {showDetailedData() && <th>Status</th>}
           </tr>
         </thead>
         <tbody>
@@ -24,10 +24,10 @@ export const ProjectsTable = (props: { items: IProject[]; onEditDocument: Functi
             return (
               <tr key={item.documentId}>
                 <td>{index + 1}</td>
-                <td>{item.documentId}</td>
-                <td>{createdAt!.toString()}</td>
+                {showDetailedData() && <td>{item.documentId}</td>}
+                {showDetailedData() && <td>{createdAt!.toString()}</td>}
                 <td>{item.name}</td>
-                <td>{item.status}</td>
+                {showDetailedData() && <td>{item.status}</td>}
                 <td>
                   <Button variant="primary" onClick={() => props.onEditDocument(item)}>
                     Editar
