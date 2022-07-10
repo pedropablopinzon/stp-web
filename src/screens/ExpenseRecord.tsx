@@ -11,9 +11,10 @@ import { db } from '../firebase';
 import { WorkingProject } from '../components/WorkingProject';
 import { Storage } from '../components/Storage';
 import { CarouselImages } from '../components/CarouselImages';
+import { Collections } from '../enums/collections';
 
 export const ExpenseRecord = () => {
-  const collectionName = 'expenseRecord';
+  const collectionName = Collections.expenseRecord;
   const title = 'Gastos';
   const titleSingular = 'Gasto';
 

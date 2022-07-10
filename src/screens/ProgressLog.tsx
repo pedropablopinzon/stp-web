@@ -11,9 +11,10 @@ import { db } from '../firebase';
 import { WorkingProject } from '../components/WorkingProject';
 import { Storage } from '../components/Storage';
 import { CarouselImages } from '../components/CarouselImages';
+import { Collections } from '../enums/collections';
 
 export const ProgressLog = () => {
-  const collectionName = 'progressLog';
+  const collectionName = Collections.progressLog;
   const title = 'Progreso';
   const titleSingular = 'Progreso';
 

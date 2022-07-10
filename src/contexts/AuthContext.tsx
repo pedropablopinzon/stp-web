@@ -21,6 +21,8 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
+    localStorage.setItem('workingBusinessId', '');
+    localStorage.setItem('workingBusinessName', '');
     localStorage.setItem('workingLogCheckInOutId', '');
     localStorage.setItem('workingProjectId', '');
     localStorage.setItem('workingProjectName', '');
@@ -43,9 +45,9 @@ export function AuthProvider({ children }) {
     return currentUser.updatePassword(password);
   }
 
-  function updateProfile(displayName: string) {
+  function updateProfile(data: any) {
     // @ts-ignore
-    return currentUser.updateProfile({ displayName });
+    return currentUser.updateProfile(data);
   }
 
   useEffect(() => {

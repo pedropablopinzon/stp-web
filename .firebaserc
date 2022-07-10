@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "stp-dev-2dfb7"
-  }
+    "default": "stp-dev-2dfb7",
+    "dev": "stp-dev-2dfb7",
+    "prod": "stp-prod-40a90"
+  },
+  "targets": {}
 }

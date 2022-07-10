@@ -1,12 +1,12 @@
+import { Rol } from '../types/rol.types';
 import { Status } from '../types/status.types';
 
-export interface IBusiness {
+export interface IBusinessUser {
   documentId?: string | null;
 
-  name: string;
-  taxId: string;
-  address: string;
-  businessId?: string;
+  businessId: string;
+  userId: string;
+  rolId: Rol;
 
   status?: Status;
   createdAt?: Date;

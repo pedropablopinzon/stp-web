@@ -7,6 +7,8 @@ export interface ILogCheckInOut {
   email?: string;
   checkInAt?: Date;
   checkOutAt?: Date;
+  businessId?: string;
+  businessName?: string;
 
   createdAt?: Date;
   createdBy?: string;
