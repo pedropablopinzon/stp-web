@@ -9,6 +9,7 @@ import {
   setDocument,
   getBusinessesByUser,
   fetchBusinesses,
+  getBusinessesByUserAndRol,
 } from '../modules/db';
 import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
@@ -121,7 +122,7 @@ export const Businesses = () => {
   };
 
   useEffect(() => {
-    getBusinessesByUser(currentUser.uid).then((data: IBusinessUser[]) => {
+    getBusinessesByUserAndRol(currentUser.uid).then((data: IBusinessUser[]) => {
       setBusinessesByUser(data);
     });
   }, []);

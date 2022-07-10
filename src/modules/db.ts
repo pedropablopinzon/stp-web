@@ -1,6 +1,7 @@
 import { Collections } from '../enums/collections';
 import { db } from '../firebase';
 import { IBusinessUser } from '../interfaces/businessUser.interface';
+import { Rol } from '../types/rol.types';
 
 export const getDocumentReference = async (collectionName: string) => {
   return await db.collection(collectionName).doc();
@@ -46,6 +47,22 @@ export const getBusinessesByUser = async (userId: string) => {
     .collection(Collections.businessUsers)
     .where('userId', '==', userId)
     .where('status', '==', 'ACTIVE')
+    .get();
+
+  const documents: any[] = [];
+  querySnapshot.forEach((doc): any => {
+    documents.push({ ...doc.data(), documentId: doc.ref.id });
+  });
+  return documents;
+};
+
+export const getBusinessesByUserAndRol = async (userId: string) => {
+  const roles: Rol[] = ['OWNER', 'EDITOR'];
+  const querySnapshot = await db
+    .collection(Collections.businessUsers)
+    .where('userId', '==', userId)
+    .where('status', '==', 'ACTIVE')
+    .where('rolId', 'in', roles)
     .get();
 
   const documents: any[] = [];
