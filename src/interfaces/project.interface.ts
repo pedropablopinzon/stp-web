@@ -4,6 +4,8 @@ export interface IProject {
   documentId?: string | null;
 
   name?: string;
+  businessId?: string;
+  businessName?: string;
 
   status?: Status;
   createdAt?: Date;

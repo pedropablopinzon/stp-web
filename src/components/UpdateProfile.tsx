@@ -3,6 +3,8 @@ import { Form, Button, Card, Alert } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
+import { ProfileImage } from './ProfileImage';
+import { Storage } from '../components/Storage';
 
 export const UpdateProfile = () => {
   const displayNameRef = useRef();
@@ -10,10 +12,13 @@ export const UpdateProfile = () => {
   const { currentUser, updateEmail, updateProfile } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [photoURL, setPhotoURL] = useState('');
   const history = useHistory();
 
   function handleSubmit(e: any) {
     e.preventDefault();
+    let updateData: boolean = false;
+    let data: any = {};
 
     const promises = [];
     setLoading(true);
@@ -27,13 +32,25 @@ export const UpdateProfile = () => {
 
     // @ts-ignore
     if (displayNameRef.current.value !== currentUser.displayName) {
+      updateData = true;
       // @ts-ignore
-      promises.push(updateProfile(displayNameRef.current.value));
+      data.displayName = displayNameRef.current.value;
+      // promises.push(updateProfile(displayNameRef.current.value));
+    }
+
+    if (photoURL !== currentUser.photoURL) {
+      updateData = true;
+      data.photoURL = photoURL;
+    }
+
+    if (updateData) {
+      // @ts-ignore
+      promises.push(updateProfile(data));
     }
 
     Promise.all(promises)
       .then(() => {
-        history.push('/');
+        history.push('/profile');
       })
       .catch(() => {
         setError('Failed to update account');
@@ -42,6 +59,10 @@ export const UpdateProfile = () => {
         setLoading(false);
       });
   }
+
+  const fileUploaded = (url: string) => {
+    setPhotoURL(url);
+  };
 
   return (
     <>
@@ -70,12 +91,19 @@ export const UpdateProfile = () => {
                 defaultValue={currentUser.email}
               />
             </Form.Group>
+            <Form.Group id="photoURL">
+              <ProfileImage photoURL={photoURL} width="200px" height="200px" />
+            </Form.Group>
             <Button disabled={loading} className="w-100" type="submit">
               Update Profile
             </Button>
           </Form>
+          <div className="mt-3">
+            <Storage onFileUploaded={fileUploaded} />
+          </div>
         </Card.Body>
       </Card>
+
       <div className="w-100 text-center mt-2">
         <Link to="/">Cancel</Link>
       </div>

@@ -1,15 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 
-import { fetchDocuments, addDocument, updateDocument, deleteDocument } from '../modules/db';
+import {
+  addDocument,
+  updateDocument,
+  deleteDocument,
+  getDocumentReference,
+  setDocument,
+  getBusinessesByUser,
+  fetchBusinesses,
+  getBusinessesByUserAndRol,
+} from '../modules/db';
 import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
 import { BusinessTable } from '../components/tables/Business.table';
 import { IBusiness } from '../interfaces/business.interface';
+import { Collections } from '../enums/collections';
+import { IBusinessUser } from '../interfaces/businessUser.interface';
 
-export const Business = () => {
-  const collectionName = 'business';
+export const Businesses = () => {
+  const collectionName = Collections.businesses;
   const title = 'Empresas';
   const titleSingular = 'Empresa';
 
@@ -19,6 +30,7 @@ export const Business = () => {
     name: '',
     taxId: '',
     address: '',
+    businessId: '',
     status: 'ACTIVE',
   };
 
@@ -27,6 +39,7 @@ export const Business = () => {
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const [selectedDocument, setSelectedDocument] = useState<IBusiness>(defaultDocument);
   const [deletedDocument, setDeletedDocument] = useState<IBusiness>(defaultDocument);
+  const [businessesByUser, setBusinessesByUser] = useState<IBusinessUser[]>([]);
 
   const handleCloseModal = () => setShowModal(false);
   const handleCloseConfirm = () => setShowConfirm(false);
@@ -52,19 +65,39 @@ export const Business = () => {
 
       setItems(updatedItems);
     } else {
-      const newData: IBusiness = {
+      const newBusinessData: IBusiness = {
         name: selectedDocument.name,
         taxId: selectedDocument.taxId,
         address: selectedDocument.address,
+        businessId: '',
         status: 'ACTIVE',
         createdAt: new Date(),
         createdBy: currentUser.uid,
         createdByEmail: currentUser.email,
       };
-      const result = await addDocument(collectionName, newData);
-      newData.documentId = result.id;
+      const docRef = await getDocumentReference(collectionName);
+      newBusinessData.businessId = docRef.id;
 
-      addItem(items, newData);
+      const resultBusiness = await setDocument(docRef, newBusinessData);
+
+      const newBusinessUserData: IBusinessUser = {
+        businessId: newBusinessData.businessId,
+        userId: currentUser.uid,
+        rolId: 'OWNER',
+        status: 'ACTIVE',
+        createdAt: new Date(),
+        createdBy: currentUser.uid,
+        createdByEmail: currentUser.email,
+      };
+
+      const resultBusinessUser = await addDocument(Collections.businessUsers, newBusinessUserData);
+      newBusinessUserData.documentId = resultBusinessUser.id;
+
+      // const result = await addDocument(collectionName, newData);
+      // newData.documentId = result.id;
+      newBusinessData.documentId = docRef.id;
+
+      addItem(items, newBusinessData);
 
       setItems(items);
     }
@@ -89,11 +122,19 @@ export const Business = () => {
   };
 
   useEffect(() => {
-    fetchDocuments(collectionName).then((data) => {
-      sortItemsString(data);
-      setItems(data);
+    getBusinessesByUserAndRol(currentUser.uid).then((data: IBusinessUser[]) => {
+      setBusinessesByUser(data);
     });
   }, []);
+
+  useEffect(() => {
+    if (businessesByUser.length > 0) {
+      fetchBusinesses(businessesByUser).then((data: IBusiness[]) => {
+        sortItemsString(data);
+        setItems(data);
+      });
+    }
+  }, [businessesByUser]);
 
   useEffect(() => {
     if (selectedDocument.documentId) {
