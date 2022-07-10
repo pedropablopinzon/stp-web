@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 
-import { addDocument, updateDocument, deleteDocument, fetchBusinessUsers } from '../modules/db';
+import { addDocument, updateDocument, deleteDocument, fetchBusinessUsers, getBusiness } from '../modules/db';
 import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
@@ -11,6 +11,10 @@ import { IBusinessUser } from '../interfaces/businessUser.interface';
 import { BusinessUsersTable } from '../components/tables/BusinessUsers.table';
 import { SelectRol } from '../components/SelectRol';
 import { Rol } from '../types/rol.types';
+import { IBusiness } from '../interfaces/business.interface';
+import { AddInvitation } from '../components/AddInvitation';
+import { Notification } from '../components/Notification';
+import { IResult } from '../interfaces/result.interface';
 
 export const BusinessUsers = () => {
   // @ts-ignore
@@ -29,16 +33,45 @@ export const BusinessUsers = () => {
     status: 'ACTIVE',
   };
 
+  const defaultBusinessDocument: IBusiness = {
+    documentId: null,
+    name: '',
+    taxId: '',
+    address: '',
+    businessId: '',
+    status: 'ACTIVE',
+  };
+
+  const defaultResult: IResult = { status: false, message: '', show: false, variant: 'Primary', title: '', subtitle: '' };
+
   const [items, setItems] = useState<IBusinessUser[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const [selectedDocument, setSelectedDocument] = useState<IBusinessUser>(defaultDocument);
   const [deletedDocument, setDeletedDocument] = useState<IBusinessUser>(defaultDocument);
   const [selectedRolId, setSelectedRolId] = useState<Rol>('OWNER');
+  const [showAddInvitation, setShowAddInvitation] = useState<boolean>(false);
+  const [selectedDocumentAddInvitation, setSelectedDocumentAddInvitation] = useState<IBusiness>(defaultBusinessDocument);
+  const [showNotification, setShowNotification] = useState<IResult>(defaultResult);
 
   const handleCloseModal = () => {
     setSelectedDocument(defaultDocument);
     setShowModal(false);
+  };
+
+  const handleCloseAddInvitation = (result: any) => {
+    // setSelectedDocumentAddInvitation(defaultDocument);
+    setShowAddInvitation(false);
+  };
+
+  const handleOnSendInvitation = (result: IResult) => {
+    // setSelectedDocumentAddInvitation(defaultDocument);
+    setShowAddInvitation(false);
+    setShowNotification(result);
+
+    const timeout = setTimeout(() => {
+      setShowNotification(defaultResult);
+    }, 5000);
   };
 
   const handleCloseConfirm = () => {
@@ -47,8 +80,7 @@ export const BusinessUsers = () => {
   };
 
   const handleShowModal = () => {
-    setSelectedDocument(defaultDocument);
-    setShowModal(true);
+    setShowAddInvitation(true);
   };
 
   const saveDocument = async () => {
@@ -112,6 +144,11 @@ export const BusinessUsers = () => {
       fetchBusinessUsers(businessId).then((data) => {
         sortItemsString(data, 'userName');
         setItems(data);
+        getBusiness(businessId).then((data: any) => {
+          if (data) {
+            setSelectedDocumentAddInvitation(data);
+          }
+        });
       });
     }
   }, []);
@@ -141,7 +178,7 @@ export const BusinessUsers = () => {
       </h1>
 
       <Button variant="primary" onClick={handleShowModal} disabled={businessId.length === 0}>
-        Nuevo {titleSingular}
+       Invitar Usuario
       </Button>
 
       <Modal show={showModal} onHide={handleCloseModal}>
@@ -184,6 +221,21 @@ export const BusinessUsers = () => {
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <AddInvitation
+        show={showAddInvitation}
+        onHide={handleCloseAddInvitation}
+        business={selectedDocumentAddInvitation}
+        onSendInvitation={handleOnSendInvitation}
+      />
+
+      <Notification
+        show={showNotification.show}
+        message={showNotification.message}
+        variant={showNotification.variant}
+        title={showNotification.title}
+        subtitle={showNotification.subtitle}
+      />
 
       <ConfirmDelete
         show={showConfirm}

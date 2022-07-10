@@ -1,3 +1,5 @@
+import { doc, getDoc } from 'firebase/firestore';
+
 import { Collections } from '../enums/collections';
 import { db } from '../firebase';
 import { IBusinessUser } from '../interfaces/businessUser.interface';
@@ -250,4 +252,17 @@ export const addBusinessUser = async (currentUser: any, businessId: string, rolI
   newBusinessUserData.documentId = resultBusinessUser.id;
 
   return newBusinessUserData;
+};
+
+export const getBusiness = async (businessId: string) => {
+  const docRef = doc(db, Collections.businesses, businessId);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const document = { ...docSnap.data(), documentId: docSnap.ref.id };
+    return document;
+  } else {
+    console.error('No such document!');
+    return null;
+  }
 };

@@ -38,6 +38,7 @@ export const Businesses = () => {
     businessId: '',
     status: 'ACTIVE',
   };
+
   const defaultResult: IResult = { status: false, message: '', show: false, variant: 'Primary', title: '', subtitle: '' };
 
   const [items, setItems] = useState<IBusiness[]>([]);
@@ -49,7 +50,6 @@ export const Businesses = () => {
   const [businessesByUser, setBusinessesByUser] = useState<IBusinessUser[]>([]);
   const [showAddInvitation, setShowAddInvitation] = useState<boolean>(false);
   const [selectedDocumentAddInvitation, setSelectedDocumentAddInvitation] = useState<IBusiness>(defaultDocument);
-
   const [showNotification, setShowNotification] = useState<IResult>(defaultResult);
 
   const handleCloseModal = () => {
