@@ -108,7 +108,7 @@ export const fetchBusinessUsersByEmail = async (businessId: string, email: strin
   return documents;
 };
 
-export const fetchInvitationsByEmail = async (businessId: string, email: string) => {
+export const fetchInvitationsByBusinessAndEmail = async (businessId: string, email: string) => {
   const querySnapshot = await db
     .collection(Collections.invitations)
     .where('status', '==', 'ACTIVE')
@@ -123,8 +123,18 @@ export const fetchInvitationsByEmail = async (businessId: string, email: string)
   return documents;
 };
 
+export const fetchInvitationsByEmail = async (email: string) => {
+  const querySnapshot = await db.collection(Collections.invitations).where('status', '==', 'ACTIVE').where('email', '==', email).get();
+
+  const documents: any[] = [];
+  querySnapshot.forEach((doc) => {
+    documents.push({ ...doc.data(), documentId: doc.ref.id });
+  });
+  return documents;
+};
+
 export const deleteInvitations = async (businessId: string, email: string) => {
-  const invitations: any[] = await fetchInvitationsByEmail(businessId, email);
+  const invitations: any[] = await fetchInvitationsByBusinessAndEmail(businessId, email);
   invitations.forEach(async (element) => {
     await deleteDocument(Collections.invitations, element.documentId);
   });
@@ -137,7 +147,14 @@ export const addInvitation = async (
   businessId: string,
   businessName: string
 ): Promise<IResult> => {
-  const result: IResult = { status: true, message: 'Invitation generated', show: true, variant: 'Primary', title: 'Invitacion', subtitle: '' };
+  const result: IResult = {
+    status: true,
+    message: 'Invitation generated',
+    show: true,
+    variant: 'Primary',
+    title: 'Invitacion',
+    subtitle: '',
+  };
 
   const businessUsers: any[] = await fetchBusinessUsersByEmail(businessId, email);
   if (businessUsers.length > 0) {
@@ -156,6 +173,7 @@ export const addInvitation = async (
     rolId,
     status: 'ACTIVE',
     createdAt: new Date(),
+    createdAtNumber: new Date().getTime(),
     createdBy: currentUser.uid,
     createdByEmail: currentUser.email,
   };

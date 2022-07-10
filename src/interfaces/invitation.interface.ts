@@ -13,6 +13,7 @@ export interface IInvitation {
 
   status?: StatusInvitation;
   createdAt?: Date;
+  createdAtNumber?: number;
   createdBy?: string;
   createdByEmail?: string;
   updatedAt?: Date;
