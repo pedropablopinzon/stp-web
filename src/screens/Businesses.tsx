@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 
 import {
-  addDocument,
   updateDocument,
   deleteDocument,
   getDocumentReference,
@@ -21,6 +20,7 @@ import { IBusinessUser } from '../interfaces/businessUser.interface';
 import { AddInvitation } from '../components/AddInvitation';
 import { Notification } from '../components/Notification';
 import { IResult } from '../interfaces/result.interface';
+import { useHistory } from 'react-router-dom';
 
 export const Businesses = () => {
   const collectionName = Collections.businesses;
@@ -28,6 +28,8 @@ export const Businesses = () => {
   const titleSingular = 'Empresa';
 
   const { currentUser } = useAuth();
+  const history = useHistory();
+
   const defaultDocument: IBusiness = {
     documentId: null,
     name: '',
@@ -43,6 +45,7 @@ export const Businesses = () => {
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
   const [selectedDocument, setSelectedDocument] = useState<IBusiness>(defaultDocument);
   const [deletedDocument, setDeletedDocument] = useState<IBusiness>(defaultDocument);
+  const [usersDocument, setUsersDocument] = useState<IBusiness>(defaultDocument);
   const [businessesByUser, setBusinessesByUser] = useState<IBusinessUser[]>([]);
   const [showAddInvitation, setShowAddInvitation] = useState<boolean>(false);
   const [selectedDocumentAddInvitation, setSelectedDocumentAddInvitation] = useState<IBusiness>(defaultDocument);
@@ -171,6 +174,12 @@ export const Businesses = () => {
     }
   }, [deletedDocument]);
 
+  useEffect(() => {
+    if (usersDocument.documentId) {
+      history.push(`/businessUsers/${usersDocument.documentId}`);
+    }
+  }, [usersDocument]);
+
   return (
     <>
       <h1>
@@ -252,6 +261,7 @@ export const Businesses = () => {
 
       <BusinessTable
         items={items}
+        onUsersDocument={setUsersDocument}
         onEditDocument={setSelectedDocument}
         onDeleteDocument={setDeletedDocument}
         onAddInvitation={setSelectedDocumentAddInvitation}

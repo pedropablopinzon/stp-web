@@ -8,6 +8,7 @@ export interface IBusinessUser {
   userId: string;
   rolId: Rol;
   email: string;
+  userName: string;
 
   status?: Status;
   createdAt?: Date;

@@ -223,6 +223,7 @@ export const addBusinessUser = async (currentUser: any, businessId: string, rolI
   const newBusinessUserData: IBusinessUser = {
     businessId: businessId,
     userId: currentUser.uid,
+    userName: currentUser.displayName,
     email: currentUser.email,
     rolId,
     status: 'ACTIVE',

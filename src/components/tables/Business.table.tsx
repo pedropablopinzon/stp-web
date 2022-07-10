@@ -9,6 +9,7 @@ export const BusinessTable = (props: {
   onEditDocument: Function;
   onDeleteDocument: Function;
   onAddInvitation: Function;
+  onUsersDocument: Function;
 }) => {
   return (
     <>
@@ -37,6 +38,11 @@ export const BusinessTable = (props: {
                 <td>{item.taxId}</td>
                 <td>{item.address}</td>
                 <td>{item.status}</td>
+                <td>
+                  <Button variant="primary" onClick={() => props.onUsersDocument(item)}>
+                    Usuarios
+                  </Button>
+                </td>
                 <td>
                   <Button variant="primary" onClick={() => props.onEditDocument(item)}>
                     Editar
