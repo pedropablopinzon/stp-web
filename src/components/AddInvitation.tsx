@@ -3,14 +3,17 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { IBusiness } from '../interfaces/business.interface';
 
 export const AddInvitation = (props: { show: boolean; onHide: Function; business?: IBusiness }) => {
-  const sendInvitation = () => {};
-
   const [email, setEmail] = useState<string>('');
 
   const onInputChange = (event: any) => {
     const { name, value } = event.target;
 
     setEmail(value);
+  };
+
+  const sendInvitation = () => {
+    setEmail('');
+    props.onHide();
   };
 
   return (

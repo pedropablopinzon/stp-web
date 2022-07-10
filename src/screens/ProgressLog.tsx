@@ -39,8 +39,15 @@ export const ProgressLog = () => {
   const [selectedDocument, setSelectedDocument] = useState<IProgressLog>(defaultDocument);
   const [deletedDocument, setDeletedDocument] = useState<IProgressLog>(defaultDocument);
 
-  const handleCloseModal = () => setShowModal(false);
-  const handleCloseConfirm = () => setShowConfirm(false);
+  const handleCloseModal = () => {
+    setSelectedDocument(defaultDocument);
+    setShowModal(false);
+  };
+
+  const handleCloseConfirm = () => {
+    setDeletedDocument(defaultDocument);
+    setShowConfirm(false);
+  };
 
   const handleShowModal = () => {
     setSelectedDocument(defaultDocument);

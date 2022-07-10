@@ -48,10 +48,12 @@ export const Businesses = () => {
     setSelectedDocument(defaultDocument);
     setShowModal(false);
   };
+
   const handleCloseAddInvitation = () => {
     setSelectedDocumentAddInvitation(defaultDocument);
     setShowAddInvitation(false);
   };
+
   const handleCloseConfirm = () => {
     setDeletedDocument(defaultDocument);
     setShowConfirm(false);
