@@ -6,4 +6,5 @@ export enum Collections {
   expenseRecord = 'expenseRecord',
   logCheckInOut = 'logCheckInOut',
   businessUsers = 'businessUsers',
+  invitations = 'invitations',
 }

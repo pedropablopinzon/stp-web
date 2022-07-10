@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
-import { IBusiness } from '../interfaces/business.interface';
 
-export const AddInvitation = (props: { show: boolean; onHide: Function; business?: IBusiness }) => {
+import { useAuth } from '../contexts/AuthContext';
+import { IBusiness } from '../interfaces/business.interface';
+import { IResult } from '../interfaces/result.interface';
+import { addInvitation } from '../modules/db';
+
+export const AddInvitation = (props: { show: boolean; onHide: Function; business?: IBusiness; onSendInvitation: Function }) => {
+  const { currentUser } = useAuth();
+
   const [email, setEmail] = useState<string>('');
 
   const onInputChange = (event: any) => {
@@ -11,14 +17,15 @@ export const AddInvitation = (props: { show: boolean; onHide: Function; business
     setEmail(value);
   };
 
-  const sendInvitation = () => {
+  const sendInvitation = async () => {
+    // @ts-ignore
+    const result: IResult = await addInvitation(currentUser, email, 'OWNER', props.business.documentId, props.business.name);
     setEmail('');
-    props.onHide();
+    props.onSendInvitation(result);
   };
 
   return (
     <>
-      <h1>Add Invitation</h1>
       <Modal
         show={props.show}
         // @ts-ignore

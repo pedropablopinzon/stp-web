@@ -7,7 +7,6 @@ import {
   deleteDocument,
   getDocumentReference,
   setDocument,
-  getBusinessesByUser,
   fetchBusinesses,
   getBusinessesByUserAndRol,
 } from '../modules/db';
@@ -19,6 +18,8 @@ import { IBusiness } from '../interfaces/business.interface';
 import { Collections } from '../enums/collections';
 import { IBusinessUser } from '../interfaces/businessUser.interface';
 import { AddInvitation } from '../components/AddInvitation';
+import { Notification } from '../components/Notification';
+import { IResult } from '../interfaces/result.interface';
 
 export const Businesses = () => {
   const collectionName = Collections.businesses;
@@ -34,6 +35,7 @@ export const Businesses = () => {
     businessId: '',
     status: 'ACTIVE',
   };
+  const defaultResult: IResult = { status: false, message: '', show: false, variant: 'Primary', title: '', subtitle: '' };
 
   const [items, setItems] = useState<IBusiness[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -44,14 +46,26 @@ export const Businesses = () => {
   const [showAddInvitation, setShowAddInvitation] = useState<boolean>(false);
   const [selectedDocumentAddInvitation, setSelectedDocumentAddInvitation] = useState<IBusiness>(defaultDocument);
 
+  const [showNotification, setShowNotification] = useState<IResult>(defaultResult);
+
   const handleCloseModal = () => {
     setSelectedDocument(defaultDocument);
     setShowModal(false);
   };
 
-  const handleCloseAddInvitation = () => {
+  const handleCloseAddInvitation = (result: any) => {
     setSelectedDocumentAddInvitation(defaultDocument);
     setShowAddInvitation(false);
+  };
+
+  const handleOnSendInvitation = (result: IResult) => {
+    setSelectedDocumentAddInvitation(defaultDocument);
+    setShowAddInvitation(false);
+    setShowNotification(result);
+
+    const timeout = setTimeout(() => {
+      setShowNotification(defaultResult);
+    }, 5000);
   };
 
   const handleCloseConfirm = () => {
@@ -98,6 +112,7 @@ export const Businesses = () => {
       const newBusinessUserData: IBusinessUser = {
         businessId: newBusinessData.businessId,
         userId: currentUser.uid,
+        email: currentUser.email,
         rolId: 'OWNER',
         status: 'ACTIVE',
         createdAt: new Date(),
@@ -225,7 +240,20 @@ export const Businesses = () => {
         </Modal.Footer>
       </Modal>
 
-      <AddInvitation show={showAddInvitation} onHide={handleCloseAddInvitation} business={selectedDocumentAddInvitation} />
+      <AddInvitation
+        show={showAddInvitation}
+        onHide={handleCloseAddInvitation}
+        business={selectedDocumentAddInvitation}
+        onSendInvitation={handleOnSendInvitation}
+      />
+
+      <Notification
+        show={showNotification.show}
+        message={showNotification.message}
+        variant={showNotification.variant}
+        title={showNotification.title}
+        subtitle={showNotification.subtitle}
+      />
 
       <ConfirmDelete
         show={showConfirm}
