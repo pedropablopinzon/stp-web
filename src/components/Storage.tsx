@@ -37,7 +37,7 @@ export const Storage = (props: { onFileUploaded: Function }) => {
         // update progress
         setPercent(percent);
       },
-      (err: any) => console.log(err),
+      (err: any) => console.error(err),
       () => {
         // download url
         getDownloadURL(uploadTask.snapshot.ref).then((url: any) => {

@@ -1,17 +1,17 @@
 import { Rol } from '../types/rol.types';
-import { Status } from '../types/status.types';
+import { StatusInvitation } from '../types/status.types';
 
-export interface IBusinessUser {
+export interface IInvitation {
   documentId?: string | null;
 
   businessId?: string;
-  userId?: string;
-  rolId?: Rol;
+  businessName?: string;
   email?: string;
-  userName?: string;
+  rolId?: Rol;
 
-  status?: Status;
+  status?: StatusInvitation;
   createdAt?: Date;
+  createdAtNumber?: number;
   createdBy?: string;
   createdByEmail?: string;
   updatedAt?: Date;

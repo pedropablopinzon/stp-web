@@ -40,8 +40,15 @@ export const ExpenseRecord = () => {
   const [selectedDocument, setSelectedDocument] = useState<IExpenseRecord>(defaultDocument);
   const [deletedDocument, setDeletedDocument] = useState<IExpenseRecord>(defaultDocument);
 
-  const handleCloseModal = () => setShowModal(false);
-  const handleCloseConfirm = () => setShowConfirm(false);
+  const handleCloseModal = () => {
+    setSelectedDocument(defaultDocument);
+    setShowModal(false);
+  };
+
+  const handleCloseConfirm = () => {
+    setDeletedDocument(defaultDocument);
+    setShowConfirm(false);
+  };
 
   const handleShowModal = () => {
     setSelectedDocument(defaultDocument);
@@ -163,7 +170,7 @@ export const ExpenseRecord = () => {
           <Modal.Title>{titleSingular}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Form.Group className="mb-3">
+          <Form.Group className="mb-3">
             <Form.Label>Monto</Form.Label>
             <Form.Control type="number" name="amount" value={selectedDocument.amount} onChange={onInputChange} />
           </Form.Group>

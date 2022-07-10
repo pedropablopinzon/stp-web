@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { Card, Button } from 'react-bootstrap';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
 import { WorkingBusiness } from './WorkingBusiness';
+import { Invitations } from './Invitations';
 
 export const Home = () => {
   const [error, setError] = useState('');
@@ -17,7 +18,7 @@ export const Home = () => {
       await logout();
       history.push('/login');
     } catch {
-      console.log(error);
+      console.error(error);
       setError('Failed to log out');
     }
   }
@@ -35,6 +36,7 @@ export const Home = () => {
         </Card.Body>
       </Card>
       <WorkingBusiness />
+      <Invitations />
       <div className="w-100 text-center mt-2">
         <Button variant="link" onClick={handleLogout}>
           Log Out

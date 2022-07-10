@@ -1,7 +1,16 @@
 import React from 'react';
 import { Button, Modal } from 'react-bootstrap';
 
-export const ConfirmDelete = (props: { show: boolean; onHide: any; title: string; subtitle: string; handleAcceptConfirm: Function }) => {
+export const ConfirmDelete = (props: {
+  show: boolean;
+  onHide: any;
+  title: string;
+  subtitle: string;
+  handleAcceptConfirm: Function;
+  acceptButtonText?: string;
+}) => {
+  const acceptButtonText: string = props.acceptButtonText || 'Eliminar';
+
   return (
     <>
       <Modal show={props.show} onHide={props.onHide}>
@@ -14,7 +23,7 @@ export const ConfirmDelete = (props: { show: boolean; onHide: any; title: string
             Cerrar
           </Button>
           <Button variant="danger" onClick={() => props.handleAcceptConfirm()}>
-            Eliminar
+            {acceptButtonText}
           </Button>
         </Modal.Footer>
       </Modal>
