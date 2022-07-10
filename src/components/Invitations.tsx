@@ -3,7 +3,7 @@ import { Card } from 'react-bootstrap';
 
 import { useAuth } from '../contexts/AuthContext';
 import { IInvitation } from '../interfaces/invitation.interface';
-import { fetchInvitationsByEmail, rejectInvitation } from '../modules/db';
+import { acceptInvitation, fetchInvitationsByEmail, rejectInvitation } from '../modules/db';
 import { deleteItem, sortItems } from '../modules/utils';
 import { ConfirmDelete } from './ConfirmDelete';
 import { InvitationsTable } from './tables/Invitations.table';
@@ -34,17 +34,18 @@ export const Invitations = () => {
 
   useEffect(() => {
     if (acceptedDocument.documentId) {
-      console.log(acceptedDocument);
+      // @ts-ignore
+      acceptInvitation(currentUser, acceptedDocument.documentId, acceptedDocument.businessId, acceptedDocument.rolId).then((data) => {
+        // @ts-ignore
+        const newItems = deleteItem(items, acceptedDocument.documentId);
 
-      const newItems = deleteItem(items, acceptedDocument.documentId);
-
-      setItems(newItems);
+        setItems(newItems);
+      });
     }
   }, [acceptedDocument]);
 
   useEffect(() => {
     if (rejectedDocument.documentId) {
-      console.log(rejectedDocument);
       setShowConfirm(true);
     }
   }, [rejectedDocument]);
@@ -79,7 +80,7 @@ export const Invitations = () => {
         handleAcceptConfirm={removeDocument}
         title={`Rechazar Invitacion`}
         subtitle={`Empresa: ${rejectedDocument.businessName}`}
-        acceptButtonText='Rechazar'
+        acceptButtonText="Rechazar"
       />
 
       <InvitationsTable items={items} onAcceptInvitation={setAcceptedDocument} onRejectInvitation={setRejectedDocument} />

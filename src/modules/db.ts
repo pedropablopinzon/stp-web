@@ -203,3 +203,36 @@ export const rejectInvitation = async (currentUser: any, documentId: string) => 
 
   return await updateDocument(Collections.invitations, documentId, updateData);
 };
+
+export const acceptInvitation = async (currentUser: any, documentId: string, businessId: string, rolId: Rol) => {
+  const resultBusinessUser = await addBusinessUser(currentUser, businessId, rolId);
+
+  const updateData: IInvitation = {
+    status: 'ACCEPTED',
+    updatedAt: new Date(),
+    updatedBy: currentUser.uid,
+    updatedByEmail: currentUser.email,
+  };
+
+  await updateDocument(Collections.invitations, documentId, updateData);
+
+  return resultBusinessUser;
+};
+
+export const addBusinessUser = async (currentUser: any, businessId: string, rolId: Rol) => {
+  const newBusinessUserData: IBusinessUser = {
+    businessId: businessId,
+    userId: currentUser.uid,
+    email: currentUser.email,
+    rolId,
+    status: 'ACTIVE',
+    createdAt: new Date(),
+    createdBy: currentUser.uid,
+    createdByEmail: currentUser.email,
+  };
+
+  const resultBusinessUser = await addDocument(Collections.businessUsers, newBusinessUserData);
+  newBusinessUserData.documentId = resultBusinessUser.id;
+
+  return newBusinessUserData;
+};

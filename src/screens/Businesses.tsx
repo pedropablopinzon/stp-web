@@ -9,6 +9,7 @@ import {
   setDocument,
   fetchBusinesses,
   getBusinessesByUserAndRol,
+  addBusinessUser,
 } from '../modules/db';
 import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
 import { useAuth } from '../contexts/AuthContext';
@@ -109,22 +110,8 @@ export const Businesses = () => {
 
       const resultBusiness = await setDocument(docRef, newBusinessData);
 
-      const newBusinessUserData: IBusinessUser = {
-        businessId: newBusinessData.businessId,
-        userId: currentUser.uid,
-        email: currentUser.email,
-        rolId: 'OWNER',
-        status: 'ACTIVE',
-        createdAt: new Date(),
-        createdBy: currentUser.uid,
-        createdByEmail: currentUser.email,
-      };
+      const resultBusinessUser = await addBusinessUser(currentUser, newBusinessData.businessId, 'OWNER');
 
-      const resultBusinessUser = await addDocument(Collections.businessUsers, newBusinessUserData);
-      newBusinessUserData.documentId = resultBusinessUser.id;
-
-      // const result = await addDocument(collectionName, newData);
-      // newData.documentId = result.id;
       newBusinessData.documentId = docRef.id;
 
       addItem(items, newBusinessData);
