@@ -77,3 +77,18 @@ export const fixDate = (value: any): string => {
   }
   return '';
 };
+
+export const showDetailedData = (): boolean => {
+  const value: string | null = localStorage.getItem('showDetailedData');
+  let result: boolean = false;
+
+  if (!value) {
+    localStorage.setItem('showDetailedData', '0');
+  } else {
+    if (parseInt(value) !== 0) {
+      result = true;
+    }
+  }
+
+  return result;
+};

@@ -53,7 +53,7 @@ export const Storage = (props: { onFileUploaded: Function }) => {
       <div>
         <input type="file" onChange={handleChange} accept="/image/*" />
         <button onClick={handleUpload} disabled={file.length === 0}>
-          Upload to Firebase
+          Upload File
         </button>
         <p>{percent} "% done"</p>
       </div>
