@@ -13,7 +13,7 @@ export const ProgressLogTable = (props: { items: IProgressLog[]; onEditDocument:
             <th></th>
             {showDetailedData() && <th>#</th>}
             {showDetailedData() && <th>Creado</th>}
-            <th>Proyecto</th>
+            {showDetailedData() && <th>Proyecto</th>}
             <th>Comentario</th>
             <th>Imagenes</th>
             {showDetailedData() && <th>Status</th>}
@@ -28,7 +28,7 @@ export const ProgressLogTable = (props: { items: IProgressLog[]; onEditDocument:
                 <td>{index + 1}</td>
                 {showDetailedData() && <td>{item.documentId}</td>}
                 {showDetailedData() && <td>{createdAt!.toString()}</td>}
-                <td>{item.projectName}</td>
+                {showDetailedData() && <td>{item.projectName}</td>}
                 <td>{item.comment}</td>
                 <td>{item.imagesUrl!.length!}</td>
                 {showDetailedData() && <td>{item.status}</td>}
