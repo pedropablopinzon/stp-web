@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
 import { IBusiness } from '../../interfaces/business.interface';
-import { fixDate } from '../../modules/utils';
+import { fixDate, showDetailedData } from '../../modules/utils';
 
 export const BusinessTable = (props: {
   items: IBusiness[];
@@ -17,12 +17,12 @@ export const BusinessTable = (props: {
         <thead>
           <tr>
             <th></th>
-            <th>#</th>
-            <th>Creado</th>
+            {showDetailedData() && <th>#</th>}
+            {showDetailedData() && <th>Creado</th>}
             <th>Nombre</th>
             <th>NIT</th>
             <th>Direccion</th>
-            <th>Status</th>
+            {showDetailedData() && <th>Status</th>}
           </tr>
         </thead>
         <tbody>
@@ -32,12 +32,12 @@ export const BusinessTable = (props: {
             return (
               <tr key={item.documentId}>
                 <td>{index + 1}</td>
-                <td>{item.documentId}</td>
-                <td>{createdAt!.toString()}</td>
+                {showDetailedData() && <td>{item.documentId}</td>}
+                {showDetailedData() && <td>{createdAt!.toString()}</td>}
                 <td>{item.name}</td>
                 <td>{item.taxId}</td>
                 <td>{item.address}</td>
-                <td>{item.status}</td>
+                {showDetailedData() && <td>{item.status}</td>}
                 <td>
                   <Button variant="primary" onClick={() => props.onUsersDocument(item)}>
                     Usuarios

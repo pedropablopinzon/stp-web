@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
 import { IProgressLog } from '../../interfaces/progressLog.interface';
-import { fixDate } from '../../modules/utils';
+import { fixDate, showDetailedData } from '../../modules/utils';
 
 export const ProgressLogTable = (props: { items: IProgressLog[]; onEditDocument: Function; onDeleteDocument: Function }) => {
   return (
@@ -11,12 +11,12 @@ export const ProgressLogTable = (props: { items: IProgressLog[]; onEditDocument:
         <thead>
           <tr>
             <th></th>
-            <th>#</th>
-            <th>Creado</th>
+            {showDetailedData() && <th>#</th>}
+            {showDetailedData() && <th>Creado</th>}
             <th>Proyecto</th>
             <th>Comentario</th>
             <th>Imagenes</th>
-            <th>Status</th>
+            {showDetailedData() && <th>Status</th>}
           </tr>
         </thead>
         <tbody>
@@ -26,12 +26,12 @@ export const ProgressLogTable = (props: { items: IProgressLog[]; onEditDocument:
             return (
               <tr key={item.documentId}>
                 <td>{index + 1}</td>
-                <td>{item.documentId}</td>
-                <td>{createdAt!.toString()}</td>
+                {showDetailedData() && <td>{item.documentId}</td>}
+                {showDetailedData() && <td>{createdAt!.toString()}</td>}
                 <td>{item.projectName}</td>
                 <td>{item.comment}</td>
                 <td>{item.imagesUrl!.length!}</td>
-                <td>{item.status}</td>
+                {showDetailedData() && <td>{item.status}</td>}
                 <td>
                   <Button variant="primary" onClick={() => props.onEditDocument(item)}>
                     Editar

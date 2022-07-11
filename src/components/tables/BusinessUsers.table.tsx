@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
 import { IBusinessUser } from '../../interfaces/businessUser.interface';
-import { fixDate } from '../../modules/utils';
+import { fixDate, showDetailedData } from '../../modules/utils';
 
 export const BusinessUsersTable = (props: { items: IBusinessUser[]; onEditDocument: Function; onDeleteDocument: Function }) => {
   return (
@@ -11,11 +11,12 @@ export const BusinessUsersTable = (props: { items: IBusinessUser[]; onEditDocume
         <thead>
           <tr>
             <th></th>
-            <th>#</th>
-            <th>Creado</th>
+            {showDetailedData() && <th>#</th>}
+            {showDetailedData() && <th>Creado</th>}
+            <th>EMail</th>
             <th>Nombre</th>
             <th>Rol</th>
-            <th>Status</th>
+            {showDetailedData() && <th>Status</th>}
           </tr>
         </thead>
         <tbody>
@@ -25,11 +26,12 @@ export const BusinessUsersTable = (props: { items: IBusinessUser[]; onEditDocume
             return (
               <tr key={item.documentId}>
                 <td>{index + 1}</td>
-                <td>{item.documentId}</td>
-                <td>{createdAt!.toString()}</td>
+                {showDetailedData() && <td>{item.documentId}</td>}
+                {showDetailedData() && <td>{createdAt!.toString()}</td>}
+                <td>{item.email}</td>
                 <td>{item.userName}</td>
                 <td>{item.rolId}</td>
-                <td>{item.status}</td>
+                {showDetailedData() && <td>{item.status}</td>}
                 <td>
                   <Button variant="primary" onClick={() => props.onEditDocument(item)}>
                     Editar
