@@ -3,9 +3,10 @@ import { Card, Button } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
-import Menu from './Menu';
+import { WorkingBusiness } from './WorkingBusiness';
+import { Invitations } from './Invitations';
 
-export default function Home() {
+export const Home = () => {
   const [error, setError] = useState('');
   const { currentUser, logout } = useAuth();
   const history = useHistory();
@@ -17,20 +18,25 @@ export default function Home() {
       await logout();
       history.push('/login');
     } catch {
-      console.log(error);
+      console.error(error);
       setError('Failed to log out');
     }
   }
 
   return (
     <>
-      <Menu />
       <Card>
         <Card.Body>
-          {/* <h2 className="text-center mb-4">Home</h2> */}
-          <strong>Email:</strong> {currentUser.email}
+          <Card.Subtitle>
+            <strong>Name:</strong> {currentUser.displayName}
+          </Card.Subtitle>
+          <Card.Footer>
+            <strong>Email:</strong> {currentUser.email}
+          </Card.Footer>
         </Card.Body>
       </Card>
+      <WorkingBusiness />
+      <Invitations />
       <div className="w-100 text-center mt-2">
         <Button variant="link" onClick={handleLogout}>
           Log Out
@@ -38,4 +44,4 @@ export default function Home() {
       </div>
     </>
   );
-}
+};

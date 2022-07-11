@@ -1,37 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { Card, Button, Table } from 'react-bootstrap';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 
 import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
+import { addDocument, fetchProjects, updateDocument } from '../modules/db';
+import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
+import { IProject } from '../interfaces/project.interface';
+import { fixDate, sortItemsString } from '../modules/utils';
+import { Collections } from '../enums/collections';
 
-export default function CheckInOut() {
+export const CheckInOut = () => {
+  const collectionName = Collections.logCheckInOut;
   const history = useHistory();
   const { currentUser } = useAuth();
+  const workingBusinessId: string = localStorage.getItem('workingBusinessId') || '';
+  const workingBusinessName: string = localStorage.getItem('workingBusinessName') || '';
+  const workingProjectId: string = localStorage.getItem('workingProjectId') || '';
 
-  const [items, setItems] = useState<any[]>([]);
-  const [logs, setLogs] = useState<any[]>([]);
-  const [selectedProject, setSelectedProject] = useState<any | null>(null);
-
-  const fetchProjects = async () => {
-    const querySnapshot = await db.collection('projects').where('status', '==', 'ACTIVE').get();
-
-    const projects: any[] = [];
-    querySnapshot.forEach((doc) => {
-      projects.push({ ...doc.data(), documentId: doc.ref.id });
-    });
-    return projects;
-  };
+  const [projects, setProjects] = useState<IProject[]>([]);
+  const [logs, setLogs] = useState<ILogCheckInOut[]>([]);
+  const [selectedProject, setSelectedProject] = useState<IProject | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string>('selectProject');
 
   const fetchLogs = async (projectId: string, userId: string) => {
     const querySnapshot = await db
-      .collection('logCheckInOut')
+      .collection(collectionName)
       .where('projectId', '==', projectId)
       .where('userId', '==', userId)
       .where('checkOut', '==', false)
       .get();
 
-    const logs: any[] = [];
+    const logs: ILogCheckInOut[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
       data.checkInAt = fixDate(data.checkInAt);
@@ -41,84 +41,106 @@ export default function CheckInOut() {
     return logs;
   };
 
-  const fixDate = (value: any) => {
-    if (value) {
-      let time = value;
-      const fireBaseTime = new Date(time.seconds * 1000 + time.nanoseconds / 1000000);
-      // const date = fireBaseTime.toDateString();
-      // const atTime = fireBaseTime.toLocaleTimeString();
-
-      return fireBaseTime.toISOString();
-    }
-  };
-
   useEffect(() => {
-    fetchProjects().then((data) => setItems(data));
+    if (workingBusinessId.length > 0) {
+      fetchProjects(workingBusinessId).then((data) => {
+        sortItemsString(data, 'name');
+        setProjects(data);
+        if (workingProjectId.length > 0) {
+          setSelectedProjectId(workingProjectId);
+        }
+      });
+    }
   }, []);
 
   const checkIn = async () => {
-    db.collection('logCheckInOut')
-      .add({
-        projectId: selectedProject.documentId,
-        userId: currentUser.uid,
-        checkOut: false,
-        email: currentUser.email,
-        createdAt: new Date(),
-        createdBy: currentUser.uid,
-        checkInAt: new Date(),
-      })
-      .then((docRef) => {
-        console.log('Document written with ID: ', docRef.id);
-      })
-      .catch((error) => {
-        console.error('Error adding document: ', error);
-      });
+    const data: ILogCheckInOut = {
+      // @ts-ignore
+      projectId: selectedProject.documentId,
+      // @ts-ignore
+      projectName: selectedProject.name,
+      userId: currentUser.uid,
+      checkOut: false,
+      email: currentUser.email,
+      businessId: workingBusinessId,
+      businessName: workingBusinessName,
+      createdAt: new Date(),
+      createdBy: currentUser.uid,
+      createdByEmail: currentUser.email,
+      checkInAt: new Date(),
+    };
 
+    const result = await addDocument(collectionName, data);
+
+    localStorage.setItem('workingLogCheckInOutId', result.id);
+    // @ts-ignore
+    localStorage.setItem('workingProjectId', data.projectId);
+    // @ts-ignore
+    localStorage.setItem('workingProjectName', data.projectName);
+    // @ts-ignore
+    localStorage.setItem('workingProjectCheckInAt', data.checkInAt);
+
+    // @ts-ignore
     fetchLogs(selectedProject.documentId, currentUser.uid).then((data) => setLogs(data));
   };
 
-  const checkOut = () => {
-    db.collection('logCheckInOut')
-      .doc(logs[0].documentId)
-      .update({
-        checkOut: true,
-        updatedAt: new Date(),
-        updatedBy: currentUser.uid,
-        checkOutAt: new Date(),
-      })
-      .then((docRef: any) => {
-        if (docRef) {
-          console.log('Document written with ID: ', docRef.id);
-        }
-      })
-      .catch((error) => {
-        console.error('Error adding document: ', error);
-      });
+  const checkOut = async () => {
+    const data: ILogCheckInOut = {
+      checkOut: true,
+      updatedAt: new Date(),
+      updatedBy: currentUser.uid,
+      updatedByEmail: currentUser.email,
+      checkOutAt: new Date(),
+    };
+
+    // @ts-ignore
+    await updateDocument(collectionName, logs[0].documentId, data);
+
+    localStorage.setItem('workingProjectId', '');
+    localStorage.setItem('workingProjectName', '');
 
     history.push('/home');
   };
 
   const handleProjectChange = (e: any) => {
-    const project = items.filter((element) => element.documentId === e.target.value);
+    const project = projects.filter((element) => element.documentId === e.target.value);
     setSelectedProject(project[0]);
 
-    fetchLogs(project[0].documentId, currentUser.uid).then((data) => setLogs(data));
+    setSelectedProjectId(e.target.value);
   };
+
+  useEffect(() => {
+    if (selectedProjectId.length > 0) {
+      // @ts-ignore
+      fetchLogs(selectedProjectId, currentUser.uid).then((data) => {
+        setLogs(data);
+        if (data.length > 0) {
+          if (workingProjectId.length === 0) {
+            // @ts-ignore
+            localStorage.setItem('workingLogCheckInOutId', data[0].documentId);
+            // @ts-ignore
+            localStorage.setItem('workingProjectId', data[0].projectId);
+            // @ts-ignore
+            localStorage.setItem('workingProjectName', data[0].projectName);
+            // @ts-ignore
+            localStorage.setItem('workingProjectCheckInAt', data[0].checkInAt);
+          }
+        }
+      });
+    }
+  }, [selectedProjectId]);
 
   return (
     <>
-      <Link to="/home" className="btn btn-primary w-100 mt-3">
-        Home
-      </Link>
-
       <Card>
         <Card.Body>
           <strong>Email:</strong> {currentUser.email}
         </Card.Body>
       </Card>
-      <select className="dropdown-toggle btn btn-info" onChange={handleProjectChange}>
-        <option value="⬇️ Seleccione un Proyecto ⬇️"> -- Seleccione un Proyecto -- </option>
-        {items.map((project) => (
+      <select className="dropdown-toggle btn btn-info" onChange={handleProjectChange} value={selectedProjectId}>
+        <option value="selectProject"> -- Seleccione un Proyecto -- </option>
+        {projects.map((project: IProject) => (
+          // @ts-ignore
           <option value={project.documentId} key={project.documentId}>
             {project.name}
           </option>
@@ -131,22 +153,28 @@ export default function CheckInOut() {
             <th>#</th>
             <th>Email</th>
             <th>Check In</th>
-            <th>Check Out</th>
           </tr>
         </thead>
         <tbody>
-          {logs.map((log) => (
-            <tr key={log.documentId}>
-              <td>{log.documentId}</td>
-              <td>{log.email}</td>
-              <td>{log.checkInAt}</td>
-              <td>{log.checkOutAt}</td>
-            </tr>
-          ))}
+          {logs.map((log: ILogCheckInOut) => {
+            const checkInAt = log.checkInAt;
+            let checkOutAt: Date | string | undefined = log.checkOutAt;
+            if (!checkOutAt) {
+              checkOutAt = '';
+            }
+            return (
+              <tr key={log.documentId}>
+                <td>{log.documentId}</td>
+                <td>{log.email}</td>
+                <td>{checkInAt!.toString()}</td>
+                <td>{checkOutAt!.toString()}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </Table>
 
-      <Button variant="success" onClick={checkIn} disabled={logs.length !== 0 || !selectedProject}>
+      <Button variant="success" onClick={checkIn} disabled={logs.length !== 0 || !selectedProject || workingProjectId.length !== 0}>
         Check In
       </Button>
       <Button variant="danger" onClick={checkOut} disabled={logs.length === 0}>
@@ -154,4 +182,4 @@ export default function CheckInOut() {
       </Button>
     </>
   );
-}
+};

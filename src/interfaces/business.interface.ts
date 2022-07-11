@@ -6,10 +6,13 @@ export interface IBusiness {
   name: string;
   taxId: string;
   address: string;
+  businessId?: string;
 
   status?: Status;
   createdAt?: Date;
   createdBy?: string;
+  createdByEmail?: string;
   updatedAt?: Date;
   updatedBy?: string;
+  updatedByEmail?: string;
 }

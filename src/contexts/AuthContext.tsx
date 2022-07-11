@@ -21,6 +21,13 @@ export function AuthProvider({ children }) {
   }
 
   function logout() {
+    localStorage.setItem('workingBusinessId', '');
+    localStorage.setItem('workingBusinessName', '');
+    localStorage.setItem('workingLogCheckInOutId', '');
+    localStorage.setItem('workingProjectId', '');
+    localStorage.setItem('workingProjectName', '');
+    localStorage.setItem('workingProjectCheckInAt', '');
+
     return auth.signOut();
   }
 
@@ -36,6 +43,11 @@ export function AuthProvider({ children }) {
   function updatePassword(password: string) {
     // @ts-ignore
     return currentUser.updatePassword(password);
+  }
+
+  function updateProfile(data: any) {
+    // @ts-ignore
+    return currentUser.updateProfile(data);
   }
 
   useEffect(() => {
@@ -55,6 +67,7 @@ export function AuthProvider({ children }) {
     resetPassword,
     updateEmail,
     updatePassword,
+    updateProfile,
   };
 
   return (

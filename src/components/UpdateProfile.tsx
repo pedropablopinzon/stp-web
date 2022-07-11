@@ -1,23 +1,24 @@
 import React, { useRef, useState } from 'react';
 import { Form, Button, Card, Alert } from 'react-bootstrap';
-import { useAuth } from '../contexts/AuthContext';
 import { Link, useHistory } from 'react-router-dom';
 
-export default function UpdateProfile() {
+import { useAuth } from '../contexts/AuthContext';
+import { ProfileImage } from './ProfileImage';
+import { Storage } from '../components/Storage';
+
+export const UpdateProfile = () => {
+  const displayNameRef = useRef();
   const emailRef = useRef();
-  const passwordRef = useRef();
-  const passwordConfirmRef = useRef();
-  const { currentUser, updatePassword, updateEmail } = useAuth();
+  const { currentUser, updateEmail, updateProfile } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [photoURL, setPhotoURL] = useState('');
   const history = useHistory();
 
   function handleSubmit(e: any) {
     e.preventDefault();
-    // @ts-ignore
-    if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError('Passwords do not match');
-    }
+    let updateData: boolean = false;
+    let data: any = {};
 
     const promises = [];
     setLoading(true);
@@ -28,15 +29,28 @@ export default function UpdateProfile() {
       // @ts-ignore
       promises.push(updateEmail(emailRef.current.value));
     }
+
     // @ts-ignore
-    if (passwordRef.current.value) {
+    if (displayNameRef.current.value !== currentUser.displayName) {
+      updateData = true;
       // @ts-ignore
-      promises.push(updatePassword(passwordRef.current.value));
+      data.displayName = displayNameRef.current.value;
+      // promises.push(updateProfile(displayNameRef.current.value));
+    }
+
+    if (photoURL !== currentUser.photoURL) {
+      updateData = true;
+      data.photoURL = photoURL;
+    }
+
+    if (updateData) {
+      // @ts-ignore
+      promises.push(updateProfile(data));
     }
 
     Promise.all(promises)
       .then(() => {
-        history.push('/');
+        history.push('/profile');
       })
       .catch(() => {
         setError('Failed to update account');
@@ -46,6 +60,10 @@ export default function UpdateProfile() {
       });
   }
 
+  const fileUploaded = (url: string) => {
+    setPhotoURL(url);
+  };
+
   return (
     <>
       <Card>
@@ -53,6 +71,16 @@ export default function UpdateProfile() {
           <h2 className="text-center mb-4">Update Profile</h2>
           {error && <Alert variant="danger">{error}</Alert>}
           <Form onSubmit={handleSubmit}>
+            <Form.Group id="displayName">
+              <Form.Label>Name</Form.Label>
+              <Form.Control
+                type="text"
+                // @ts-ignore
+                ref={displayNameRef}
+                required
+                defaultValue={currentUser.displayName}
+              />
+            </Form.Group>
             <Form.Group id="email">
               <Form.Label>Email</Form.Label>
               <Form.Control
@@ -63,33 +91,22 @@ export default function UpdateProfile() {
                 defaultValue={currentUser.email}
               />
             </Form.Group>
-            <Form.Group id="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                // @ts-ignore
-                ref={passwordRef}
-                placeholder="Leave blank to keep the same"
-              />
-            </Form.Group>
-            <Form.Group id="password-confirm">
-              <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control
-                type="password"
-                // @ts-ignore
-                ref={passwordConfirmRef}
-                placeholder="Leave blank to keep the same"
-              />
+            <Form.Group id="photoURL">
+              <ProfileImage photoURL={photoURL} width="200px" height="200px" />
             </Form.Group>
             <Button disabled={loading} className="w-100" type="submit">
-              Update
+              Update Profile
             </Button>
           </Form>
+          <div className="mt-3">
+            <Storage onFileUploaded={fileUploaded} />
+          </div>
         </Card.Body>
       </Card>
+
       <div className="w-100 text-center mt-2">
         <Link to="/">Cancel</Link>
       </div>
     </>
   );
-}
+};
