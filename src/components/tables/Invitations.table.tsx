@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
 import { IInvitation } from '../../interfaces/invitation.interface';
-import { fixDate } from '../../modules/utils';
+import { fixDate, showDetailedData } from '../../modules/utils';
 
 export const InvitationsTable = (props: { items: IInvitation[]; onAcceptInvitation: Function; onRejectInvitation: Function }) => {
   return (
@@ -11,11 +11,11 @@ export const InvitationsTable = (props: { items: IInvitation[]; onAcceptInvitati
         <thead>
           <tr>
             <th></th>
-            <th>#</th>
-            <th>Creado</th>
+            {showDetailedData() && <th>#</th>}
+            {showDetailedData() && <th>Creado</th>}
             <th>Nombre</th>
             <th>Rol</th>
-            <th>Status</th>
+            {showDetailedData() && <th>Status</th>}
           </tr>
         </thead>
         <tbody>
@@ -25,11 +25,11 @@ export const InvitationsTable = (props: { items: IInvitation[]; onAcceptInvitati
             return (
               <tr key={item.documentId}>
                 <td>{index + 1}</td>
-                <td>{item.documentId}</td>
-                <td>{createdAt!.toString()}</td>
+                {showDetailedData() && <td>{item.documentId}</td>}
+                {showDetailedData() && <td>{createdAt!.toString()}</td>}
                 <td>{item.businessName}</td>
                 <td>{item.rolId}</td>
-                <td>{item.status}</td>
+                {showDetailedData() && <td>{item.status}</td>}
                 <td>
                   <Button variant="primary" onClick={() => props.onAcceptInvitation(item)}>
                     Aceptar

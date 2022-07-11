@@ -7,7 +7,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { addDocument, fetchProjects, updateDocument } from '../modules/db';
 import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
 import { IProject } from '../interfaces/project.interface';
-import { fixDate, sortItemsString } from '../modules/utils';
+import { fixDate, sortItemsString, showDetailedData } from '../modules/utils';
 import { Collections } from '../enums/collections';
 
 export const CheckInOut = () => {
@@ -150,13 +150,15 @@ export const CheckInOut = () => {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>#</th>
-            <th>Email</th>
+            <th></th>
+            {showDetailedData() && <th>#</th>}
+            {showDetailedData() && <th>Email</th>}
             <th>Check In</th>
+            {showDetailedData() && <th>Check Out</th>}
           </tr>
         </thead>
         <tbody>
-          {logs.map((log: ILogCheckInOut) => {
+          {logs.map((log: ILogCheckInOut, index) => {
             const checkInAt = log.checkInAt;
             let checkOutAt: Date | string | undefined = log.checkOutAt;
             if (!checkOutAt) {
@@ -164,10 +166,11 @@ export const CheckInOut = () => {
             }
             return (
               <tr key={log.documentId}>
-                <td>{log.documentId}</td>
-                <td>{log.email}</td>
+                <td>{index + 1}</td>
+                {showDetailedData() && <td>{log.documentId}</td>}
+                {showDetailedData() && <td>{log.email}</td>}
                 <td>{checkInAt!.toString()}</td>
-                <td>{checkOutAt!.toString()}</td>
+                {showDetailedData() && <td>{checkOutAt!.toString()}</td>}
               </tr>
             );
           })}
