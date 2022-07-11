@@ -1,35 +1,54 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Modal, Form } from 'react-bootstrap';
+import React, { useEffect, useState } from "react";
+import { Button, Modal, Form } from "react-bootstrap";
 
-import { addDocument, updateDocument, deleteDocument, fetchProjects } from '../modules/db';
-import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
-import { useAuth } from '../contexts/AuthContext';
-import { ConfirmDelete } from '../components/ConfirmDelete';
-import { ProjectsTable } from '../components/tables/Projects.table';
-import { IProject } from '../interfaces/project.interface';
-import { Collections } from '../enums/collections';
+import {
+  addDocument,
+  updateDocument,
+  deleteDocument,
+  fetchProjects,
+} from "../modules/db";
+import {
+  sortItemsString,
+  addItem,
+  updateItem,
+  deleteItem,
+} from "../modules/utils";
+import { useAuth } from "../contexts/AuthContext";
+import { ConfirmDelete } from "../components/ConfirmDelete";
+import { ProjectsTable } from "../components/tables/Projects.table";
+import { IProject } from "../interfaces/project.interface";
+import { Collections } from "../enums/collections";
+import { useHistory } from "react-router-dom";
 
 export const Projects = () => {
   const collectionName = Collections.projects;
-  const title = 'Proyectos';
-  const titleSingular = 'Proyecto';
+  const title = "Proyectos";
+  const titleSingular = "Proyecto";
 
   const { currentUser } = useAuth();
+  const history = useHistory();
+
   const defaultDocument: IProject = {
     documentId: null,
-    name: '',
-    businessId: '',
-    businessName: '',
-    status: 'ACTIVE',
+    name: "",
+    businessId: "",
+    businessName: "",
+    status: "ACTIVE",
   };
-  const workingBusinessId: string = localStorage.getItem('workingBusinessId') || '';
-  const workingBusinessName: string = localStorage.getItem('workingBusinessName') || '';
+  const workingBusinessId: string =
+    localStorage.getItem("workingBusinessId") || "";
+  const workingBusinessName: string =
+    localStorage.getItem("workingBusinessName") || "";
 
   const [items, setItems] = useState<IProject[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
-  const [selectedDocument, setSelectedDocument] = useState<IProject>(defaultDocument);
-  const [deletedDocument, setDeletedDocument] = useState<IProject>(defaultDocument);
+  const [selectedDocument, setSelectedDocument] =
+    useState<IProject>(defaultDocument);
+  const [deletedDocument, setDeletedDocument] =
+    useState<IProject>(defaultDocument);
+  const [projectReportDocument, setProjectReportDocument] =
+    useState<IProject>(defaultDocument);
 
   const handleCloseModal = () => {
     setSelectedDocument(defaultDocument);
@@ -56,7 +75,11 @@ export const Projects = () => {
       };
       updateDocument(collectionName, selectedDocument.documentId, updateData);
 
-      const updatedItems = updateItem(items, selectedDocument.documentId, updateData);
+      const updatedItems = updateItem(
+        items,
+        selectedDocument.documentId,
+        updateData
+      );
 
       setItems(updatedItems);
     } else {
@@ -64,7 +87,7 @@ export const Projects = () => {
         name: selectedDocument.name,
         businessId: workingBusinessId,
         businessName: workingBusinessName,
-        status: 'ACTIVE',
+        status: "ACTIVE",
         createdAt: new Date(),
         createdBy: currentUser.uid,
         createdByEmail: currentUser.email,
@@ -99,7 +122,7 @@ export const Projects = () => {
   useEffect(() => {
     if (workingBusinessId.length > 0) {
       fetchProjects(workingBusinessId).then((data) => {
-        sortItemsString(data, 'name');
+        sortItemsString(data, "name");
         setItems(data);
       });
     }
@@ -117,13 +140,23 @@ export const Projects = () => {
     }
   }, [deletedDocument]);
 
+  useEffect(() => {
+    if (projectReportDocument.documentId) {
+      history.push(`/projectReport/${projectReportDocument.documentId}`);
+    }
+  }, [projectReportDocument]);
+
   return (
     <>
       <h1>
         {title} ({items.length})
       </h1>
 
-      <Button variant="primary" onClick={handleShowModal} disabled={workingBusinessId.length === 0}>
+      <Button
+        variant="primary"
+        onClick={handleShowModal}
+        disabled={workingBusinessId.length === 0}
+      >
         Nuevo {titleSingular}
       </Button>
 
@@ -161,7 +194,12 @@ export const Projects = () => {
         subtitle={`Nombre: ${deletedDocument.name}`}
       />
 
-      <ProjectsTable items={items} onEditDocument={setSelectedDocument} onDeleteDocument={setDeletedDocument} />
+      <ProjectsTable
+        items={items}
+        onEditDocument={setSelectedDocument}
+        onDeleteDocument={setDeletedDocument}
+        onReportDocument={setProjectReportDocument}
+      />
     </>
   );
 };

@@ -1,43 +1,47 @@
-import React, { useEffect, useState } from 'react';
-import { Button, Modal, Form } from 'react-bootstrap';
+import React, { useEffect, useState } from "react";
+import { Button, Modal, Form } from "react-bootstrap";
 
-import { addDocument, updateDocument, deleteDocument } from '../modules/db';
-import { addItem, updateItem, deleteItem, sortItems } from '../modules/utils';
-import { useAuth } from '../contexts/AuthContext';
-import { ConfirmDelete } from '../components/ConfirmDelete';
-import { IProgressLog } from '../interfaces/progressLog.interface';
-import { ProgressLogTable } from '../components/tables/ProgressLog.table';
-import { db } from '../firebase';
-import { WorkingProject } from '../components/WorkingProject';
-import { Storage } from '../components/Storage';
-import { CarouselImages } from '../components/CarouselImages';
-import { Collections } from '../enums/collections';
+import { addDocument, updateDocument, deleteDocument } from "../modules/db";
+import { addItem, updateItem, deleteItem, sortItems } from "../modules/utils";
+import { useAuth } from "../contexts/AuthContext";
+import { ConfirmDelete } from "../components/ConfirmDelete";
+import { IProgressLog } from "../interfaces/progressLog.interface";
+import { ProgressLogTable } from "../components/tables/ProgressLog.table";
+import { db } from "../firebase";
+import { WorkingProject } from "../components/WorkingProject";
+import { Storage } from "../components/Storage";
+import { CarouselImages } from "../components/CarouselImages";
+import { Collections } from "../enums/collections";
 
 export const ProgressLog = () => {
   const collectionName = Collections.progressLog;
-  const title = 'Progreso';
-  const titleSingular = 'Progreso';
+  const title = "Progreso";
+  const titleSingular = "Progreso";
 
   const { currentUser } = useAuth();
   const defaultDocument: IProgressLog = {
     documentId: null,
-    comment: '',
+    comment: "",
     imagesUrl: [],
-    status: 'ACTIVE',
+    status: "ACTIVE",
   };
 
-  let workingProjectId = localStorage.getItem('workingProjectId');
-  const workingProjectName = localStorage.getItem('workingProjectName');
-  const workingProjectCheckInAt = localStorage.getItem('workingProjectCheckInAt');
+  let workingProjectId = localStorage.getItem("workingProjectId");
+  const workingProjectName = localStorage.getItem("workingProjectName");
+  const workingProjectCheckInAt = localStorage.getItem(
+    "workingProjectCheckInAt"
+  );
   if (!workingProjectId) {
-    workingProjectId = '';
+    workingProjectId = "";
   }
 
   const [items, setItems] = useState<IProgressLog[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
-  const [selectedDocument, setSelectedDocument] = useState<IProgressLog>(defaultDocument);
-  const [deletedDocument, setDeletedDocument] = useState<IProgressLog>(defaultDocument);
+  const [selectedDocument, setSelectedDocument] =
+    useState<IProgressLog>(defaultDocument);
+  const [deletedDocument, setDeletedDocument] =
+    useState<IProgressLog>(defaultDocument);
 
   const handleCloseModal = () => {
     setSelectedDocument(defaultDocument);
@@ -65,7 +69,14 @@ export const ProgressLog = () => {
       };
       updateDocument(collectionName, selectedDocument.documentId, updateData);
 
-      const updatedItems = updateItem(items, selectedDocument.documentId, updateData, 'createdAtNumber', 'number', 'desc');
+      const updatedItems = updateItem(
+        items,
+        selectedDocument.documentId,
+        updateData,
+        "createdAtNumber",
+        "number",
+        "desc"
+      );
 
       setItems(updatedItems);
     } else {
@@ -74,7 +85,7 @@ export const ProgressLog = () => {
         projectName: workingProjectName!,
         comment: selectedDocument.comment,
         imagesUrl: selectedDocument.imagesUrl,
-        status: 'ACTIVE',
+        status: "ACTIVE",
         createdAt: new Date(),
         createdAtNumber: new Date().getTime(),
         createdBy: currentUser.uid,
@@ -83,7 +94,7 @@ export const ProgressLog = () => {
       const result = await addDocument(collectionName, newData);
       newData.documentId = result.id;
 
-      addItem(items, newData, 'createdAtNumber', 'number', 'desc');
+      addItem(items, newData, "createdAtNumber", "number", "desc");
 
       setItems(items);
     }
@@ -110,8 +121,8 @@ export const ProgressLog = () => {
   const fetchDocuments = async (collectionName: string) => {
     const querySnapshot = await db
       .collection(collectionName)
-      .where('status', '==', 'ACTIVE')
-      .where('projectId', '==', workingProjectId)
+      .where("status", "==", "ACTIVE")
+      .where("projectId", "==", workingProjectId)
       .get();
 
     const documents: any[] = [];
@@ -129,7 +140,7 @@ export const ProgressLog = () => {
 
   useEffect(() => {
     fetchDocuments(collectionName).then((data) => {
-      sortItems(data, 'createdAtNumber', 'desc');
+      sortItems(data, "createdAtNumber", "desc");
       setItems(data);
     });
   }, []);
@@ -169,7 +180,13 @@ export const ProgressLog = () => {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label>Comentario</Form.Label>
-            <Form.Control as="textarea" rows={3} name="comment" value={selectedDocument.comment} onChange={onInputChange} />
+            <Form.Control
+              as="textarea"
+              rows={3}
+              name="comment"
+              value={selectedDocument.comment}
+              onChange={onInputChange}
+            />
           </Form.Group>
           <Storage onFileUploaded={fileUploaded} />
           <CarouselImages items={selectedDocument.imagesUrl} />
@@ -192,7 +209,12 @@ export const ProgressLog = () => {
         subtitle={`Comentario: ${deletedDocument.comment}`}
       />
 
-      <ProgressLogTable items={items} onEditDocument={setSelectedDocument} onDeleteDocument={setDeletedDocument} />
+      <ProgressLogTable
+        items={items}
+        onEditDocument={setSelectedDocument}
+        onDeleteDocument={setDeletedDocument}
+        editable={true}
+      />
     </>
   );
 };

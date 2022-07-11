@@ -1,10 +1,15 @@
-import React from 'react';
-import { Button, Table } from 'react-bootstrap';
+import React from "react";
+import { Button, Table } from "react-bootstrap";
 
-import { IProgressLog } from '../../interfaces/progressLog.interface';
-import { fixDate, showDetailedData } from '../../modules/utils';
+import { IProgressLog } from "../../interfaces/progressLog.interface";
+import { fixDate, showDetailedData } from "../../modules/utils";
 
-export const ProgressLogTable = (props: { items: IProgressLog[]; onEditDocument: Function; onDeleteDocument: Function }) => {
+export const ProgressLogTable = (props: {
+  items: IProgressLog[];
+  onEditDocument: Function;
+  onDeleteDocument: Function;
+  editable: boolean;
+}) => {
   return (
     <>
       <Table striped bordered hover>
@@ -32,16 +37,26 @@ export const ProgressLogTable = (props: { items: IProgressLog[]; onEditDocument:
                 <td>{item.comment}</td>
                 <td>{item.imagesUrl!.length!}</td>
                 {showDetailedData() && <td>{item.status}</td>}
-                <td>
-                  <Button variant="primary" onClick={() => props.onEditDocument(item)}>
-                    Editar
-                  </Button>
-                </td>
-                <td>
-                  <Button variant="danger" onClick={() => props.onDeleteDocument(item)}>
-                    Eliminar
-                  </Button>
-                </td>
+                {props.editable && (
+                  <td>
+                    <Button
+                      variant="primary"
+                      onClick={() => props.onEditDocument(item)}
+                    >
+                      Editar
+                    </Button>
+                  </td>
+                )}
+                {props.editable && (
+                  <td>
+                    <Button
+                      variant="danger"
+                      onClick={() => props.onDeleteDocument(item)}
+                    >
+                      Eliminar
+                    </Button>
+                  </td>
+                )}
               </tr>
             );
           })}

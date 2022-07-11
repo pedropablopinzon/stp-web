@@ -1,10 +1,15 @@
-import React from 'react';
-import { Button, Table } from 'react-bootstrap';
+import React from "react";
+import { Button, Table } from "react-bootstrap";
 
-import { IProject } from '../../interfaces/project.interface';
-import { fixDate, showDetailedData } from '../../modules/utils';
+import { IProject } from "../../interfaces/project.interface";
+import { fixDate, showDetailedData } from "../../modules/utils";
 
-export const ProjectsTable = (props: { items: IProject[]; onEditDocument: Function; onDeleteDocument: Function }) => {
+export const ProjectsTable = (props: {
+  items: IProject[];
+  onEditDocument: Function;
+  onDeleteDocument: Function;
+  onReportDocument: Function;
+}) => {
   return (
     <>
       <Table striped bordered hover>
@@ -29,13 +34,27 @@ export const ProjectsTable = (props: { items: IProject[]; onEditDocument: Functi
                 <td>{item.name}</td>
                 {showDetailedData() && <td>{item.status}</td>}
                 <td>
-                  <Button variant="primary" onClick={() => props.onEditDocument(item)}>
+                  <Button
+                    variant="primary"
+                    onClick={() => props.onEditDocument(item)}
+                  >
                     Editar
                   </Button>
                 </td>
                 <td>
-                  <Button variant="danger" onClick={() => props.onDeleteDocument(item)}>
+                  <Button
+                    variant="danger"
+                    onClick={() => props.onDeleteDocument(item)}
+                  >
                     Eliminar
+                  </Button>
+                </td>
+                <td>
+                  <Button
+                    variant="info"
+                    onClick={() => props.onReportDocument(item)}
+                  >
+                    Reporte
                   </Button>
                 </td>
               </tr>
