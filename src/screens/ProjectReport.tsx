@@ -8,13 +8,26 @@ import { ProgressLogTable } from "../components/tables/ProgressLog.table";
 import { IExpenseRecord } from "../interfaces/expenseRecord.interface";
 import { ILogCheckInOut } from "../interfaces/logCheckInOut.interface";
 import { IProgressLog } from "../interfaces/progressLog.interface";
-import { fetchExpenseRecord, fetchLogs, fetchProgressLog } from "../modules/db";
+import { IProject } from "../interfaces/project.interface";
+import {
+  fetchExpenseRecord,
+  fetchLogs,
+  fetchProgressLog,
+  getProject,
+} from "../modules/db";
 import { sortItems } from "../modules/utils";
 
 export const ProjectReport = () => {
   // @ts-ignore
   const { projectId } = useParams();
 
+  const defaultProjectDocument: IProject = {
+    documentId: null,
+    name: "",
+    businessId: "",
+    businessName: "",
+    status: "ACTIVE",
+  };
   const defaultProgressLogDocument: IProgressLog = {
     documentId: null,
     comment: "",
@@ -29,6 +42,9 @@ export const ProjectReport = () => {
     status: "ACTIVE",
   };
 
+  const [selectedProject, setSelectedProject] = useState<IProject>(
+    defaultProjectDocument
+  );
   const [progressLog, setProgressLog] = useState<IProgressLog[]>([]);
   const [expenseRecord, setExpenseRecord] = useState<IExpenseRecord[]>([]);
   const [logs, setLogs] = useState<ILogCheckInOut[]>([]);
@@ -39,6 +55,12 @@ export const ProjectReport = () => {
   const [imagesUrl, setImagesUrl] = useState<string[]>([]);
 
   useEffect(() => {
+    getProject(projectId).then((data: any) => {
+      if (data) {
+        setSelectedProject(data);
+      }
+    });
+
     fetchProgressLog(projectId).then((data) => {
       sortItems(data, "createdAtNumber", "desc");
       setProgressLog(data);
@@ -77,7 +99,7 @@ export const ProjectReport = () => {
 
   return (
     <>
-      <h1>Reporte - {projectId}</h1>
+      <h1>Reporte - {selectedProject.name}</h1>
       <ModalViewImages
         ref={childRefViewImages}
         title={"Imagenes"}
@@ -89,7 +111,7 @@ export const ProjectReport = () => {
         id="uncontrolled-tab-example"
         className="mb-3"
       >
-        <Tab eventKey="checkInOut" title="Marcado">
+        <Tab eventKey="checkInOut" title={`Marcado (${logs.length})`}>
           <Table striped bordered hover>
             <thead>
               <tr>
@@ -120,7 +142,7 @@ export const ProjectReport = () => {
             </tbody>
           </Table>
         </Tab>
-        <Tab eventKey="progressLog" title="Tareas">
+        <Tab eventKey="progressLog" title={`Tareas (${progressLog.length})`}>
           <ProgressLogTable
             items={progressLog}
             onEditDocument={() => {}}
@@ -129,7 +151,10 @@ export const ProjectReport = () => {
             editable={false}
           />
         </Tab>
-        <Tab eventKey="expenseRecord" title="Gastos">
+        <Tab
+          eventKey="expenseRecord"
+          title={`Gastos (${expenseRecord.length})`}
+        >
           <ExpenseRecordTable
             items={expenseRecord}
             onEditDocument={() => {}}
@@ -138,7 +163,6 @@ export const ProjectReport = () => {
             editable={false}
           />
         </Tab>
-        <Tab eventKey="contact" title="Info"></Tab>
       </Tabs>
     </>
   );
