@@ -10,17 +10,20 @@ export const UpdateProfile = () => {
   const displayNameRef = useRef();
   const emailRef = useRef();
   const { currentUser, updateEmail, updateProfile } = useAuth();
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [photoURL, setPhotoURL] = useState('');
+  const [photoURL, setPhotoURL] = useState(currentUser.photoURL || '');
   const history = useHistory();
 
   function handleSubmit(e: any) {
     e.preventDefault();
+
     let updateData: boolean = false;
     let data: any = {};
 
     const promises = [];
+
     setLoading(true);
     setError('');
 
