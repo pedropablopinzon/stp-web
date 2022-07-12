@@ -10,17 +10,20 @@ export const UpdateProfile = () => {
   const displayNameRef = useRef();
   const emailRef = useRef();
   const { currentUser, updateEmail, updateProfile } = useAuth();
+
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [photoURL, setPhotoURL] = useState('');
+  const [photoURL, setPhotoURL] = useState(currentUser.photoURL || '');
   const history = useHistory();
 
   function handleSubmit(e: any) {
     e.preventDefault();
+
     let updateData: boolean = false;
     let data: any = {};
 
     const promises = [];
+
     setLoading(true);
     setError('');
 
@@ -94,13 +97,11 @@ export const UpdateProfile = () => {
             <Form.Group id="photoURL">
               <ProfileImage photoURL={photoURL} width="200px" height="200px" />
             </Form.Group>
+            <Storage onFileUploaded={fileUploaded} />
             <Button disabled={loading} className="w-100" type="submit">
               Update Profile
             </Button>
           </Form>
-          <div className="mt-3">
-            <Storage onFileUploaded={fileUploaded} />
-          </div>
         </Card.Body>
       </Card>
 

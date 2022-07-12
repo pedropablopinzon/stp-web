@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 
@@ -50,7 +50,6 @@ export const BusinessUsers = () => {
   const [selectedDocument, setSelectedDocument] = useState<IBusinessUser>(defaultDocument);
   const [deletedDocument, setDeletedDocument] = useState<IBusinessUser>(defaultDocument);
   const [selectedRolId, setSelectedRolId] = useState<Rol>('OWNER');
-  const [showAddInvitation, setShowAddInvitation] = useState<boolean>(false);
   const [selectedDocumentAddInvitation, setSelectedDocumentAddInvitation] = useState<IBusiness>(defaultBusinessDocument);
   const [showNotification, setShowNotification] = useState<IResult>(defaultResult);
 
@@ -59,14 +58,7 @@ export const BusinessUsers = () => {
     setShowModal(false);
   };
 
-  const handleCloseAddInvitation = (result: any) => {
-    // setSelectedDocumentAddInvitation(defaultDocument);
-    setShowAddInvitation(false);
-  };
-
   const handleOnSendInvitation = (result: IResult) => {
-    // setSelectedDocumentAddInvitation(defaultDocument);
-    setShowAddInvitation(false);
     setShowNotification(result);
 
     const timeout = setTimeout(() => {
@@ -80,13 +72,13 @@ export const BusinessUsers = () => {
   };
 
   const handleShowModal = () => {
-    setShowAddInvitation(true);
+    // @ts-ignore
+    childRefAddInvitation.current.show();
   };
 
   const saveDocument = async () => {
     if (selectedDocument.documentId) {
       const updateData: IBusinessUser = {
-        // userName: selectedDocument.userName,
         rolId: selectedDocument.rolId,
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
@@ -171,6 +163,8 @@ export const BusinessUsers = () => {
     }
   }, [selectedRolId]);
 
+  const childRefAddInvitation = useRef();
+
   return (
     <>
       <h1>
@@ -223,10 +217,10 @@ export const BusinessUsers = () => {
       </Modal>
 
       <AddInvitation
-        show={showAddInvitation}
-        onHide={handleCloseAddInvitation}
+        ref={childRefAddInvitation}
         business={selectedDocumentAddInvitation}
         onSendInvitation={handleOnSendInvitation}
+        subtitle={selectedDocumentAddInvitation.name}
       />
 
       <Notification

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 
 import {
@@ -48,23 +48,17 @@ export const Businesses = () => {
   const [deletedDocument, setDeletedDocument] = useState<IBusiness>(defaultDocument);
   const [usersDocument, setUsersDocument] = useState<IBusiness>(defaultDocument);
   const [businessesByUser, setBusinessesByUser] = useState<IBusinessUser[]>([]);
-  const [showAddInvitation, setShowAddInvitation] = useState<boolean>(false);
   const [selectedDocumentAddInvitation, setSelectedDocumentAddInvitation] = useState<IBusiness>(defaultDocument);
   const [showNotification, setShowNotification] = useState<IResult>(defaultResult);
+  const [addInvitationSubtitle, setAddInvitationSubtitle] = useState<string>('');
 
   const handleCloseModal = () => {
     setSelectedDocument(defaultDocument);
     setShowModal(false);
   };
 
-  const handleCloseAddInvitation = (result: any) => {
-    setSelectedDocumentAddInvitation(defaultDocument);
-    setShowAddInvitation(false);
-  };
-
   const handleOnSendInvitation = (result: IResult) => {
     setSelectedDocumentAddInvitation(defaultDocument);
-    setShowAddInvitation(false);
     setShowNotification(result);
 
     const timeout = setTimeout(() => {
@@ -164,7 +158,10 @@ export const Businesses = () => {
 
   useEffect(() => {
     if (selectedDocumentAddInvitation.documentId) {
-      setShowAddInvitation(true);
+      // @ts-ignore
+      childRefAddInvitation.current.show();
+      setAddInvitationSubtitle(selectedDocumentAddInvitation.name);
+      setSelectedDocumentAddInvitation(defaultDocument);
     }
   }, [selectedDocumentAddInvitation]);
 
@@ -179,6 +176,8 @@ export const Businesses = () => {
       history.push(`/businessUsers/${usersDocument.documentId}`);
     }
   }, [usersDocument]);
+
+  const childRefAddInvitation = useRef();
 
   return (
     <>
@@ -237,10 +236,10 @@ export const Businesses = () => {
       </Modal>
 
       <AddInvitation
-        show={showAddInvitation}
-        onHide={handleCloseAddInvitation}
+        ref={childRefAddInvitation}
         business={selectedDocumentAddInvitation}
         onSendInvitation={handleOnSendInvitation}
+        subtitle={addInvitationSubtitle}
       />
 
       <Notification
