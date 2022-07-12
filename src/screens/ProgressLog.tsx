@@ -15,8 +15,8 @@ import { Collections } from "../enums/collections";
 
 export const ProgressLog = () => {
   const collectionName = Collections.progressLog;
-  const title = "Progreso";
-  const titleSingular = "Progreso";
+  const title = "Tareas";
+  const titleSingular = "Tarea";
 
   const { currentUser } = useAuth();
   const defaultDocument: IProgressLog = {
@@ -170,7 +170,7 @@ export const ProgressLog = () => {
         // @ts-ignore
         disabled={workingProjectId.length === 0}
       >
-        Nuevo {titleSingular}
+        Nueva {titleSingular}
       </Button>
 
       <Modal show={showModal} onHide={handleCloseModal}>

@@ -62,6 +62,7 @@ export const CheckInOut = () => {
       userId: currentUser.uid,
       checkOut: false,
       email: currentUser.email,
+      userName: currentUser.displayName,
       businessId: workingBusinessId,
       businessName: workingBusinessName,
       createdAt: new Date(),
