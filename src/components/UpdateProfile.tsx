@@ -94,13 +94,11 @@ export const UpdateProfile = () => {
             <Form.Group id="photoURL">
               <ProfileImage photoURL={photoURL} width="200px" height="200px" />
             </Form.Group>
+            <Storage onFileUploaded={fileUploaded} />
             <Button disabled={loading} className="w-100" type="submit">
               Update Profile
             </Button>
           </Form>
-          <div className="mt-3">
-            <Storage onFileUploaded={fileUploaded} />
-          </div>
         </Card.Body>
       </Card>
 

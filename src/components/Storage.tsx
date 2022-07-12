@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 import { storage } from '../firebase';
@@ -48,13 +48,19 @@ export const Storage = (props: { onFileUploaded: Function }) => {
     );
   };
 
+  useEffect(() => {
+    if (file) {
+      handleUpload();
+    }
+  }, [file]);
+
   return (
     <>
       <div>
         <input type="file" onChange={handleChange} accept="/image/*" />
-        <button onClick={handleUpload} disabled={file.length === 0}>
+        {/* <button onClick={handleUpload} disabled={file.length === 0}>
           Upload File
-        </button>
+        </button> */}
         <p>{percent} "% done"</p>
       </div>
     </>
