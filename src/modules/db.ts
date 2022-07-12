@@ -368,3 +368,16 @@ export const fetchLogs = async (projectId: string) => {
   });
   return logs;
 };
+
+export const getProject = async (projectId: string) => {
+  const docRef = doc(db, Collections.projects, projectId);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const document = { ...docSnap.data(), documentId: docSnap.ref.id };
+    return document;
+  } else {
+    console.error("No such document!");
+    return null;
+  }
+};
