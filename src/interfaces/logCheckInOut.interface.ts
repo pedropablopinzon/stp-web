@@ -5,6 +5,7 @@ export interface ILogCheckInOut {
   userId?: string;
   checkOut?: boolean;
   email?: string;
+  userName?: string;
   checkInAt?: Date;
   checkOutAt?: Date;
   businessId?: string;

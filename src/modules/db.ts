@@ -4,8 +4,10 @@ import { Collections } from "../enums/collections";
 import { db } from "../firebase";
 import { IBusinessUser } from "../interfaces/businessUser.interface";
 import { IInvitation } from "../interfaces/invitation.interface";
+import { ILogCheckInOut } from "../interfaces/logCheckInOut.interface";
 import { IResult } from "../interfaces/result.interface";
 import { Rol } from "../types/rol.types";
+import { fixDate } from "./utils";
 
 export const getDocumentReference = async (collectionName: string) => {
   return await db.collection(collectionName).doc();
@@ -342,7 +344,27 @@ export const fetchExpenseRecord = async (projectId: string) => {
 
   const documents: any[] = [];
   querySnapshot.forEach((doc) => {
-    documents.push({ ...doc.data(), documentId: doc.ref.id });
+    const data = doc.data()
+    if (!data.imagesUrl) {
+      data.imagesUrl = [];
+    }
+    documents.push({ ...data, documentId: doc.ref.id });
   });
   return documents;
+};
+
+export const fetchLogs = async (projectId: string) => {
+  const querySnapshot = await db
+    .collection(Collections.logCheckInOut)
+    .where("projectId", "==", projectId)
+    .get();
+
+  const logs: ILogCheckInOut[] = [];
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    data.checkInAt = fixDate(data.checkInAt);
+    data.checkOutAt = fixDate(data.checkOutAt);
+    logs.push({ ...data, documentId: doc.ref.id });
+  });
+  return logs;
 };

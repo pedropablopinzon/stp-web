@@ -8,6 +8,7 @@ export const ExpenseRecordTable = (props: {
   items: IExpenseRecord[];
   onEditDocument: Function;
   onDeleteDocument: Function;
+  onViewImagesDocument: Function;
   editable: boolean;
 }) => {
   return (
@@ -39,6 +40,16 @@ export const ExpenseRecordTable = (props: {
                 <td>{item.comment}</td>
                 <td>{item.imagesUrl!.length!}</td>
                 {showDetailedData() && <td>{item.status}</td>}
+                {!props.editable && (
+                  <td>
+                    <Button
+                      variant="primary"
+                      onClick={() => props.onViewImagesDocument(item)}
+                    >
+                      Imagenes
+                    </Button>
+                  </td>
+                )}
                 {props.editable && (
                   <td>
                     <Button
