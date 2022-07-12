@@ -225,6 +225,7 @@ export const ExpenseRecord = () => {
         items={items}
         onEditDocument={setSelectedDocument}
         onDeleteDocument={setDeletedDocument}
+        onViewImagesDocument={() => {}}
         editable={true}
       />
     </>

@@ -213,6 +213,7 @@ export const ProgressLog = () => {
         items={items}
         onEditDocument={setSelectedDocument}
         onDeleteDocument={setDeletedDocument}
+        onViewImagesDocument={() => {}}
         editable={true}
       />
     </>

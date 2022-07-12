@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Tab, Table, Tabs } from "react-bootstrap";
 import { useParams } from "react-router-dom";
+import { ModalViewImages } from "../components/ModalViewImages";
 import { ExpenseRecordTable } from "../components/tables/ExpenseRecord.table";
 
 import { ProgressLogTable } from "../components/tables/ProgressLog.table";
@@ -14,9 +15,28 @@ export const ProjectReport = () => {
   // @ts-ignore
   const { projectId } = useParams();
 
+  const defaultProgressLogDocument: IProgressLog = {
+    documentId: null,
+    comment: "",
+    imagesUrl: [],
+    status: "ACTIVE",
+  };
+  const defaultExpenseRecordDocument: IExpenseRecord = {
+    documentId: null,
+    amount: 0,
+    comment: "",
+    imagesUrl: [],
+    status: "ACTIVE",
+  };
+
   const [progressLog, setProgressLog] = useState<IProgressLog[]>([]);
   const [expenseRecord, setExpenseRecord] = useState<IExpenseRecord[]>([]);
   const [logs, setLogs] = useState<ILogCheckInOut[]>([]);
+  const [selectedProgressLogDocument, setSelectedProgressLogDocument] =
+    useState<IProgressLog>(defaultProgressLogDocument);
+  const [selectedExpenseRecordDocument, setSelectedExpenseRecordDocument] =
+    useState<IExpenseRecord>(defaultExpenseRecordDocument);
+  const [imagesUrl, setImagesUrl] = useState<string[]>([]);
 
   useEffect(() => {
     fetchProgressLog(projectId).then((data) => {
@@ -35,9 +55,35 @@ export const ProjectReport = () => {
     });
   }, []);
 
+  useEffect(() => {
+    if (selectedProgressLogDocument.documentId) {
+      setImagesUrl(selectedProgressLogDocument.imagesUrl!);
+      // @ts-ignore
+      childRefViewImages.current.show();
+      setSelectedProgressLogDocument(defaultProgressLogDocument);
+    }
+  }, [selectedProgressLogDocument]);
+
+  useEffect(() => {
+    if (selectedExpenseRecordDocument.documentId) {
+      setImagesUrl(selectedExpenseRecordDocument.imagesUrl!);
+      // @ts-ignore
+      childRefViewImages.current.show();
+      setSelectedExpenseRecordDocument(defaultExpenseRecordDocument);
+    }
+  }, [selectedExpenseRecordDocument]);
+
+  const childRefViewImages = useRef();
+
   return (
     <>
-      <h1>Project - Report {projectId}</h1>
+      <h1>Reporte - {projectId}</h1>
+      <ModalViewImages
+        ref={childRefViewImages}
+        title={"Imagenes"}
+        // @ts-ignore
+        imagesUrl={imagesUrl}
+      />
       <Tabs
         defaultActiveKey="checkInOut"
         id="uncontrolled-tab-example"
@@ -79,6 +125,7 @@ export const ProjectReport = () => {
             items={progressLog}
             onEditDocument={() => {}}
             onDeleteDocument={() => {}}
+            onViewImagesDocument={setSelectedProgressLogDocument}
             editable={false}
           />
         </Tab>
@@ -87,6 +134,7 @@ export const ProjectReport = () => {
             items={expenseRecord}
             onEditDocument={() => {}}
             onDeleteDocument={() => {}}
+            onViewImagesDocument={setSelectedExpenseRecordDocument}
             editable={false}
           />
         </Tab>
