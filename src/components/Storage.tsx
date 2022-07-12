@@ -56,12 +56,9 @@ export const Storage = (props: { onFileUploaded: Function }) => {
 
   return (
     <>
-      <div>
+      <div className="mb-2">
         <input type="file" onChange={handleChange} accept="/image/*" />
-        {/* <button onClick={handleUpload} disabled={file.length === 0}>
-          Upload File
-        </button> */}
-        <p>{percent} "% done"</p>
+        {file.length !== 0 ? <p>{percent} % done</p> : null}
       </div>
     </>
   );
