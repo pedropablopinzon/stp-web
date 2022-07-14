@@ -4,7 +4,7 @@ import { Button, Form, Modal } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 import { IBusiness } from '../interfaces/business.interface';
 import { IResult } from '../interfaces/result.interface';
-import { addInvitation } from '../modules/db';
+import { addInvitation } from '../api/stpAPI/db';
 import { Rol } from '../types/rol.types';
 import { SelectRol } from './SelectRol';
 

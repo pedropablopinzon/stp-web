@@ -1,13 +1,13 @@
 import { doc, getDoc } from 'firebase/firestore';
 
-import { Collections } from '../enums/collections';
-import { firestoreDb } from '../firebase';
-import { IBusinessUser } from '../interfaces/businessUser.interface';
-import { IInvitation } from '../interfaces/invitation.interface';
-import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
-import { IResult } from '../interfaces/result.interface';
-import { Rol } from '../types/rol.types';
-import { fixDate } from './utils';
+import { Collections } from '../../enums/collections';
+import { firestoreDb } from '../../firebase';
+import { IBusinessUser } from '../../interfaces/businessUser.interface';
+import { IInvitation } from '../../interfaces/invitation.interface';
+import { ILogCheckInOut } from '../../interfaces/logCheckInOut.interface';
+import { IResult } from '../../interfaces/result.interface';
+import { Rol } from '../../types/rol.types';
+import { fixDate } from '../../modules/utils';
 
 export const getDocumentReference = async (collectionName: string) => {
   return await firestoreDb.collection(collectionName).doc();
@@ -48,40 +48,6 @@ export const getBusinessesByUser = async (userId: string) => {
 
   const documents: any[] = [];
   querySnapshot.forEach((doc): any => {
-    documents.push({ ...doc.data(), documentId: doc.ref.id });
-  });
-  return documents;
-};
-
-export const getBusinessesByUserAndRol = async (userId: string) => {
-  const roles: Rol[] = ['OWNER', 'EDITOR'];
-  const querySnapshot = await firestoreDb
-    .collection(Collections.businessUsers)
-    .where('userId', '==', userId)
-    .where('status', '==', 'ACTIVE')
-    .where('rolId', 'in', roles)
-    .get();
-
-  const documents: any[] = [];
-  querySnapshot.forEach((doc): any => {
-    documents.push({ ...doc.data(), documentId: doc.ref.id });
-  });
-  return documents;
-};
-
-export const fetchBusinesses = async (businessesByUser: IBusinessUser[]) => {
-  const querySnapshot = await firestoreDb
-    .collection(Collections.businesses)
-    .where('status', '==', 'ACTIVE')
-    .where(
-      'businessId',
-      'in',
-      businessesByUser.map((element) => element.businessId)
-    )
-    .get();
-
-  const documents: any[] = [];
-  querySnapshot.forEach((doc) => {
     documents.push({ ...doc.data(), documentId: doc.ref.id });
   });
   return documents;

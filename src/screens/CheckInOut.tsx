@@ -3,7 +3,7 @@ import { Card, Button, Table } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
-import { addDocument, fetchProjects, updateDocument, fetchLogsByUser } from '../modules/db';
+import { addDocument, fetchProjects, updateDocument, fetchLogsByUser } from '../api/stpAPI/db';
 import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
 import { IProject } from '../interfaces/project.interface';
 import { sortItemsString, showDetailedData } from '../modules/utils';

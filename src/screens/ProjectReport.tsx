@@ -14,7 +14,7 @@ import {
   fetchLogs,
   fetchProgressLog,
   getProject,
-} from "../modules/db";
+} from "../api/stpAPI/db";
 import { sortItems } from "../modules/utils";
 
 export const ProjectReport = () => {

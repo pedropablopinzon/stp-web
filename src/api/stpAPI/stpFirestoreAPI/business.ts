@@ -1,0 +1,64 @@
+import { addDocument, deleteDocument, getDocumentReference, setDocument, updateDocument } from '../db';
+import { Collections } from '../../../enums/collections';
+import { IBusiness } from '../../../interfaces/business.interface';
+import { IBusinessUser } from '../../../interfaces/businessUser.interface';
+import { Rol } from '../../../types/rol.types';
+import { firestoreDb } from '../../../firebase';
+
+export const createBusiness = async (currentUser: any, newBusinessData: IBusiness) => {
+  const docRef = await getDocumentReference(Collections.businesses);
+  newBusinessData.businessId = docRef.id;
+
+  const resultBusiness = await setDocument(docRef, newBusinessData);
+
+  const resultBusinessUser = await addBusinessUser(currentUser, newBusinessData.businessId, 'OWNER');
+
+  newBusinessData.documentId = docRef.id;
+
+  return newBusinessData;
+};
+
+export const updateBusiness = async (currentUser: any, documentId: string, updateData: IBusiness) => {
+  return updateDocument(Collections.businesses, documentId, updateData);
+};
+
+export const deleteBusiness = async (currentUser: any, documentId: string) => {
+  return deleteDocument(Collections.businesses, documentId);
+};
+
+export const addBusinessUser = async (currentUser: any, businessId: string, rolId: Rol) => {
+  const newBusinessUserData: IBusinessUser = {
+    businessId: businessId,
+    userId: currentUser.uid,
+    userName: currentUser.displayName,
+    email: currentUser.email,
+    rolId,
+    status: 'ACTIVE',
+    createdAt: new Date(),
+    createdBy: currentUser.uid,
+    createdByEmail: currentUser.email,
+  };
+
+  const resultBusinessUser = await addDocument(Collections.businessUsers, newBusinessUserData);
+  newBusinessUserData.documentId = resultBusinessUser.id;
+
+  return newBusinessUserData;
+};
+
+export const getBusinesses = async (businessesByUser: IBusinessUser[]) => {
+  const querySnapshot = await firestoreDb
+    .collection(Collections.businesses)
+    .where('status', '==', 'ACTIVE')
+    .where(
+      'businessId',
+      'in',
+      businessesByUser.map((element) => element.businessId)
+    )
+    .get();
+
+  const documents: any[] = [];
+  querySnapshot.forEach((doc) => {
+    documents.push({ ...doc.data(), documentId: doc.ref.id });
+  });
+  return documents;
+};

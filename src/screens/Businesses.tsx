@@ -1,29 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
-
-import {
-  updateDocument,
-  deleteDocument,
-  getDocumentReference,
-  setDocument,
-  fetchBusinesses,
-  getBusinessesByUserAndRol,
-  addBusinessUser,
-} from '../modules/db';
-import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
-import { useAuth } from '../contexts/AuthContext';
-import { ConfirmDelete } from '../components/ConfirmDelete';
-import { BusinessTable } from '../components/tables/Business.table';
-import { IBusiness } from '../interfaces/business.interface';
-import { Collections } from '../enums/collections';
-import { IBusinessUser } from '../interfaces/businessUser.interface';
-import { AddInvitation } from '../components/AddInvitation';
-import { Notification } from '../components/Notification';
-import { IResult } from '../interfaces/result.interface';
 import { useHistory } from 'react-router-dom';
 
+import { createBusinessAPI, deleteBusinessAPI, getBusinessesAPI, updateBusinessAPI } from '../api/businessAPI';
+import { getBusinessesByUserAdministrativeRolesAPI } from '../api/userAPI';
+import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
+import { useAuth } from '../contexts/AuthContext';
+import { IBusiness } from '../interfaces/business.interface';
+import { IBusinessUser } from '../interfaces/businessUser.interface';
+import { IResult } from '../interfaces/result.interface';
+import { ConfirmDelete } from '../components/ConfirmDelete';
+import { BusinessTable } from '../components/tables/Business.table';
+import { AddInvitation } from '../components/AddInvitation';
+import { Notification } from '../components/Notification';
+
 export const Businesses = () => {
-  const collectionName = Collections.businesses;
   const title = 'Empresas';
   const titleSingular = 'Empresa';
 
@@ -86,7 +77,7 @@ export const Businesses = () => {
         updatedBy: currentUser.uid,
         updatedByEmail: currentUser.email,
       };
-      updateDocument(collectionName, selectedDocument.documentId, updateData);
+      const result = await updateBusinessAPI(currentUser, selectedDocument.documentId, updateData);
 
       const updatedItems: any[] = updateItem(items, selectedDocument.documentId, updateData);
 
@@ -102,25 +93,18 @@ export const Businesses = () => {
         createdBy: currentUser.uid,
         createdByEmail: currentUser.email,
       };
-      const docRef = await getDocumentReference(collectionName);
-      newBusinessData.businessId = docRef.id;
+      const result = await createBusinessAPI(currentUser, newBusinessData);
 
-      const resultBusiness = await setDocument(docRef, newBusinessData);
-
-      const resultBusinessUser = await addBusinessUser(currentUser, newBusinessData.businessId, 'OWNER');
-
-      newBusinessData.documentId = docRef.id;
-
-      addItem(items, newBusinessData);
+      addItem(items, result);
 
       setItems(items);
     }
     setShowModal(false);
   };
 
-  const removeDocument = () => {
+  const removeDocument = async () => {
     if (deletedDocument.documentId) {
-      deleteDocument(collectionName, deletedDocument.documentId);
+      const result = await deleteBusinessAPI(currentUser, deletedDocument.documentId);
 
       const newItems = deleteItem(items, deletedDocument.documentId);
 
@@ -136,14 +120,14 @@ export const Businesses = () => {
   };
 
   useEffect(() => {
-    getBusinessesByUserAndRol(currentUser.uid).then((data: IBusinessUser[]) => {
+    getBusinessesByUserAdministrativeRolesAPI(currentUser.uid).then((data: IBusinessUser[]) => {
       setBusinessesByUser(data);
     });
   }, []);
 
   useEffect(() => {
     if (businessesByUser.length > 0) {
-      fetchBusinesses(businessesByUser).then((data: IBusiness[]) => {
+      getBusinessesAPI(businessesByUser).then((data: IBusiness[]) => {
         sortItemsString(data);
         setItems(data);
       });

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 
-import { addDocument, updateDocument, deleteDocument, fetchExpenseRecord } from "../modules/db";
+import { addDocument, updateDocument, deleteDocument, fetchExpenseRecord } from "../api/stpAPI/db";
 import { addItem, updateItem, deleteItem, sortItems } from "../modules/utils";
 import { useAuth } from "../contexts/AuthContext";
 import { ConfirmDelete } from "../components/ConfirmDelete";

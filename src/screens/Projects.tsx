@@ -6,7 +6,7 @@ import {
   updateDocument,
   deleteDocument,
   fetchProjects,
-} from "../modules/db";
+} from "../api/stpAPI/db";
 import {
   sortItemsString,
   addItem,
