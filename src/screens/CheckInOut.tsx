@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { Card, Button, Table } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
-import { db } from '../firebase';
 import { useAuth } from '../contexts/AuthContext';
-import { addDocument, fetchProjects, updateDocument } from '../modules/db';
+import { addDocument, fetchProjects, updateDocument, fetchLogsByUser } from '../modules/db';
 import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
 import { IProject } from '../interfaces/project.interface';
-import { fixDate, sortItemsString, showDetailedData } from '../modules/utils';
+import { sortItemsString, showDetailedData } from '../modules/utils';
 import { Collections } from '../enums/collections';
 
 export const CheckInOut = () => {
@@ -22,24 +21,6 @@ export const CheckInOut = () => {
   const [logs, setLogs] = useState<ILogCheckInOut[]>([]);
   const [selectedProject, setSelectedProject] = useState<IProject | null>(null);
   const [selectedProjectId, setSelectedProjectId] = useState<string>('selectProject');
-
-  const fetchLogs = async (projectId: string, userId: string) => {
-    const querySnapshot = await db
-      .collection(collectionName)
-      .where('projectId', '==', projectId)
-      .where('userId', '==', userId)
-      .where('checkOut', '==', false)
-      .get();
-
-    const logs: ILogCheckInOut[] = [];
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      data.checkInAt = fixDate(data.checkInAt);
-      data.checkOutAt = fixDate(data.checkOutAt);
-      logs.push({ ...data, documentId: doc.ref.id });
-    });
-    return logs;
-  };
 
   useEffect(() => {
     if (workingBusinessId.length > 0) {
@@ -82,7 +63,7 @@ export const CheckInOut = () => {
     localStorage.setItem('workingProjectCheckInAt', data.checkInAt);
 
     // @ts-ignore
-    fetchLogs(selectedProject.documentId, currentUser.uid).then((data) => setLogs(data));
+    fetchLogsByUser(selectedProject.documentId, currentUser.uid).then((data) => setLogs(data));
   };
 
   const checkOut = async () => {
@@ -113,7 +94,7 @@ export const CheckInOut = () => {
   useEffect(() => {
     if (selectedProjectId.length > 0) {
       // @ts-ignore
-      fetchLogs(selectedProjectId, currentUser.uid).then((data) => {
+      fetchLogsByUser(selectedProjectId, currentUser.uid).then((data) => {
         setLogs(data);
         if (data.length > 0) {
           if (workingProjectId.length === 0) {

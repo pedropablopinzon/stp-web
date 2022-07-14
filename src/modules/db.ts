@@ -1,16 +1,16 @@
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc } from 'firebase/firestore';
 
-import { Collections } from "../enums/collections";
-import { db } from "../firebase";
-import { IBusinessUser } from "../interfaces/businessUser.interface";
-import { IInvitation } from "../interfaces/invitation.interface";
-import { ILogCheckInOut } from "../interfaces/logCheckInOut.interface";
-import { IResult } from "../interfaces/result.interface";
-import { Rol } from "../types/rol.types";
-import { fixDate } from "./utils";
+import { Collections } from '../enums/collections';
+import { firestoreDb } from '../firebase';
+import { IBusinessUser } from '../interfaces/businessUser.interface';
+import { IInvitation } from '../interfaces/invitation.interface';
+import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
+import { IResult } from '../interfaces/result.interface';
+import { Rol } from '../types/rol.types';
+import { fixDate } from './utils';
 
 export const getDocumentReference = async (collectionName: string) => {
-  return await db.collection(collectionName).doc();
+  return await firestoreDb.collection(collectionName).doc();
 };
 
 export const setDocument = async (documentReference: any, data: any) => {
@@ -18,29 +18,19 @@ export const setDocument = async (documentReference: any, data: any) => {
 };
 
 export const addDocument = async (collectionName: string, data: any) => {
-  return await db.collection(collectionName).add(data);
+  return await firestoreDb.collection(collectionName).add(data);
 };
 
-export const updateDocument = async (
-  collectionName: string,
-  documentId: string,
-  data: any
-) => {
-  await db.collection(collectionName).doc(documentId).update(data);
+export const updateDocument = async (collectionName: string, documentId: string, data: any) => {
+  await firestoreDb.collection(collectionName).doc(documentId).update(data);
 };
 
-export const deleteDocument = async (
-  collectionName: string,
-  documentId: string
-) => {
-  await db.collection(collectionName).doc(documentId).delete();
+export const deleteDocument = async (collectionName: string, documentId: string) => {
+  await firestoreDb.collection(collectionName).doc(documentId).delete();
 };
 
 export const fetchDocuments = async (collectionName: string) => {
-  const querySnapshot = await db
-    .collection(collectionName)
-    .where("status", "==", "ACTIVE")
-    .get();
+  const querySnapshot = await firestoreDb.collection(collectionName).where('status', '==', 'ACTIVE').get();
 
   const documents: any[] = [];
   querySnapshot.forEach((doc) => {
@@ -50,10 +40,10 @@ export const fetchDocuments = async (collectionName: string) => {
 };
 
 export const getBusinessesByUser = async (userId: string) => {
-  const querySnapshot = await db
+  const querySnapshot = await firestoreDb
     .collection(Collections.businessUsers)
-    .where("userId", "==", userId)
-    .where("status", "==", "ACTIVE")
+    .where('userId', '==', userId)
+    .where('status', '==', 'ACTIVE')
     .get();
 
   const documents: any[] = [];
@@ -64,12 +54,12 @@ export const getBusinessesByUser = async (userId: string) => {
 };
 
 export const getBusinessesByUserAndRol = async (userId: string) => {
-  const roles: Rol[] = ["OWNER", "EDITOR"];
-  const querySnapshot = await db
+  const roles: Rol[] = ['OWNER', 'EDITOR'];
+  const querySnapshot = await firestoreDb
     .collection(Collections.businessUsers)
-    .where("userId", "==", userId)
-    .where("status", "==", "ACTIVE")
-    .where("rolId", "in", roles)
+    .where('userId', '==', userId)
+    .where('status', '==', 'ACTIVE')
+    .where('rolId', 'in', roles)
     .get();
 
   const documents: any[] = [];
@@ -80,12 +70,12 @@ export const getBusinessesByUserAndRol = async (userId: string) => {
 };
 
 export const fetchBusinesses = async (businessesByUser: IBusinessUser[]) => {
-  const querySnapshot = await db
+  const querySnapshot = await firestoreDb
     .collection(Collections.businesses)
-    .where("status", "==", "ACTIVE")
+    .where('status', '==', 'ACTIVE')
     .where(
-      "businessId",
-      "in",
+      'businessId',
+      'in',
       businessesByUser.map((element) => element.businessId)
     )
     .get();
@@ -98,10 +88,10 @@ export const fetchBusinesses = async (businessesByUser: IBusinessUser[]) => {
 };
 
 export const fetchProjects = async (businessId: string) => {
-  const querySnapshot = await db
+  const querySnapshot = await firestoreDb
     .collection(Collections.projects)
-    .where("status", "==", "ACTIVE")
-    .where("businessId", "==", businessId)
+    .where('status', '==', 'ACTIVE')
+    .where('businessId', '==', businessId)
     .get();
 
   const documents: any[] = [];
@@ -112,10 +102,10 @@ export const fetchProjects = async (businessId: string) => {
 };
 
 export const fetchBusinessUsers = async (businessId: string) => {
-  const querySnapshot = await db
+  const querySnapshot = await firestoreDb
     .collection(Collections.businessUsers)
-    .where("status", "==", "ACTIVE")
-    .where("businessId", "==", businessId)
+    .where('status', '==', 'ACTIVE')
+    .where('businessId', '==', businessId)
     .get();
 
   const documents: any[] = [];
@@ -125,15 +115,12 @@ export const fetchBusinessUsers = async (businessId: string) => {
   return documents;
 };
 
-export const fetchBusinessUsersByEmail = async (
-  businessId: string,
-  email: string
-) => {
-  const querySnapshot = await db
+export const fetchBusinessUsersByEmail = async (businessId: string, email: string) => {
+  const querySnapshot = await firestoreDb
     .collection(Collections.businessUsers)
-    .where("status", "==", "ACTIVE")
-    .where("businessId", "==", businessId)
-    .where("email", "==", email)
+    .where('status', '==', 'ACTIVE')
+    .where('businessId', '==', businessId)
+    .where('email', '==', email)
     .get();
 
   const documents: any[] = [];
@@ -143,15 +130,12 @@ export const fetchBusinessUsersByEmail = async (
   return documents;
 };
 
-export const fetchInvitationsByBusinessAndEmail = async (
-  businessId: string,
-  email: string
-) => {
-  const querySnapshot = await db
+export const fetchInvitationsByBusinessAndEmail = async (businessId: string, email: string) => {
+  const querySnapshot = await firestoreDb
     .collection(Collections.invitations)
-    .where("status", "==", "ACTIVE")
-    .where("businessId", "==", businessId)
-    .where("email", "==", email)
+    .where('status', '==', 'ACTIVE')
+    .where('businessId', '==', businessId)
+    .where('email', '==', email)
     .get();
 
   const documents: any[] = [];
@@ -162,10 +146,10 @@ export const fetchInvitationsByBusinessAndEmail = async (
 };
 
 export const fetchInvitationsByEmail = async (email: string) => {
-  const querySnapshot = await db
+  const querySnapshot = await firestoreDb
     .collection(Collections.invitations)
-    .where("status", "==", "ACTIVE")
-    .where("email", "==", email)
+    .where('status', '==', 'ACTIVE')
+    .where('email', '==', email)
     .get();
 
   const documents: any[] = [];
@@ -176,10 +160,7 @@ export const fetchInvitationsByEmail = async (email: string) => {
 };
 
 export const deleteInvitations = async (businessId: string, email: string) => {
-  const invitations: any[] = await fetchInvitationsByBusinessAndEmail(
-    businessId,
-    email
-  );
+  const invitations: any[] = await fetchInvitationsByBusinessAndEmail(businessId, email);
   invitations.forEach(async (element) => {
     await deleteDocument(Collections.invitations, element.documentId);
   });
@@ -194,29 +175,26 @@ export const addInvitation = async (
 ): Promise<IResult> => {
   const result: IResult = {
     status: true,
-    message: "Invitation generated",
+    message: 'Invitation generated',
     show: true,
-    variant: "Primary",
-    title: "Invitacion",
-    subtitle: "",
+    variant: 'Primary',
+    title: 'Invitacion',
+    subtitle: '',
   };
 
   if (email.length === 0) {
     result.status = false;
     result.message = `Enter an Email`;
-    result.variant = "Warning";
+    result.variant = 'Warning';
     return result;
   }
 
-  const businessUsers: any[] = await fetchBusinessUsersByEmail(
-    businessId,
-    email
-  );
+  const businessUsers: any[] = await fetchBusinessUsersByEmail(businessId, email);
 
   if (businessUsers.length > 0) {
     result.status = false;
     result.message = `The email (${email}) is already assigned to the business`;
-    result.variant = "Warning";
+    result.variant = 'Warning';
     return result;
   }
 
@@ -227,29 +205,23 @@ export const addInvitation = async (
     businessName,
     email,
     rolId,
-    status: "ACTIVE",
+    status: 'ACTIVE',
     createdAt: new Date(),
     createdAtNumber: new Date().getTime(),
     createdBy: currentUser.uid,
     createdByEmail: currentUser.email,
   };
 
-  const resultInvitation = await addDocument(
-    Collections.invitations,
-    invitation
-  );
+  const resultInvitation = await addDocument(Collections.invitations, invitation);
   result.collectionName = Collections.invitations;
   result.documentId = resultInvitation.id;
 
   return result;
 };
 
-export const rejectInvitation = async (
-  currentUser: any,
-  documentId: string
-) => {
+export const rejectInvitation = async (currentUser: any, documentId: string) => {
   const updateData: IInvitation = {
-    status: "REJECTED",
+    status: 'REJECTED',
     updatedAt: new Date(),
     updatedBy: currentUser.uid,
     updatedByEmail: currentUser.email,
@@ -258,20 +230,11 @@ export const rejectInvitation = async (
   return await updateDocument(Collections.invitations, documentId, updateData);
 };
 
-export const acceptInvitation = async (
-  currentUser: any,
-  documentId: string,
-  businessId: string,
-  rolId: Rol
-) => {
-  const resultBusinessUser = await addBusinessUser(
-    currentUser,
-    businessId,
-    rolId
-  );
+export const acceptInvitation = async (currentUser: any, documentId: string, businessId: string, rolId: Rol) => {
+  const resultBusinessUser = await addBusinessUser(currentUser, businessId, rolId);
 
   const updateData: IInvitation = {
-    status: "ACCEPTED",
+    status: 'ACCEPTED',
     updatedAt: new Date(),
     updatedBy: currentUser.uid,
     updatedByEmail: currentUser.email,
@@ -282,50 +245,43 @@ export const acceptInvitation = async (
   return resultBusinessUser;
 };
 
-export const addBusinessUser = async (
-  currentUser: any,
-  businessId: string,
-  rolId: Rol
-) => {
+export const addBusinessUser = async (currentUser: any, businessId: string, rolId: Rol) => {
   const newBusinessUserData: IBusinessUser = {
     businessId: businessId,
     userId: currentUser.uid,
     userName: currentUser.displayName,
     email: currentUser.email,
     rolId,
-    status: "ACTIVE",
+    status: 'ACTIVE',
     createdAt: new Date(),
     createdBy: currentUser.uid,
     createdByEmail: currentUser.email,
   };
 
-  const resultBusinessUser = await addDocument(
-    Collections.businessUsers,
-    newBusinessUserData
-  );
+  const resultBusinessUser = await addDocument(Collections.businessUsers, newBusinessUserData);
   newBusinessUserData.documentId = resultBusinessUser.id;
 
   return newBusinessUserData;
 };
 
 export const getBusiness = async (businessId: string) => {
-  const docRef = doc(db, Collections.businesses, businessId);
+  const docRef = doc(firestoreDb, Collections.businesses, businessId);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
     const document = { ...docSnap.data(), documentId: docSnap.ref.id };
     return document;
   } else {
-    console.error("No such document!");
+    console.error('No such document!');
     return null;
   }
 };
 
 export const fetchProgressLog = async (projectId: string) => {
-  const querySnapshot = await db
+  const querySnapshot = await firestoreDb
     .collection(Collections.progressLog)
-    .where("status", "==", "ACTIVE")
-    .where("projectId", "==", projectId)
+    .where('status', '==', 'ACTIVE')
+    .where('projectId', '==', projectId)
     .get();
 
   const documents: any[] = [];
@@ -336,15 +292,15 @@ export const fetchProgressLog = async (projectId: string) => {
 };
 
 export const fetchExpenseRecord = async (projectId: string) => {
-  const querySnapshot = await db
+  const querySnapshot = await firestoreDb
     .collection(Collections.expenseRecord)
-    .where("status", "==", "ACTIVE")
-    .where("projectId", "==", projectId)
+    .where('status', '==', 'ACTIVE')
+    .where('projectId', '==', projectId)
     .get();
 
   const documents: any[] = [];
   querySnapshot.forEach((doc) => {
-    const data = doc.data()
+    const data = doc.data();
     if (!data.imagesUrl) {
       data.imagesUrl = [];
     }
@@ -354,9 +310,24 @@ export const fetchExpenseRecord = async (projectId: string) => {
 };
 
 export const fetchLogs = async (projectId: string) => {
-  const querySnapshot = await db
+  const querySnapshot = await firestoreDb.collection(Collections.logCheckInOut).where('projectId', '==', projectId).get();
+
+  const logs: ILogCheckInOut[] = [];
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    data.checkInAt = fixDate(data.checkInAt);
+    data.checkOutAt = fixDate(data.checkOutAt);
+    logs.push({ ...data, documentId: doc.ref.id });
+  });
+  return logs;
+};
+
+export const fetchLogsByUser = async (projectId: string, userId: string) => {
+  const querySnapshot = await firestoreDb
     .collection(Collections.logCheckInOut)
-    .where("projectId", "==", projectId)
+    .where('projectId', '==', projectId)
+    .where('userId', '==', userId)
+    .where('checkOut', '==', false)
     .get();
 
   const logs: ILogCheckInOut[] = [];
@@ -370,14 +341,14 @@ export const fetchLogs = async (projectId: string) => {
 };
 
 export const getProject = async (projectId: string) => {
-  const docRef = doc(db, Collections.projects, projectId);
+  const docRef = doc(firestoreDb, Collections.projects, projectId);
   const docSnap = await getDoc(docRef);
 
   if (docSnap.exists()) {
     const document = { ...docSnap.data(), documentId: docSnap.ref.id };
     return document;
   } else {
-    console.error("No such document!");
+    console.error('No such document!');
     return null;
   }
 };

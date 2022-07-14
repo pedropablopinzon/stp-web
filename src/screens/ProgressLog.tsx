@@ -7,7 +7,6 @@ import { useAuth } from "../contexts/AuthContext";
 import { ConfirmDelete } from "../components/ConfirmDelete";
 import { IProgressLog } from "../interfaces/progressLog.interface";
 import { ProgressLogTable } from "../components/tables/ProgressLog.table";
-import { db } from "../firebase";
 import { WorkingProject } from "../components/WorkingProject";
 import { Storage } from "../components/Storage";
 import { CarouselImages } from "../components/CarouselImages";
@@ -26,14 +25,8 @@ export const ProgressLog = () => {
     status: "ACTIVE",
   };
 
-  let workingProjectId = localStorage.getItem("workingProjectId");
-  const workingProjectName = localStorage.getItem("workingProjectName");
-  const workingProjectCheckInAt = localStorage.getItem(
-    "workingProjectCheckInAt"
-  );
-  if (!workingProjectId) {
-    workingProjectId = "";
-  }
+  const workingProjectId = localStorage.getItem("workingProjectId") || '';
+  const workingProjectName = localStorage.getItem("workingProjectName") || '';
 
   const [items, setItems] = useState<IProgressLog[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -118,20 +111,6 @@ export const ProgressLog = () => {
     setSelectedDocument({ ...selectedDocument, [name]: value });
   };
 
-  const fetchDocuments = async (collectionName: string) => {
-    const querySnapshot = await db
-      .collection(collectionName)
-      .where("status", "==", "ACTIVE")
-      .where("projectId", "==", workingProjectId)
-      .get();
-
-    const documents: any[] = [];
-    querySnapshot.forEach((doc) => {
-      documents.push({ ...doc.data(), documentId: doc.ref.id });
-    });
-    return documents;
-  };
-
   const fileUploaded = (url: string) => {
     // @ts-ignore
     selectedDocument.imagesUrl.push(url);
@@ -139,7 +118,7 @@ export const ProgressLog = () => {
   };
 
   useEffect(() => {
-    fetchDocuments(collectionName).then((data) => {
+    fetchProgressLog(workingProjectId).then((data) => {
       sortItems(data, "createdAtNumber", "desc");
       setItems(data);
     });

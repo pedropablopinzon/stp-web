@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 
-import { addDocument, updateDocument, deleteDocument } from "../modules/db";
+import { addDocument, updateDocument, deleteDocument, fetchExpenseRecord } from "../modules/db";
 import { addItem, updateItem, deleteItem, sortItems } from "../modules/utils";
 import { useAuth } from "../contexts/AuthContext";
 import { ConfirmDelete } from "../components/ConfirmDelete";
 import { IExpenseRecord } from "../interfaces/expenseRecord.interface";
 import { ExpenseRecordTable } from "../components/tables/ExpenseRecord.table";
-import { db } from "../firebase";
 import { WorkingProject } from "../components/WorkingProject";
 import { Storage } from "../components/Storage";
 import { CarouselImages } from "../components/CarouselImages";
@@ -27,14 +26,8 @@ export const ExpenseRecord = () => {
     status: "ACTIVE",
   };
 
-  let workingProjectId = localStorage.getItem("workingProjectId");
-  const workingProjectName = localStorage.getItem("workingProjectName");
-  const workingProjectCheckInAt = localStorage.getItem(
-    "workingProjectCheckInAt"
-  );
-  if (!workingProjectId) {
-    workingProjectId = "";
-  }
+  const workingProjectId = localStorage.getItem("workingProjectId") || '';
+  const workingProjectName = localStorage.getItem("workingProjectName") || '';
 
   const [items, setItems] = useState<IExpenseRecord[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -83,8 +76,8 @@ export const ExpenseRecord = () => {
       setItems(updatedItems);
     } else {
       const newData: IExpenseRecord = {
-        projectId: workingProjectId!,
-        projectName: workingProjectName!,
+        projectId: workingProjectId,
+        projectName: workingProjectName,
         amount: selectedDocument.amount,
         comment: selectedDocument.comment,
         imagesUrl: selectedDocument.imagesUrl,
@@ -121,20 +114,6 @@ export const ExpenseRecord = () => {
     setSelectedDocument({ ...selectedDocument, [name]: value });
   };
 
-  const fetchDocuments = async (collectionName: string) => {
-    const querySnapshot = await db
-      .collection(collectionName)
-      .where("status", "==", "ACTIVE")
-      .where("projectId", "==", workingProjectId)
-      .get();
-
-    const documents: any[] = [];
-    querySnapshot.forEach((doc) => {
-      documents.push({ ...doc.data(), documentId: doc.ref.id });
-    });
-    return documents;
-  };
-
   const fileUploaded = (url: string) => {
     // @ts-ignore
     selectedDocument.imagesUrl.push(url);
@@ -142,7 +121,7 @@ export const ExpenseRecord = () => {
   };
 
   useEffect(() => {
-    fetchDocuments(collectionName).then((data) => {
+    fetchExpenseRecord(workingProjectId).then((data) => {
       sortItems(data, "createdAtNumber", "desc");
       setItems(data);
     });
