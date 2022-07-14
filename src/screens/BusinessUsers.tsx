@@ -3,7 +3,7 @@ import { Button, Modal, Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 
 import { addDocument, updateDocument, deleteDocument, fetchBusinessUsers, getBusiness } from '../api/stpAPI/db';
-import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
+import { sortItemsString, addItem, updateItem, deleteItem } from '../common/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
 import { Collections } from '../enums/collections';

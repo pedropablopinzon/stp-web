@@ -7,7 +7,7 @@ import { IInvitation } from '../../interfaces/invitation.interface';
 import { ILogCheckInOut } from '../../interfaces/logCheckInOut.interface';
 import { IResult } from '../../interfaces/result.interface';
 import { Rol } from '../../types/rol.types';
-import { fixDate } from '../../modules/utils';
+import { fixDate } from '../../common/utils';
 
 export const getDocumentReference = async (collectionName: string) => {
   return await firestoreDb.collection(collectionName).doc();

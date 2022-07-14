@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Table } from "react-bootstrap";
 
 import { IProject } from "../../interfaces/project.interface";
-import { fixDate, showDetailedData } from "../../modules/utils";
+import { fixDate, showDetailedData } from "../../common/utils";
 
 export const ProjectsTable = (props: {
   items: IProject[];

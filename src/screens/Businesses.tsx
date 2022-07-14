@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom';
 
 import { createBusinessAPI, deleteBusinessAPI, getBusinessesAPI, updateBusinessAPI } from '../api/businessAPI';
 import { getBusinessesByUserAdministrativeRolesAPI } from '../api/userAPI';
-import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
+import { sortItemsString, addItem, updateItem, deleteItem } from '../common/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { IBusiness } from '../interfaces/business.interface';
 import { IBusinessUser } from '../interfaces/businessUser.interface';

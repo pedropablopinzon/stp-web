@@ -12,7 +12,7 @@ import {
   addItem,
   updateItem,
   deleteItem,
-} from "../modules/utils";
+} from "../common/utils";
 import { useAuth } from "../contexts/AuthContext";
 import { ConfirmDelete } from "../components/ConfirmDelete";
 import { ProjectsTable } from "../components/tables/Projects.table";

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
 import { IBusiness } from '../../interfaces/business.interface';
-import { fixDate, showDetailedData } from '../../modules/utils';
+import { fixDate, showDetailedData } from '../../common/utils';
 
 export const BusinessTable = (props: {
   items: IBusiness[];

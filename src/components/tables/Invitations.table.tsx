@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
 import { IInvitation } from '../../interfaces/invitation.interface';
-import { fixDate, showDetailedData } from '../../modules/utils';
+import { fixDate, showDetailedData } from '../../common/utils';
 
 export const InvitationsTable = (props: { items: IInvitation[]; onAcceptInvitation: Function; onRejectInvitation: Function }) => {
   return (

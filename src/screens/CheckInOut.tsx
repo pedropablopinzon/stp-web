@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { addDocument, fetchProjects, updateDocument, fetchLogsByUser } from '../api/stpAPI/db';
 import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
 import { IProject } from '../interfaces/project.interface';
-import { sortItemsString, showDetailedData } from '../modules/utils';
+import { sortItemsString, showDetailedData } from '../common/utils';
 import { Collections } from '../enums/collections';
 
 export const CheckInOut = () => {

@@ -6,7 +6,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { IBusiness } from '../interfaces/business.interface';
 import { IBusinessUser } from '../interfaces/businessUser.interface';
 import { getBusinessesByUser } from '../api/stpAPI/db';
-import { sortItemsString } from '../modules/utils';
+import { sortItemsString } from '../common/utils';
 import { getBusinessesAPI } from '../api/businessAPI';
 
 export const WorkingBusiness = () => {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
 import { IBusinessUser } from '../../interfaces/businessUser.interface';
-import { fixDate, showDetailedData } from '../../modules/utils';
+import { fixDate, showDetailedData } from '../../common/utils';
 
 export const BusinessUsersTable = (props: { items: IBusinessUser[]; onEditDocument: Function; onDeleteDocument: Function }) => {
   return (

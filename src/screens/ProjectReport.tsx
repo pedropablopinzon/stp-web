@@ -15,7 +15,7 @@ import {
   fetchProgressLog,
   getProject,
 } from "../api/stpAPI/db";
-import { sortItems } from "../modules/utils";
+import { sortItems } from "../common/utils";
 
 export const ProjectReport = () => {
   // @ts-ignore
