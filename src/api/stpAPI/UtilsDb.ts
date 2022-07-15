@@ -2,12 +2,9 @@ import { doc, getDoc } from 'firebase/firestore';
 
 import { Collections } from '../../enums/Collections';
 import { firestoreDb } from '../../Firebase';
-import { IBusinessUser } from '../../interfaces/BusinessUser.interface';
 import { IInvitation } from '../../interfaces/Invitation.interface';
-import { ILogCheckInOut } from '../../interfaces/LogCheckInOut.interface';
 import { IResult } from '../../interfaces/Result.interface';
 import { Rol } from '../../types/Rol.types';
-import { fixDate } from '../../common/Utils';
 import { addBusinessUser } from './stpFirestoreAPI/BusinessUsers';
 
 export const getDocumentReference = async (collectionName: string) => {
@@ -182,22 +179,3 @@ export const acceptInvitation = async (currentUser: any, documentId: string, bus
 
   return resultBusinessUser;
 };
-
-export const fetchExpenseRecord = async (projectId: string) => {
-  const querySnapshot = await firestoreDb
-    .collection(Collections.expenseRecord)
-    .where('status', '==', 'ACTIVE')
-    .where('projectId', '==', projectId)
-    .get();
-
-  const documents: any[] = [];
-  querySnapshot.forEach((doc) => {
-    const data = doc.data();
-    if (!data.imagesUrl) {
-      data.imagesUrl = [];
-    }
-    documents.push({ ...data, documentId: doc.ref.id });
-  });
-  return documents;
-};
-

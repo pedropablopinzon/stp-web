@@ -16,3 +16,7 @@ export const deleteExpenseRecordAPI = (currentUser: any, documentId: string) => 
 export const readExpenseRecordAPI = (currentUser: any, documentId: string) => {
   return service.readExpenseRecord(currentUser, documentId);
 };
+
+export const getExpenseRecordAPI = (projectId: string) => {
+  return service.getExpenseRecord(projectId);
+};

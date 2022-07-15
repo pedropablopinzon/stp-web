@@ -7,7 +7,7 @@ import { ExpenseRecordTable } from '../components/tables/ExpenseRecord.table';
 import { getProgressLogAPI } from '../api/ProgressLogAPI';
 import { readProjectAPI } from '../api/ProjectsAPI';
 import { getLogsByProjectAPI } from '../api/LogCheckInOutAPI';
-import { fetchExpenseRecord } from '../api/stpAPI/UtilsDb';
+import { getExpenseRecord } from '../api/stpAPI/stpFirestoreAPI/ExpenseRecord';
 import { useAuth } from '../contexts/AuthContext';
 import { sortItems } from '../common/Utils';
 import { IExpenseRecord } from '../interfaces/ExpenseRecord.interface';
@@ -62,7 +62,7 @@ export const ProjectReport = () => {
       setProgressLog(data);
     });
 
-    fetchExpenseRecord(projectId).then((data) => {
+    getExpenseRecord(projectId).then((data) => {
       sortItems(data, 'createdAtNumber', 'desc');
       setExpenseRecord(data);
     });
