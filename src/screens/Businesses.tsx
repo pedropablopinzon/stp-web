@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
-import { createBusinessAPI, deleteBusinessAPI, getBusinessesAPI, updateBusinessAPI } from '../api/businessAPI';
+import { createBusinessAPI, deleteBusinessAPI, getBusinessesByBusinessessByUserAPI, updateBusinessAPI } from '../api/businessAPI';
 import { getBusinessesByUserAdministrativeRolesAPI } from '../api/userAPI';
 import { sortItemsString, addItem, updateItem, deleteItem } from '../common/utils';
 import { useAuth } from '../contexts/AuthContext';
@@ -83,7 +83,7 @@ export const Businesses = () => {
 
       setItems(updatedItems);
     } else {
-      const newBusinessData: IBusiness = {
+      const newData: IBusiness = {
         name: selectedDocument.name,
         taxId: selectedDocument.taxId,
         address: selectedDocument.address,
@@ -93,7 +93,7 @@ export const Businesses = () => {
         createdBy: currentUser.uid,
         createdByEmail: currentUser.email,
       };
-      const result = await createBusinessAPI(currentUser, newBusinessData);
+      const result = await createBusinessAPI(currentUser, newData);
 
       addItem(items, result);
 
@@ -127,7 +127,7 @@ export const Businesses = () => {
 
   useEffect(() => {
     if (businessesByUser.length > 0) {
-      getBusinessesAPI(businessesByUser).then((data: IBusiness[]) => {
+      getBusinessesByBusinessessByUserAPI(businessesByUser).then((data: IBusiness[]) => {
         sortItemsString(data);
         setItems(data);
       });

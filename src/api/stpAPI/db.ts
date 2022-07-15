@@ -29,6 +29,19 @@ export const deleteDocument = async (collectionName: string, documentId: string)
   await firestoreDb.collection(collectionName).doc(documentId).delete();
 };
 
+export const readDocument = async (collectionName: string, documentId: string) => {
+  const docRef = doc(firestoreDb, collectionName, documentId);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+    const document = { ...docSnap.data(), documentId: docSnap.ref.id };
+    return document;
+  } else {
+    console.error('No such document!');
+    return null;
+  }
+};
+
 export const fetchDocuments = async (collectionName: string) => {
   const querySnapshot = await firestoreDb.collection(collectionName).where('status', '==', 'ACTIVE').get();
 
@@ -39,37 +52,9 @@ export const fetchDocuments = async (collectionName: string) => {
   return documents;
 };
 
-export const getBusinessesByUser = async (userId: string) => {
-  const querySnapshot = await firestoreDb
-    .collection(Collections.businessUsers)
-    .where('userId', '==', userId)
-    .where('status', '==', 'ACTIVE')
-    .get();
-
-  const documents: any[] = [];
-  querySnapshot.forEach((doc): any => {
-    documents.push({ ...doc.data(), documentId: doc.ref.id });
-  });
-  return documents;
-};
-
 export const fetchProjects = async (businessId: string) => {
   const querySnapshot = await firestoreDb
     .collection(Collections.projects)
-    .where('status', '==', 'ACTIVE')
-    .where('businessId', '==', businessId)
-    .get();
-
-  const documents: any[] = [];
-  querySnapshot.forEach((doc) => {
-    documents.push({ ...doc.data(), documentId: doc.ref.id });
-  });
-  return documents;
-};
-
-export const fetchBusinessUsers = async (businessId: string) => {
-  const querySnapshot = await firestoreDb
-    .collection(Collections.businessUsers)
     .where('status', '==', 'ACTIVE')
     .where('businessId', '==', businessId)
     .get();
@@ -228,19 +213,6 @@ export const addBusinessUser = async (currentUser: any, businessId: string, rolI
   newBusinessUserData.documentId = resultBusinessUser.id;
 
   return newBusinessUserData;
-};
-
-export const getBusiness = async (businessId: string) => {
-  const docRef = doc(firestoreDb, Collections.businesses, businessId);
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    const document = { ...docSnap.data(), documentId: docSnap.ref.id };
-    return document;
-  } else {
-    console.error('No such document!');
-    return null;
-  }
 };
 
 export const fetchProgressLog = async (projectId: string) => {

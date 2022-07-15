@@ -14,6 +14,10 @@ export const deleteBusinessAPI = (currentUser: any, documentId: string) => {
   return service.deleteBusiness(currentUser, documentId);
 };
 
-export const getBusinessesAPI = (businessesByUser: IBusinessUser[]) => {
-  return service.getBusinesses(businessesByUser);
+export const readBusinessAPI = (currentUser: any, documentId: string) => {
+  return service.readBusiness(currentUser, documentId);
+};
+
+export const getBusinessesByBusinessessByUserAPI = (businessesByUser: IBusinessUser[]) => {
+  return service.getBusinessesByBusinessessByUser(businessesByUser);
 };

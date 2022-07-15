@@ -1,4 +1,4 @@
-import { addDocument, deleteDocument, getDocumentReference, setDocument, updateDocument } from '../db';
+import { addDocument, deleteDocument, getDocumentReference, readDocument, setDocument, updateDocument } from '../db';
 import { Collections } from '../../../enums/collections';
 import { IBusiness } from '../../../interfaces/business.interface';
 import { IBusinessUser } from '../../../interfaces/businessUser.interface';
@@ -26,6 +26,10 @@ export const deleteBusiness = async (currentUser: any, documentId: string) => {
   return deleteDocument(Collections.businesses, documentId);
 };
 
+export const readBusiness = async (currentUser: any, businessId: string) => {
+  return readDocument(Collections.businesses, businessId);
+};
+
 export const addBusinessUser = async (currentUser: any, businessId: string, rolId: Rol) => {
   const newBusinessUserData: IBusinessUser = {
     businessId: businessId,
@@ -44,8 +48,8 @@ export const addBusinessUser = async (currentUser: any, businessId: string, rolI
 
   return newBusinessUserData;
 };
-
-export const getBusinesses = async (businessesByUser: IBusinessUser[]) => {
+// businessesByUser
+export const getBusinessesByBusinessessByUser = async (businessesByUser: IBusinessUser[]) => {
   const querySnapshot = await firestoreDb
     .collection(Collections.businesses)
     .where('status', '==', 'ACTIVE')

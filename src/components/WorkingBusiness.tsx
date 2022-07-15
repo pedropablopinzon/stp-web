@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { IBusiness } from '../interfaces/business.interface';
 import { IBusinessUser } from '../interfaces/businessUser.interface';
-import { getBusinessesByUser } from '../api/stpAPI/db';
 import { sortItemsString } from '../common/utils';
-import { getBusinessesAPI } from '../api/businessAPI';
+import { getBusinessesByBusinessessByUserAPI } from '../api/businessAPI';
+import { getBusinessesByUserAPI } from '../api/businessUserAPI';
 
 export const WorkingBusiness = () => {
   const { currentUser } = useAuth();
@@ -20,14 +20,14 @@ export const WorkingBusiness = () => {
   const [selectedBusinessId, setSelectedBusinessId] = useState<string>('selectBusiness');
 
   useEffect(() => {
-    getBusinessesByUser(currentUser.uid).then((data: IBusinessUser[]) => {
+    getBusinessesByUserAPI(currentUser.uid).then((data: IBusinessUser[]) => {
       setBusinessesByUser(data);
     });
   }, []);
 
   useEffect(() => {
     if (businessesByUser.length > 0) {
-      getBusinessesAPI(businessesByUser).then((data: IBusiness[]) => {
+      getBusinessesByBusinessessByUserAPI(businessesByUser).then((data: IBusiness[]) => {
         sortItemsString(data);
         setItems(data);
         if (workingBusinessId) {
