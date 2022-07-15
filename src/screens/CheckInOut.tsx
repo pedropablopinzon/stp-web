@@ -3,15 +3,13 @@ import { Card, Button, Table } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
 import { getProjectsAPI } from '../api/projectsAPI';
+import { createLogCheckInOutAPI, updateLogCheckInOutAPI, getLogsByUserAPI } from '../api/logCheckInOutAPI';
 import { useAuth } from '../contexts/AuthContext';
-import { addDocument, updateDocument, fetchLogsByUser } from '../api/stpAPI/db';
+import { sortItemsString, showDetailedData } from '../common/utils';
 import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
 import { IProject } from '../interfaces/project.interface';
-import { sortItemsString, showDetailedData } from '../common/utils';
-import { Collections } from '../enums/collections';
 
 export const CheckInOut = () => {
-  const collectionName = Collections.logCheckInOut;
   const history = useHistory();
   const { currentUser } = useAuth();
   const workingBusinessId: string = localStorage.getItem('workingBusinessId') || '';
@@ -36,7 +34,7 @@ export const CheckInOut = () => {
   }, []);
 
   const checkIn = async () => {
-    const data: ILogCheckInOut = {
+    const newData: ILogCheckInOut = {
       // @ts-ignore
       projectId: selectedProject.documentId,
       // @ts-ignore
@@ -53,22 +51,22 @@ export const CheckInOut = () => {
       checkInAt: new Date(),
     };
 
-    const result = await addDocument(collectionName, data);
+    const result = await createLogCheckInOutAPI(currentUser, newData);
 
-    localStorage.setItem('workingLogCheckInOutId', result.id);
+    localStorage.setItem('workingLogCheckInOutId', result.documentId || '');
     // @ts-ignore
-    localStorage.setItem('workingProjectId', data.projectId);
+    localStorage.setItem('workingProjectId', newData.projectId);
     // @ts-ignore
-    localStorage.setItem('workingProjectName', data.projectName);
+    localStorage.setItem('workingProjectName', newData.projectName);
     // @ts-ignore
-    localStorage.setItem('workingProjectCheckInAt', data.checkInAt);
+    localStorage.setItem('workingProjectCheckInAt', newData.checkInAt);
 
     // @ts-ignore
-    fetchLogsByUser(selectedProject.documentId, currentUser.uid).then((data) => setLogs(data));
+    getLogsByUserAPI(selectedProject.documentId, currentUser.uid).then((data) => setLogs(data));
   };
 
   const checkOut = async () => {
-    const data: ILogCheckInOut = {
+    const updateData: ILogCheckInOut = {
       checkOut: true,
       updatedAt: new Date(),
       updatedBy: currentUser.uid,
@@ -77,7 +75,7 @@ export const CheckInOut = () => {
     };
 
     // @ts-ignore
-    await updateDocument(collectionName, logs[0].documentId, data);
+    const result = await updateLogCheckInOutAPI(currentUser, logs[0].documentId, updateData);
 
     localStorage.setItem('workingProjectId', '');
     localStorage.setItem('workingProjectName', '');
@@ -95,7 +93,7 @@ export const CheckInOut = () => {
   useEffect(() => {
     if (selectedProjectId.length > 0) {
       // @ts-ignore
-      fetchLogsByUser(selectedProjectId, currentUser.uid).then((data) => {
+      getLogsByUserAPI(selectedProjectId, currentUser.uid).then((data) => {
         setLogs(data);
         if (data.length > 0) {
           if (workingProjectId.length === 0) {
