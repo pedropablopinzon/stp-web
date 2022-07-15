@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
 
+import { acceptInvitationAPI, rejectInvitationAPI } from '../api/InvitationsAPI';
 import { useAuth } from '../contexts/AuthContext';
 import { IInvitation } from '../interfaces/Invitation.interface';
-import { acceptInvitation, fetchInvitationsByEmail, rejectInvitation } from '../api/stpAPI/UtilsDb';
 import { deleteItem, sortItems } from '../common/Utils';
 import { ConfirmDelete } from './ConfirmDelete';
 import { InvitationsTable } from './tables/Invitations.table';
+import { getInvitationsByEmail } from '../api/stpAPI/stpFirestoreAPI/Invitations';
 
 export const Invitations = () => {
   const { currentUser } = useAuth();
@@ -26,7 +27,7 @@ export const Invitations = () => {
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
 
   useEffect(() => {
-    fetchInvitationsByEmail(currentUser.email).then((data: any) => {
+    getInvitationsByEmail(currentUser.email).then((data: any) => {
       sortItems(data, 'createdAtNumber', 'desc');
       setItems(data);
     });
@@ -35,7 +36,7 @@ export const Invitations = () => {
   useEffect(() => {
     if (acceptedDocument.documentId) {
       // @ts-ignore
-      acceptInvitation(currentUser, acceptedDocument.documentId, acceptedDocument.businessId, acceptedDocument.rolId).then((data) => {
+      acceptInvitationAPI(currentUser, acceptedDocument.documentId, acceptedDocument.businessId, acceptedDocument.rolId).then((data) => {
         // @ts-ignore
         const newItems = deleteItem(items, acceptedDocument.documentId);
 
@@ -57,7 +58,7 @@ export const Invitations = () => {
 
   const removeDocument = async () => {
     if (rejectedDocument.documentId) {
-      await rejectInvitation(currentUser, rejectedDocument.documentId);
+      await rejectInvitationAPI(currentUser, rejectedDocument.documentId);
 
       const newItems = deleteItem(items, rejectedDocument.documentId);
 
