@@ -3,7 +3,7 @@ import { Collections } from '../../../enums/collections';
 import { IBusiness } from '../../../interfaces/business.interface';
 import { IBusinessUser } from '../../../interfaces/businessUser.interface';
 import { firestoreDb } from '../../../firebase';
-import { addBusinessUser } from './businessUser';
+import { addBusinessUser } from './businessUsers';
 
 export const createBusiness = async (currentUser: any, newBusinessData: IBusiness) => {
   const docRef = await getDocumentReference(Collections.businesses);

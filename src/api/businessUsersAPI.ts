@@ -1,5 +1,5 @@
 import { IBusinessUser } from '../interfaces/businessUser.interface';
-import * as service from './stpAPI/stpFirestoreAPI/businessUser';
+import * as service from './stpAPI/stpFirestoreAPI/businessUsers';
 
 export const createBusinessUserAPI = (currentUser: any, data: IBusinessUser) => {
   return service.createBusinessUser(currentUser, data);
@@ -23,4 +23,8 @@ export const getBusinessUsersAPI = (documentId: string) => {
 
 export const getBusinessesByUserAPI = (documentId: string) => {
   return service.getBusinessesByUser(documentId);
+};
+
+export const getBusinessesByUserAdministrativeRolesAPI = (userId: string) => {
+  return service.getBusinessesByUserAdministrativeRoles(userId);
 };

@@ -1,6 +1,6 @@
 import { IBusiness } from '../interfaces/business.interface';
 import { IBusinessUser } from '../interfaces/businessUser.interface';
-import * as service from './stpAPI/stpFirestoreAPI/business';
+import * as service from './stpAPI/stpFirestoreAPI/businesses';
 
 export const createBusinessAPI = (currentUser: any, data: IBusiness) => {
   return service.createBusiness(currentUser, data);

@@ -8,7 +8,7 @@ import { ILogCheckInOut } from '../../interfaces/logCheckInOut.interface';
 import { IResult } from '../../interfaces/result.interface';
 import { Rol } from '../../types/rol.types';
 import { fixDate } from '../../common/utils';
-import { addBusinessUser } from './stpFirestoreAPI/businessUser';
+import { addBusinessUser } from './stpFirestoreAPI/businessUsers';
 
 export const getDocumentReference = async (collectionName: string) => {
   return await firestoreDb.collection(collectionName).doc();
@@ -45,20 +45,6 @@ export const readDocument = async (collectionName: string, documentId: string) =
 
 export const fetchDocuments = async (collectionName: string) => {
   const querySnapshot = await firestoreDb.collection(collectionName).where('status', '==', 'ACTIVE').get();
-
-  const documents: any[] = [];
-  querySnapshot.forEach((doc) => {
-    documents.push({ ...doc.data(), documentId: doc.ref.id });
-  });
-  return documents;
-};
-
-export const fetchProjects = async (businessId: string) => {
-  const querySnapshot = await firestoreDb
-    .collection(Collections.projects)
-    .where('status', '==', 'ACTIVE')
-    .where('businessId', '==', businessId)
-    .get();
 
   const documents: any[] = [];
   querySnapshot.forEach((doc) => {

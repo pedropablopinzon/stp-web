@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Card, Button, Table } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
+import { getProjectsAPI } from '../api/projectsAPI';
 import { useAuth } from '../contexts/AuthContext';
-import { addDocument, fetchProjects, updateDocument, fetchLogsByUser } from '../api/stpAPI/db';
+import { addDocument, updateDocument, fetchLogsByUser } from '../api/stpAPI/db';
 import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
 import { IProject } from '../interfaces/project.interface';
 import { sortItemsString, showDetailedData } from '../common/utils';
@@ -24,7 +25,7 @@ export const CheckInOut = () => {
 
   useEffect(() => {
     if (workingBusinessId.length > 0) {
-      fetchProjects(workingBusinessId).then((data) => {
+      getProjectsAPI(workingBusinessId).then((data) => {
         sortItemsString(data, 'name');
         setProjects(data);
         if (workingProjectId.length > 0) {

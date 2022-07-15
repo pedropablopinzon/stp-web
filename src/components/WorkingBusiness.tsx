@@ -6,8 +6,8 @@ import { useAuth } from '../contexts/AuthContext';
 import { IBusiness } from '../interfaces/business.interface';
 import { IBusinessUser } from '../interfaces/businessUser.interface';
 import { sortItemsString } from '../common/utils';
-import { getBusinessesByBusinessessByUserAPI } from '../api/businessAPI';
-import { getBusinessesByUserAPI } from '../api/businessUserAPI';
+import { getBusinessesByBusinessessByUserAPI } from '../api/businessesAPI';
+import { getBusinessesByUserAPI } from '../api/businessUsersAPI';
 
 export const WorkingBusiness = () => {
   const { currentUser } = useAuth();

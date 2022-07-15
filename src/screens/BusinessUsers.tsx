@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 
-import { createBusinessUserAPI, deleteBusinessUserAPI, getBusinessUsersAPI, updateBusinessUserAPI } from '../api/businessUserAPI';
+import { createBusinessUserAPI, deleteBusinessUserAPI, getBusinessUsersAPI, updateBusinessUserAPI } from '../api/businessUsersAPI';
+import { readBusinessAPI } from '../api/businessesAPI';
 import { sortItemsString, addItem, updateItem, deleteItem } from '../common/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { IBusinessUser } from '../interfaces/businessUser.interface';
@@ -14,7 +15,6 @@ import { BusinessUsersTable } from '../components/tables/BusinessUsers.table';
 import { SelectRol } from '../components/SelectRol';
 import { AddInvitation } from '../components/AddInvitation';
 import { Notification } from '../components/Notification';
-import { readBusinessAPI } from '../api/businessAPI';
 
 export const BusinessUsers = () => {
   // @ts-ignore

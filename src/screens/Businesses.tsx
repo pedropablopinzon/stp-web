@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
-import { createBusinessAPI, deleteBusinessAPI, getBusinessesByBusinessessByUserAPI, updateBusinessAPI } from '../api/businessAPI';
-import { getBusinessesByUserAdministrativeRolesAPI } from '../api/userAPI';
+import { createBusinessAPI, deleteBusinessAPI, getBusinessesByBusinessessByUserAPI, updateBusinessAPI } from '../api/businessesAPI';
+import { getBusinessesByUserAdministrativeRolesAPI } from '../api/businessUsersAPI';
 import { sortItemsString, addItem, updateItem, deleteItem } from '../common/utils';
 import { useAuth } from '../contexts/AuthContext';
 import { IBusiness } from '../interfaces/business.interface';
