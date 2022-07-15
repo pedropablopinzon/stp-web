@@ -3,10 +3,11 @@ import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
-import { IBusiness } from '../interfaces/business.interface';
-import { IBusinessUser } from '../interfaces/businessUser.interface';
-import { fetchBusinesses, getBusinessesByUser } from '../modules/db';
-import { sortItemsString } from '../modules/utils';
+import { IBusiness } from '../interfaces/Business.interface';
+import { IBusinessUser } from '../interfaces/BusinessUser.interface';
+import { sortItemsString } from '../common/Utils';
+import { getBusinessesByBusinessessByUserAPI } from '../api/BusinessesAPI';
+import { getBusinessesByUserAPI } from '../api/BusinessUsersAPI';
 
 export const WorkingBusiness = () => {
   const { currentUser } = useAuth();
@@ -19,14 +20,14 @@ export const WorkingBusiness = () => {
   const [selectedBusinessId, setSelectedBusinessId] = useState<string>('selectBusiness');
 
   useEffect(() => {
-    getBusinessesByUser(currentUser.uid).then((data: IBusinessUser[]) => {
+    getBusinessesByUserAPI(currentUser.uid).then((data: IBusinessUser[]) => {
       setBusinessesByUser(data);
     });
   }, []);
 
   useEffect(() => {
     if (businessesByUser.length > 0) {
-      fetchBusinesses(businessesByUser).then((data: IBusiness[]) => {
+      getBusinessesByBusinessessByUserAPI(businessesByUser).then((data: IBusiness[]) => {
         sortItemsString(data);
         setItems(data);
         if (workingBusinessId) {

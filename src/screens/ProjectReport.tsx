@@ -1,78 +1,74 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Tab, Table, Tabs } from "react-bootstrap";
-import { useParams } from "react-router-dom";
-import { ModalViewImages } from "../components/ModalViewImages";
-import { ExpenseRecordTable } from "../components/tables/ExpenseRecord.table";
+import React, { useEffect, useRef, useState } from 'react';
+import { Tab, Table, Tabs } from 'react-bootstrap';
+import { useParams } from 'react-router-dom';
+import { ModalViewImages } from '../components/ModalViewImages';
+import { ExpenseRecordTable } from '../components/tables/ExpenseRecord.table';
 
-import { ProgressLogTable } from "../components/tables/ProgressLog.table";
-import { IExpenseRecord } from "../interfaces/expenseRecord.interface";
-import { ILogCheckInOut } from "../interfaces/logCheckInOut.interface";
-import { IProgressLog } from "../interfaces/progressLog.interface";
-import { IProject } from "../interfaces/project.interface";
-import {
-  fetchExpenseRecord,
-  fetchLogs,
-  fetchProgressLog,
-  getProject,
-} from "../modules/db";
-import { sortItems } from "../modules/utils";
+import { getProgressLogAPI } from '../api/ProgressLogAPI';
+import { readProjectAPI } from '../api/ProjectsAPI';
+import { getLogsByProjectAPI } from '../api/LogCheckInOutAPI';
+import { getExpenseRecord } from '../api/stpAPI/stpFirestoreAPI/ExpenseRecord';
+import { useAuth } from '../contexts/AuthContext';
+import { sortItems } from '../common/Utils';
+import { IExpenseRecord } from '../interfaces/ExpenseRecord.interface';
+import { ILogCheckInOut } from '../interfaces/LogCheckInOut.interface';
+import { IProgressLog } from '../interfaces/ProgressLog.interface';
+import { IProject } from '../interfaces/Project.interface';
+import { ProgressLogTable } from '../components/tables/ProgressLog.table';
 
 export const ProjectReport = () => {
   // @ts-ignore
   const { projectId } = useParams();
+  const { currentUser } = useAuth();
 
   const defaultProjectDocument: IProject = {
     documentId: null,
-    name: "",
-    businessId: "",
-    businessName: "",
-    status: "ACTIVE",
+    name: '',
+    businessId: '',
+    businessName: '',
+    status: 'ACTIVE',
   };
   const defaultProgressLogDocument: IProgressLog = {
     documentId: null,
-    comment: "",
+    comment: '',
     imagesUrl: [],
-    status: "ACTIVE",
+    status: 'ACTIVE',
   };
   const defaultExpenseRecordDocument: IExpenseRecord = {
     documentId: null,
     amount: 0,
-    comment: "",
+    comment: '',
     imagesUrl: [],
-    status: "ACTIVE",
+    status: 'ACTIVE',
   };
 
-  const [selectedProject, setSelectedProject] = useState<IProject>(
-    defaultProjectDocument
-  );
+  const [selectedProject, setSelectedProject] = useState<IProject>(defaultProjectDocument);
   const [progressLog, setProgressLog] = useState<IProgressLog[]>([]);
   const [expenseRecord, setExpenseRecord] = useState<IExpenseRecord[]>([]);
   const [logs, setLogs] = useState<ILogCheckInOut[]>([]);
-  const [selectedProgressLogDocument, setSelectedProgressLogDocument] =
-    useState<IProgressLog>(defaultProgressLogDocument);
-  const [selectedExpenseRecordDocument, setSelectedExpenseRecordDocument] =
-    useState<IExpenseRecord>(defaultExpenseRecordDocument);
+  const [selectedProgressLogDocument, setSelectedProgressLogDocument] = useState<IProgressLog>(defaultProgressLogDocument);
+  const [selectedExpenseRecordDocument, setSelectedExpenseRecordDocument] = useState<IExpenseRecord>(defaultExpenseRecordDocument);
   const [imagesUrl, setImagesUrl] = useState<string[]>([]);
 
   useEffect(() => {
-    getProject(projectId).then((data: any) => {
+    readProjectAPI(currentUser, projectId).then((data: any) => {
       if (data) {
         setSelectedProject(data);
       }
     });
 
-    fetchProgressLog(projectId).then((data) => {
-      sortItems(data, "createdAtNumber", "desc");
+    getProgressLogAPI(projectId).then((data) => {
+      sortItems(data, 'createdAtNumber', 'desc');
       setProgressLog(data);
     });
 
-    fetchExpenseRecord(projectId).then((data) => {
-      sortItems(data, "createdAtNumber", "desc");
+    getExpenseRecord(projectId).then((data) => {
+      sortItems(data, 'createdAtNumber', 'desc');
       setExpenseRecord(data);
     });
 
-    fetchLogs(projectId).then((data) => {
-      sortItems(data, "createdAtNumber", "desc");
+    getLogsByProjectAPI(projectId).then((data) => {
+      sortItems(data, 'createdAtNumber', 'desc');
       setLogs(data);
     });
   }, []);
@@ -102,15 +98,11 @@ export const ProjectReport = () => {
       <h1>Reporte - {selectedProject.name}</h1>
       <ModalViewImages
         ref={childRefViewImages}
-        title={"Imagenes"}
+        title={'Imagenes'}
         // @ts-ignore
         imagesUrl={imagesUrl}
       />
-      <Tabs
-        defaultActiveKey="checkInOut"
-        id="uncontrolled-tab-example"
-        className="mb-3"
-      >
+      <Tabs defaultActiveKey="checkInOut" id="uncontrolled-tab-example" className="mb-3">
         <Tab eventKey="checkInOut" title={`Marcado (${logs.length})`}>
           <Table striped bordered hover>
             <thead>
@@ -127,7 +119,7 @@ export const ProjectReport = () => {
                 const checkInAt = log.checkInAt;
                 let checkOutAt: Date | string | undefined = log.checkOutAt;
                 if (!checkOutAt) {
-                  checkOutAt = "";
+                  checkOutAt = '';
                 }
                 return (
                   <tr key={log.documentId}>
@@ -151,10 +143,7 @@ export const ProjectReport = () => {
             editable={false}
           />
         </Tab>
-        <Tab
-          eventKey="expenseRecord"
-          title={`Gastos (${expenseRecord.length})`}
-        >
+        <Tab eventKey="expenseRecord" title={`Gastos (${expenseRecord.length})`}>
           <ExpenseRecordTable
             items={expenseRecord}
             onEditDocument={() => {}}

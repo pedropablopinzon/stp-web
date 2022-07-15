@@ -1,5 +1,5 @@
-import { Rol } from '../types/rol.types';
-import { Status } from '../types/status.types';
+import { Rol } from '../types/Rol.types';
+import { Status } from '../types/Status.types';
 
 export interface IBusinessUser {
   documentId?: string | null;

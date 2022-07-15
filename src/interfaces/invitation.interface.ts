@@ -1,5 +1,5 @@
-import { Rol } from '../types/rol.types';
-import { StatusInvitation } from '../types/status.types';
+import { Rol } from '../types/Rol.types';
+import { StatusInvitation } from '../types/Status.types';
 
 export interface IInvitation {
   documentId?: string | null;

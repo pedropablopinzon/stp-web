@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card } from 'react-bootstrap';
 
-import { Rol } from '../types/rol.types';
+import { Rol } from '../types/Rol.types';
 
 export const SelectRol = (props: { onSelectedRol: Function; rolId: Rol }) => {
   const [items, setItems] = useState<Rol[]>(['OWNER', 'EDITOR', 'OPERATOR']);
