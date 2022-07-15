@@ -1,8 +1,8 @@
 import React from 'react';
 import { Button, Table } from 'react-bootstrap';
 
-import { IBusiness } from '../../interfaces/business.interface';
-import { fixDate, showDetailedData } from '../../common/utils';
+import { IBusiness } from '../../interfaces/Business.interface';
+import { fixDate, showDetailedData } from '../../common/Utils';
 
 export const BusinessTable = (props: {
   items: IBusiness[];

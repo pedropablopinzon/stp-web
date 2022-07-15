@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 
-import { addDocument, updateDocument, deleteDocument, fetchExpenseRecord } from "../api/stpAPI/db";
-import { addItem, updateItem, deleteItem, sortItems } from "../common/utils";
+import { addDocument, updateDocument, deleteDocument, fetchExpenseRecord } from "../api/stpAPI/UtilsDb";
+import { addItem, updateItem, deleteItem, sortItems } from "../common/Utils";
 import { useAuth } from "../contexts/AuthContext";
 import { ConfirmDelete } from "../components/ConfirmDelete";
-import { IExpenseRecord } from "../interfaces/expenseRecord.interface";
+import { IExpenseRecord } from "../interfaces/ExpenseRecord.interface";
 import { ExpenseRecordTable } from "../components/tables/ExpenseRecord.table";
 import { WorkingProject } from "../components/WorkingProject";
 import { Storage } from "../components/Storage";
 import { CarouselImages } from "../components/CarouselImages";
-import { Collections } from "../enums/collections";
+import { Collections } from "../enums/Collections";
 
 export const ExpenseRecord = () => {
   const collectionName = Collections.expenseRecord;

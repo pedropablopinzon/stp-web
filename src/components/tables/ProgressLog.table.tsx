@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, Table } from "react-bootstrap";
 
-import { IProgressLog } from "../../interfaces/progressLog.interface";
-import { fixDate, showDetailedData } from "../../common/utils";
+import { IProgressLog } from "../../interfaces/ProgressLog.interface";
+import { fixDate, showDetailedData } from "../../common/Utils";
 
 export const ProgressLogTable = (props: {
   items: IProgressLog[];

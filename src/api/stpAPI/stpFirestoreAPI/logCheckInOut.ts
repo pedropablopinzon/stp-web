@@ -1,8 +1,8 @@
-import { firestoreDb } from '../../../firebase';
-import { addDocument, deleteDocument, readDocument, updateDocument } from '../db';
-import { Collections } from '../../../enums/collections';
-import { ILogCheckInOut } from '../../../interfaces/logCheckInOut.interface';
-import { fixDate } from '../../../common/utils';
+import { firestoreDb } from '../../../Firebase';
+import { addDocument, deleteDocument, readDocument, updateDocument } from '../UtilsDb';
+import { Collections } from '../../../enums/Collections';
+import { ILogCheckInOut } from '../../../interfaces/LogCheckInOut.interface';
+import { fixDate } from '../../../common/Utils';
 
 export const createLogCheckInOut = async (currentUser: any, newData: ILogCheckInOut) => {
   const result = await addDocument(Collections.logCheckInOut, newData);

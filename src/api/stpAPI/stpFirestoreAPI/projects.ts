@@ -1,7 +1,7 @@
-import { firestoreDb } from '../../../firebase';
-import { addDocument, deleteDocument, readDocument, updateDocument } from '../db';
-import { Collections } from '../../../enums/collections';
-import { IProject } from '../../../interfaces/project.interface';
+import { firestoreDb } from '../../../Firebase';
+import { addDocument, deleteDocument, readDocument, updateDocument } from '../UtilsDb';
+import { Collections } from '../../../enums/Collections';
+import { IProject } from '../../../interfaces/Project.interface';
 
 export const createProject = async (currentUser: any, newData: IProject) => {
   const result = await addDocument(Collections.projects, newData);

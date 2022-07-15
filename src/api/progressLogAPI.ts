@@ -1,5 +1,5 @@
-import { IProgressLog } from '../interfaces/progressLog.interface';
-import * as service from './stpAPI/stpFirestoreAPI/progressLog';
+import { IProgressLog } from '../interfaces/ProgressLog.interface';
+import * as service from './stpAPI/stpFirestoreAPI/ProgressLog';
 
 export const createProgressLogAPI = (currentUser: any, data: IProgressLog) => {
   return service.createProgressLog(currentUser, data);

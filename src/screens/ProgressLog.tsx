@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 
-import { createProgressLogAPI, deleteProgressLogAPI, getProgressLogAPI, updateProgressLogAPI } from '../api/progressLogAPI';
-import { addItem, updateItem, deleteItem, sortItems } from '../common/utils';
+import { createProgressLogAPI, deleteProgressLogAPI, getProgressLogAPI, updateProgressLogAPI } from '../api/ProgressLogAPI';
+import { addItem, updateItem, deleteItem, sortItems } from '../common/Utils';
 import { useAuth } from '../contexts/AuthContext';
 import { ConfirmDelete } from '../components/ConfirmDelete';
-import { IProgressLog } from '../interfaces/progressLog.interface';
+import { IProgressLog } from '../interfaces/ProgressLog.interface';
 import { ProgressLogTable } from '../components/tables/ProgressLog.table';
 import { WorkingProject } from '../components/WorkingProject';
 import { Storage } from '../components/Storage';

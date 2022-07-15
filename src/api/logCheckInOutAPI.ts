@@ -1,5 +1,5 @@
-import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
-import * as service from './stpAPI/stpFirestoreAPI/logCheckInOut';
+import { ILogCheckInOut } from '../interfaces/LogCheckInOut.interface';
+import * as service from './stpAPI/stpFirestoreAPI/LogCheckInOut';
 
 export const createLogCheckInOutAPI = (currentUser: any, data: ILogCheckInOut) => {
   return service.createLogCheckInOut(currentUser, data);

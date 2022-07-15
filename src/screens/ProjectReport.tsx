@@ -4,16 +4,16 @@ import { useParams } from 'react-router-dom';
 import { ModalViewImages } from '../components/ModalViewImages';
 import { ExpenseRecordTable } from '../components/tables/ExpenseRecord.table';
 
-import { getProgressLogAPI } from '../api/progressLogAPI';
-import { readProjectAPI } from '../api/projectsAPI';
-import { getLogsByProjectAPI } from '../api/logCheckInOutAPI';
-import { fetchExpenseRecord } from '../api/stpAPI/db';
+import { getProgressLogAPI } from '../api/ProgressLogAPI';
+import { readProjectAPI } from '../api/ProjectsAPI';
+import { getLogsByProjectAPI } from '../api/LogCheckInOutAPI';
+import { fetchExpenseRecord } from '../api/stpAPI/UtilsDb';
 import { useAuth } from '../contexts/AuthContext';
-import { sortItems } from '../common/utils';
-import { IExpenseRecord } from '../interfaces/expenseRecord.interface';
-import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
-import { IProgressLog } from '../interfaces/progressLog.interface';
-import { IProject } from '../interfaces/project.interface';
+import { sortItems } from '../common/Utils';
+import { IExpenseRecord } from '../interfaces/ExpenseRecord.interface';
+import { ILogCheckInOut } from '../interfaces/LogCheckInOut.interface';
+import { IProgressLog } from '../interfaces/ProgressLog.interface';
+import { IProject } from '../interfaces/Project.interface';
 import { ProgressLogTable } from '../components/tables/ProgressLog.table';
 
 export const ProjectReport = () => {

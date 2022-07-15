@@ -1,8 +1,8 @@
-import { firestoreDb } from '../../../firebase';
-import { addDocument, deleteDocument, readDocument, updateDocument } from '../db';
-import { IBusinessUser } from '../../../interfaces/businessUser.interface';
-import { Collections } from '../../../enums/collections';
-import { Rol } from '../../../types/rol.types';
+import { firestoreDb } from '../../../Firebase';
+import { addDocument, deleteDocument, readDocument, updateDocument } from '../UtilsDb';
+import { IBusinessUser } from '../../../interfaces/BusinessUser.interface';
+import { Collections } from '../../../enums/Collections';
+import { Rol } from '../../../types/Rol.types';
 
 export const createBusinessUser = async (currentUser: any, newData: IBusinessUser) => {
   const result = await addDocument(Collections.businessUsers, newData);

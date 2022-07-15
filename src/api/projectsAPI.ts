@@ -1,5 +1,5 @@
-import { IProject } from '../interfaces/project.interface';
-import * as service from './stpAPI/stpFirestoreAPI/projects';
+import { IProject } from '../interfaces/Project.interface';
+import * as service from './stpAPI/stpFirestoreAPI/Projects';
 
 export const createProjectAPI = (currentUser: any, data: IProject) => {
   return service.createProject(currentUser, data);

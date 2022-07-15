@@ -1,9 +1,9 @@
-import { deleteDocument, getDocumentReference, readDocument, setDocument, updateDocument } from '../db';
-import { Collections } from '../../../enums/collections';
-import { IBusiness } from '../../../interfaces/business.interface';
-import { IBusinessUser } from '../../../interfaces/businessUser.interface';
-import { firestoreDb } from '../../../firebase';
-import { addBusinessUser } from './businessUsers';
+import { deleteDocument, getDocumentReference, readDocument, setDocument, updateDocument } from '../UtilsDb';
+import { Collections } from '../../../enums/Collections';
+import { IBusiness } from '../../../interfaces/Business.interface';
+import { IBusinessUser } from '../../../interfaces/BusinessUser.interface';
+import { firestoreDb } from '../../../Firebase';
+import { addBusinessUser } from './BusinessUsers';
 
 export const createBusiness = async (currentUser: any, newBusinessData: IBusiness) => {
   const docRef = await getDocumentReference(Collections.businesses);

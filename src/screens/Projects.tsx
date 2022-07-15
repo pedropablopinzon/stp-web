@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
-import { createProjectAPI, deleteProjectAPI, getProjectsAPI, updateProjectAPI } from '../api/projectsAPI';
-import { sortItemsString, addItem, updateItem, deleteItem } from '../common/utils';
+import { createProjectAPI, deleteProjectAPI, getProjectsAPI, updateProjectAPI } from '../api/ProjectsAPI';
+import { sortItemsString, addItem, updateItem, deleteItem } from '../common/Utils';
 import { useAuth } from '../contexts/AuthContext';
-import { IProject } from '../interfaces/project.interface';
+import { IProject } from '../interfaces/Project.interface';
 import { ConfirmDelete } from '../components/ConfirmDelete';
 import { ProjectsTable } from '../components/tables/Projects.table';
 

@@ -3,11 +3,11 @@ import { Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import { useAuth } from '../contexts/AuthContext';
-import { IBusiness } from '../interfaces/business.interface';
-import { IBusinessUser } from '../interfaces/businessUser.interface';
-import { sortItemsString } from '../common/utils';
-import { getBusinessesByBusinessessByUserAPI } from '../api/businessesAPI';
-import { getBusinessesByUserAPI } from '../api/businessUsersAPI';
+import { IBusiness } from '../interfaces/Business.interface';
+import { IBusinessUser } from '../interfaces/BusinessUser.interface';
+import { sortItemsString } from '../common/Utils';
+import { getBusinessesByBusinessessByUserAPI } from '../api/BusinessesAPI';
+import { getBusinessesByUserAPI } from '../api/BusinessUsersAPI';
 
 export const WorkingBusiness = () => {
   const { currentUser } = useAuth();

@@ -1,14 +1,14 @@
 import { doc, getDoc } from 'firebase/firestore';
 
-import { Collections } from '../../enums/collections';
-import { firestoreDb } from '../../firebase';
-import { IBusinessUser } from '../../interfaces/businessUser.interface';
-import { IInvitation } from '../../interfaces/invitation.interface';
-import { ILogCheckInOut } from '../../interfaces/logCheckInOut.interface';
-import { IResult } from '../../interfaces/result.interface';
-import { Rol } from '../../types/rol.types';
-import { fixDate } from '../../common/utils';
-import { addBusinessUser } from './stpFirestoreAPI/businessUsers';
+import { Collections } from '../../enums/Collections';
+import { firestoreDb } from '../../Firebase';
+import { IBusinessUser } from '../../interfaces/BusinessUser.interface';
+import { IInvitation } from '../../interfaces/Invitation.interface';
+import { ILogCheckInOut } from '../../interfaces/LogCheckInOut.interface';
+import { IResult } from '../../interfaces/Result.interface';
+import { Rol } from '../../types/Rol.types';
+import { fixDate } from '../../common/Utils';
+import { addBusinessUser } from './stpFirestoreAPI/BusinessUsers';
 
 export const getDocumentReference = async (collectionName: string) => {
   return await firestoreDb.collection(collectionName).doc();

@@ -1,4 +1,4 @@
-import { Status } from '../types/status.types';
+import { Status } from '../types/Status.types';
 
 export interface IExpenseRecord {
   documentId?: string | null;

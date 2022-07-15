@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { Card } from 'react-bootstrap';
 
 import { useAuth } from '../contexts/AuthContext';
-import { IInvitation } from '../interfaces/invitation.interface';
-import { acceptInvitation, fetchInvitationsByEmail, rejectInvitation } from '../api/stpAPI/db';
-import { deleteItem, sortItems } from '../common/utils';
+import { IInvitation } from '../interfaces/Invitation.interface';
+import { acceptInvitation, fetchInvitationsByEmail, rejectInvitation } from '../api/stpAPI/UtilsDb';
+import { deleteItem, sortItems } from '../common/Utils';
 import { ConfirmDelete } from './ConfirmDelete';
 import { InvitationsTable } from './tables/Invitations.table';
 

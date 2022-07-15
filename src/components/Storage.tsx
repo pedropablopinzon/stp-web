@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
-import { storage } from '../firebase';
+import { storage } from '../Firebase';
 
 export const Storage = (props: { onFileUploaded: Function }) => {
   // State to store uploaded file

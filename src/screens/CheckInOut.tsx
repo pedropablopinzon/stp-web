@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Card, Button, Table } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
-import { getProjectsAPI } from '../api/projectsAPI';
-import { createLogCheckInOutAPI, updateLogCheckInOutAPI, getLogsByUserAPI } from '../api/logCheckInOutAPI';
+import { getProjectsAPI } from '../api/ProjectsAPI';
+import { createLogCheckInOutAPI, updateLogCheckInOutAPI, getLogsByUserAPI } from '../api/LogCheckInOutAPI';
 import { useAuth } from '../contexts/AuthContext';
-import { sortItemsString, showDetailedData } from '../common/utils';
-import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
-import { IProject } from '../interfaces/project.interface';
+import { sortItemsString, showDetailedData } from '../common/Utils';
+import { ILogCheckInOut } from '../interfaces/LogCheckInOut.interface';
+import { IProject } from '../interfaces/Project.interface';
 
 export const CheckInOut = () => {
   const history = useHistory();

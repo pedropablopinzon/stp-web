@@ -1,7 +1,7 @@
-import { firestoreDb } from '../../../firebase';
-import { addDocument, deleteDocument, readDocument, updateDocument } from '../db';
-import { Collections } from '../../../enums/collections';
-import { IProgressLog } from '../../../interfaces/progressLog.interface';
+import { firestoreDb } from '../../../Firebase';
+import { addDocument, deleteDocument, readDocument, updateDocument } from '../UtilsDb';
+import { Collections } from '../../../enums/Collections';
+import { IProgressLog } from '../../../interfaces/ProgressLog.interface';
 
 export const createProgressLog = async (currentUser: any, newData: IProgressLog) => {
   const result = await addDocument(Collections.progressLog, newData);
