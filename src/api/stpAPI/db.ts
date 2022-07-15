@@ -8,6 +8,7 @@ import { ILogCheckInOut } from '../../interfaces/logCheckInOut.interface';
 import { IResult } from '../../interfaces/result.interface';
 import { Rol } from '../../types/rol.types';
 import { fixDate } from '../../common/utils';
+import { addBusinessUser } from './stpFirestoreAPI/businessUser';
 
 export const getDocumentReference = async (collectionName: string) => {
   return await firestoreDb.collection(collectionName).doc();
@@ -194,25 +195,6 @@ export const acceptInvitation = async (currentUser: any, documentId: string, bus
   await updateDocument(Collections.invitations, documentId, updateData);
 
   return resultBusinessUser;
-};
-
-export const addBusinessUser = async (currentUser: any, businessId: string, rolId: Rol) => {
-  const newBusinessUserData: IBusinessUser = {
-    businessId: businessId,
-    userId: currentUser.uid,
-    userName: currentUser.displayName,
-    email: currentUser.email,
-    rolId,
-    status: 'ACTIVE',
-    createdAt: new Date(),
-    createdBy: currentUser.uid,
-    createdByEmail: currentUser.email,
-  };
-
-  const resultBusinessUser = await addDocument(Collections.businessUsers, newBusinessUserData);
-  newBusinessUserData.documentId = resultBusinessUser.id;
-
-  return newBusinessUserData;
 };
 
 export const fetchProgressLog = async (projectId: string) => {

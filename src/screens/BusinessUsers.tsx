@@ -76,8 +76,7 @@ export const BusinessUsers = () => {
   };
 
   const saveDocument = async () => {
-    console.log(selectedDocument);
-    if (selectedDocument.documentId) {
+   if (selectedDocument.documentId) {
       const updateData: IBusinessUser = {
         rolId: selectedRolId,
         updatedAt: new Date(),

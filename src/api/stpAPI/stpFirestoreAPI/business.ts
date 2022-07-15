@@ -1,9 +1,9 @@
-import { addDocument, deleteDocument, getDocumentReference, readDocument, setDocument, updateDocument } from '../db';
+import { deleteDocument, getDocumentReference, readDocument, setDocument, updateDocument } from '../db';
 import { Collections } from '../../../enums/collections';
 import { IBusiness } from '../../../interfaces/business.interface';
 import { IBusinessUser } from '../../../interfaces/businessUser.interface';
-import { Rol } from '../../../types/rol.types';
 import { firestoreDb } from '../../../firebase';
+import { addBusinessUser } from './businessUser';
 
 export const createBusiness = async (currentUser: any, newBusinessData: IBusiness) => {
   const docRef = await getDocumentReference(Collections.businesses);
@@ -30,25 +30,6 @@ export const readBusiness = async (currentUser: any, businessId: string) => {
   return readDocument(Collections.businesses, businessId);
 };
 
-export const addBusinessUser = async (currentUser: any, businessId: string, rolId: Rol) => {
-  const newBusinessUserData: IBusinessUser = {
-    businessId: businessId,
-    userId: currentUser.uid,
-    userName: currentUser.displayName,
-    email: currentUser.email,
-    rolId,
-    status: 'ACTIVE',
-    createdAt: new Date(),
-    createdBy: currentUser.uid,
-    createdByEmail: currentUser.email,
-  };
-
-  const resultBusinessUser = await addDocument(Collections.businessUsers, newBusinessUserData);
-  newBusinessUserData.documentId = resultBusinessUser.id;
-
-  return newBusinessUserData;
-};
-// businessesByUser
 export const getBusinessesByBusinessessByUser = async (businessesByUser: IBusinessUser[]) => {
   const querySnapshot = await firestoreDb
     .collection(Collections.businesses)

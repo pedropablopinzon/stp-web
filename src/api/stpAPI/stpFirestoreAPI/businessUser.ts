@@ -2,6 +2,7 @@ import { firestoreDb } from '../../../firebase';
 import { addDocument, deleteDocument, readDocument, updateDocument } from '../db';
 import { IBusinessUser } from '../../../interfaces/businessUser.interface';
 import { Collections } from '../../../enums/collections';
+import { Rol } from '../../../types/rol.types';
 
 export const createBusinessUser = async (currentUser: any, newData: IBusinessUser) => {
   const result = await addDocument(Collections.businessUsers, newData);
@@ -48,4 +49,23 @@ export const getBusinessesByUser = async (userId: string) => {
     documents.push({ ...doc.data(), documentId: doc.ref.id });
   });
   return documents;
+};
+
+export const addBusinessUser = async (currentUser: any, businessId: string, rolId: Rol) => {
+  const newBusinessUserData: IBusinessUser = {
+    businessId: businessId,
+    userId: currentUser.uid,
+    userName: currentUser.displayName,
+    email: currentUser.email,
+    rolId,
+    status: 'ACTIVE',
+    createdAt: new Date(),
+    createdBy: currentUser.uid,
+    createdByEmail: currentUser.email,
+  };
+
+  const resultBusinessUser = await addDocument(Collections.businessUsers, newBusinessUserData);
+  newBusinessUserData.documentId = resultBusinessUser.id;
+
+  return newBusinessUserData;
 };
