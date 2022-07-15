@@ -1,40 +1,36 @@
-import React, { useEffect, useState } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import React, { useEffect, useState } from 'react';
+import { Button, Modal, Form } from 'react-bootstrap';
 
-import { addDocument, updateDocument, deleteDocument, fetchProgressLog } from "../api/stpAPI/db";
-import { addItem, updateItem, deleteItem, sortItems } from "../common/utils";
-import { useAuth } from "../contexts/AuthContext";
-import { ConfirmDelete } from "../components/ConfirmDelete";
-import { IProgressLog } from "../interfaces/progressLog.interface";
-import { ProgressLogTable } from "../components/tables/ProgressLog.table";
-import { WorkingProject } from "../components/WorkingProject";
-import { Storage } from "../components/Storage";
-import { CarouselImages } from "../components/CarouselImages";
-import { Collections } from "../enums/collections";
+import { createProgressLogAPI, deleteProgressLogAPI, getProgressLogAPI, updateProgressLogAPI } from '../api/progressLogAPI';
+import { addItem, updateItem, deleteItem, sortItems } from '../common/utils';
+import { useAuth } from '../contexts/AuthContext';
+import { ConfirmDelete } from '../components/ConfirmDelete';
+import { IProgressLog } from '../interfaces/progressLog.interface';
+import { ProgressLogTable } from '../components/tables/ProgressLog.table';
+import { WorkingProject } from '../components/WorkingProject';
+import { Storage } from '../components/Storage';
+import { CarouselImages } from '../components/CarouselImages';
 
 export const ProgressLog = () => {
-  const collectionName = Collections.progressLog;
-  const title = "Tareas";
-  const titleSingular = "Tarea";
+  const title = 'Tareas';
+  const titleSingular = 'Tarea';
 
   const { currentUser } = useAuth();
   const defaultDocument: IProgressLog = {
     documentId: null,
-    comment: "",
+    comment: '',
     imagesUrl: [],
-    status: "ACTIVE",
+    status: 'ACTIVE',
   };
 
-  const workingProjectId = localStorage.getItem("workingProjectId") || '';
-  const workingProjectName = localStorage.getItem("workingProjectName") || '';
+  const workingProjectId = localStorage.getItem('workingProjectId') || '';
+  const workingProjectName = localStorage.getItem('workingProjectName') || '';
 
   const [items, setItems] = useState<IProgressLog[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
-  const [selectedDocument, setSelectedDocument] =
-    useState<IProgressLog>(defaultDocument);
-  const [deletedDocument, setDeletedDocument] =
-    useState<IProgressLog>(defaultDocument);
+  const [selectedDocument, setSelectedDocument] = useState<IProgressLog>(defaultDocument);
+  const [deletedDocument, setDeletedDocument] = useState<IProgressLog>(defaultDocument);
 
   const handleCloseModal = () => {
     setSelectedDocument(defaultDocument);
@@ -60,16 +56,9 @@ export const ProgressLog = () => {
         updatedBy: currentUser.uid,
         updatedByEmail: currentUser.email,
       };
-      updateDocument(collectionName, selectedDocument.documentId, updateData);
+      const result = await updateProgressLogAPI(currentUser, selectedDocument.documentId, updateData);
 
-      const updatedItems = updateItem(
-        items,
-        selectedDocument.documentId,
-        updateData,
-        "createdAtNumber",
-        "number",
-        "desc"
-      );
+      const updatedItems = updateItem(items, selectedDocument.documentId, updateData, 'createdAtNumber', 'number', 'desc');
 
       setItems(updatedItems);
     } else {
@@ -78,25 +67,24 @@ export const ProgressLog = () => {
         projectName: workingProjectName,
         comment: selectedDocument.comment,
         imagesUrl: selectedDocument.imagesUrl,
-        status: "ACTIVE",
+        status: 'ACTIVE',
         createdAt: new Date(),
         createdAtNumber: new Date().getTime(),
         createdBy: currentUser.uid,
         createdByEmail: currentUser.email,
       };
-      const result = await addDocument(collectionName, newData);
-      newData.documentId = result.id;
+      const result = await createProgressLogAPI(currentUser, newData);
 
-      addItem(items, newData, "createdAtNumber", "number", "desc");
+      addItem(items, result, 'createdAtNumber', 'number', 'desc');
 
       setItems(items);
     }
     setShowModal(false);
   };
 
-  const removeDocument = () => {
+  const removeDocument = async () => {
     if (deletedDocument.documentId) {
-      deleteDocument(collectionName, deletedDocument.documentId);
+      const result = await deleteProgressLogAPI(currentUser, deletedDocument.documentId);
 
       const newItems = deleteItem(items, deletedDocument.documentId);
 
@@ -118,8 +106,8 @@ export const ProgressLog = () => {
   };
 
   useEffect(() => {
-    fetchProgressLog(workingProjectId).then((data) => {
-      sortItems(data, "createdAtNumber", "desc");
+    getProgressLogAPI(workingProjectId).then((data) => {
+      sortItems(data, 'createdAtNumber', 'desc');
       setItems(data);
     });
   }, []);
@@ -159,13 +147,7 @@ export const ProgressLog = () => {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label>Comentario</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              name="comment"
-              value={selectedDocument.comment}
-              onChange={onInputChange}
-            />
+            <Form.Control as="textarea" rows={3} name="comment" value={selectedDocument.comment} onChange={onInputChange} />
           </Form.Group>
           <Storage onFileUploaded={fileUploaded} />
           <CarouselImages items={selectedDocument.imagesUrl} />

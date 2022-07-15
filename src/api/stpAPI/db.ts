@@ -183,20 +183,6 @@ export const acceptInvitation = async (currentUser: any, documentId: string, bus
   return resultBusinessUser;
 };
 
-export const fetchProgressLog = async (projectId: string) => {
-  const querySnapshot = await firestoreDb
-    .collection(Collections.progressLog)
-    .where('status', '==', 'ACTIVE')
-    .where('projectId', '==', projectId)
-    .get();
-
-  const documents: any[] = [];
-  querySnapshot.forEach((doc) => {
-    documents.push({ ...doc.data(), documentId: doc.ref.id });
-  });
-  return documents;
-};
-
 export const fetchExpenseRecord = async (projectId: string) => {
   const querySnapshot = await firestoreDb
     .collection(Collections.expenseRecord)

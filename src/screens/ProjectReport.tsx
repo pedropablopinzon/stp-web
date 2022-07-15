@@ -4,9 +4,10 @@ import { useParams } from 'react-router-dom';
 import { ModalViewImages } from '../components/ModalViewImages';
 import { ExpenseRecordTable } from '../components/tables/ExpenseRecord.table';
 
+import { getProgressLogAPI } from '../api/progressLogAPI';
 import { readProjectAPI } from '../api/projectsAPI';
 import { getLogsByProjectAPI } from '../api/logCheckInOutAPI';
-import { fetchExpenseRecord, fetchProgressLog } from '../api/stpAPI/db';
+import { fetchExpenseRecord } from '../api/stpAPI/db';
 import { useAuth } from '../contexts/AuthContext';
 import { sortItems } from '../common/utils';
 import { IExpenseRecord } from '../interfaces/expenseRecord.interface';
@@ -56,7 +57,7 @@ export const ProjectReport = () => {
       }
     });
 
-    fetchProgressLog(projectId).then((data) => {
+    getProgressLogAPI(projectId).then((data) => {
       sortItems(data, 'createdAtNumber', 'desc');
       setProgressLog(data);
     });
