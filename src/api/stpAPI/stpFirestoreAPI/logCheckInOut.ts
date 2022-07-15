@@ -1,4 +1,4 @@
-import { firestoreDb } from '../../../Firebase';
+import { firestoreDb } from '../../../firebase';
 import { addDocument, deleteDocument, readDocument, updateDocument } from '../UtilsDb';
 import { Collections } from '../../../enums/Collections';
 import { ILogCheckInOut } from '../../../interfaces/LogCheckInOut.interface';

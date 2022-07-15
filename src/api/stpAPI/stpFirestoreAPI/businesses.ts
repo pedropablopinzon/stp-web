@@ -2,7 +2,7 @@ import { deleteDocument, getDocumentReference, readDocument, setDocument, update
 import { Collections } from '../../../enums/Collections';
 import { IBusiness } from '../../../interfaces/Business.interface';
 import { IBusinessUser } from '../../../interfaces/BusinessUser.interface';
-import { firestoreDb } from '../../../Firebase';
+import { firestoreDb } from '../../../firebase';
 import { addBusinessUser } from './BusinessUsers';
 
 export const createBusiness = async (currentUser: any, newBusinessData: IBusiness) => {

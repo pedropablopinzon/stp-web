@@ -9,7 +9,7 @@ import { ExpenseRecordTable } from '../components/tables/ExpenseRecord.table';
 import { WorkingProject } from '../components/WorkingProject';
 import { Storage } from '../components/Storage';
 import { CarouselImages } from '../components/CarouselImages';
-import { createExpenseRecordAPI, deleteExpenseRecordAPI, updateExpenseRecordAPI } from '../api/expenseRecordAPI';
+import { createExpenseRecordAPI, deleteExpenseRecordAPI, updateExpenseRecordAPI } from '../api/ExpenseRecordAPI';
 import { getExpenseRecord } from '../api/stpAPI/stpFirestoreAPI/ExpenseRecord';
 
 export const ExpenseRecord = () => {

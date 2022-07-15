@@ -1,7 +1,7 @@
 import { doc, getDoc } from 'firebase/firestore';
 
 import { Collections } from '../../enums/Collections';
-import { firestoreDb } from '../../Firebase';
+import { firestoreDb } from '../../firebase';
 import { IInvitation } from '../../interfaces/Invitation.interface';
 import { IResult } from '../../interfaces/Result.interface';
 import { Rol } from '../../types/Rol.types';
