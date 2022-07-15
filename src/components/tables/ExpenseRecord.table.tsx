@@ -1,8 +1,8 @@
 import React from "react";
 import { Button, Table } from "react-bootstrap";
 
-import { IExpenseRecord } from "../../interfaces/expenseRecord.interface";
-import { fixDate, showDetailedData } from "../../modules/utils";
+import { IExpenseRecord } from "../../interfaces/ExpenseRecord.interface";
+import { fixDate, showDetailedData } from "../../common/Utils";
 
 export const ExpenseRecordTable = (props: {
   items: IExpenseRecord[];

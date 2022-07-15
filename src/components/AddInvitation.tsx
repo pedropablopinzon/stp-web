@@ -1,11 +1,11 @@
 import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 
+import { addInvitationAPI } from '../api/InvitationsAPI';
 import { useAuth } from '../contexts/AuthContext';
-import { IBusiness } from '../interfaces/business.interface';
-import { IResult } from '../interfaces/result.interface';
-import { addInvitation } from '../modules/db';
-import { Rol } from '../types/rol.types';
+import { IBusiness } from '../interfaces/Business.interface';
+import { IResult } from '../interfaces/Result.interface';
+import { Rol } from '../types/Rol.types';
 import { SelectRol } from './SelectRol';
 
 export const AddInvitation = forwardRef((props: { business?: IBusiness; onSendInvitation: Function; subtitle?: string }, ref) => {
@@ -35,7 +35,7 @@ export const AddInvitation = forwardRef((props: { business?: IBusiness; onSendIn
 
   const sendInvitation = async () => {
     // @ts-ignore
-    const result: IResult = await addInvitation(currentUser, email, selectedRolId, props.business.documentId, props.business.name);
+    const result: IResult = await addInvitationAPI(currentUser, email, selectedRolId, props.business.documentId, props.business.name);
     setEmail('');
     props.onSendInvitation(result);
     setShowModal(false);

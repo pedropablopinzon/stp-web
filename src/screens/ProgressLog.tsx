@@ -1,47 +1,36 @@
-import React, { useEffect, useState } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import React, { useEffect, useState } from 'react';
+import { Button, Modal, Form } from 'react-bootstrap';
 
-import { addDocument, updateDocument, deleteDocument } from "../modules/db";
-import { addItem, updateItem, deleteItem, sortItems } from "../modules/utils";
-import { useAuth } from "../contexts/AuthContext";
-import { ConfirmDelete } from "../components/ConfirmDelete";
-import { IProgressLog } from "../interfaces/progressLog.interface";
-import { ProgressLogTable } from "../components/tables/ProgressLog.table";
-import { db } from "../firebase";
-import { WorkingProject } from "../components/WorkingProject";
-import { Storage } from "../components/Storage";
-import { CarouselImages } from "../components/CarouselImages";
-import { Collections } from "../enums/collections";
+import { createProgressLogAPI, deleteProgressLogAPI, getProgressLogAPI, updateProgressLogAPI } from '../api/ProgressLogAPI';
+import { addItem, updateItem, deleteItem, sortItems } from '../common/Utils';
+import { useAuth } from '../contexts/AuthContext';
+import { ConfirmDelete } from '../components/ConfirmDelete';
+import { IProgressLog } from '../interfaces/ProgressLog.interface';
+import { ProgressLogTable } from '../components/tables/ProgressLog.table';
+import { WorkingProject } from '../components/WorkingProject';
+import { Storage } from '../components/Storage';
+import { CarouselImages } from '../components/CarouselImages';
 
 export const ProgressLog = () => {
-  const collectionName = Collections.progressLog;
-  const title = "Tareas";
-  const titleSingular = "Tarea";
+  const title = 'Tareas';
+  const titleSingular = 'Tarea';
 
   const { currentUser } = useAuth();
   const defaultDocument: IProgressLog = {
     documentId: null,
-    comment: "",
+    comment: '',
     imagesUrl: [],
-    status: "ACTIVE",
+    status: 'ACTIVE',
   };
 
-  let workingProjectId = localStorage.getItem("workingProjectId");
-  const workingProjectName = localStorage.getItem("workingProjectName");
-  const workingProjectCheckInAt = localStorage.getItem(
-    "workingProjectCheckInAt"
-  );
-  if (!workingProjectId) {
-    workingProjectId = "";
-  }
+  const workingProjectId = localStorage.getItem('workingProjectId') || '';
+  const workingProjectName = localStorage.getItem('workingProjectName') || '';
 
   const [items, setItems] = useState<IProgressLog[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
-  const [selectedDocument, setSelectedDocument] =
-    useState<IProgressLog>(defaultDocument);
-  const [deletedDocument, setDeletedDocument] =
-    useState<IProgressLog>(defaultDocument);
+  const [selectedDocument, setSelectedDocument] = useState<IProgressLog>(defaultDocument);
+  const [deletedDocument, setDeletedDocument] = useState<IProgressLog>(defaultDocument);
 
   const handleCloseModal = () => {
     setSelectedDocument(defaultDocument);
@@ -67,43 +56,35 @@ export const ProgressLog = () => {
         updatedBy: currentUser.uid,
         updatedByEmail: currentUser.email,
       };
-      updateDocument(collectionName, selectedDocument.documentId, updateData);
+      const result = await updateProgressLogAPI(currentUser, selectedDocument.documentId, updateData);
 
-      const updatedItems = updateItem(
-        items,
-        selectedDocument.documentId,
-        updateData,
-        "createdAtNumber",
-        "number",
-        "desc"
-      );
+      const updatedItems = updateItem(items, selectedDocument.documentId, updateData, 'createdAtNumber', 'number', 'desc');
 
       setItems(updatedItems);
     } else {
       const newData: IProgressLog = {
-        projectId: workingProjectId!,
-        projectName: workingProjectName!,
+        projectId: workingProjectId,
+        projectName: workingProjectName,
         comment: selectedDocument.comment,
         imagesUrl: selectedDocument.imagesUrl,
-        status: "ACTIVE",
+        status: 'ACTIVE',
         createdAt: new Date(),
         createdAtNumber: new Date().getTime(),
         createdBy: currentUser.uid,
         createdByEmail: currentUser.email,
       };
-      const result = await addDocument(collectionName, newData);
-      newData.documentId = result.id;
+      const result = await createProgressLogAPI(currentUser, newData);
 
-      addItem(items, newData, "createdAtNumber", "number", "desc");
+      addItem(items, result, 'createdAtNumber', 'number', 'desc');
 
       setItems(items);
     }
     setShowModal(false);
   };
 
-  const removeDocument = () => {
+  const removeDocument = async () => {
     if (deletedDocument.documentId) {
-      deleteDocument(collectionName, deletedDocument.documentId);
+      const result = await deleteProgressLogAPI(currentUser, deletedDocument.documentId);
 
       const newItems = deleteItem(items, deletedDocument.documentId);
 
@@ -118,20 +99,6 @@ export const ProgressLog = () => {
     setSelectedDocument({ ...selectedDocument, [name]: value });
   };
 
-  const fetchDocuments = async (collectionName: string) => {
-    const querySnapshot = await db
-      .collection(collectionName)
-      .where("status", "==", "ACTIVE")
-      .where("projectId", "==", workingProjectId)
-      .get();
-
-    const documents: any[] = [];
-    querySnapshot.forEach((doc) => {
-      documents.push({ ...doc.data(), documentId: doc.ref.id });
-    });
-    return documents;
-  };
-
   const fileUploaded = (url: string) => {
     // @ts-ignore
     selectedDocument.imagesUrl.push(url);
@@ -139,8 +106,8 @@ export const ProgressLog = () => {
   };
 
   useEffect(() => {
-    fetchDocuments(collectionName).then((data) => {
-      sortItems(data, "createdAtNumber", "desc");
+    getProgressLogAPI(workingProjectId).then((data) => {
+      sortItems(data, 'createdAtNumber', 'desc');
       setItems(data);
     });
   }, []);
@@ -180,13 +147,7 @@ export const ProgressLog = () => {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label>Comentario</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              name="comment"
-              value={selectedDocument.comment}
-              onChange={onInputChange}
-            />
+            <Form.Control as="textarea" rows={3} name="comment" value={selectedDocument.comment} onChange={onInputChange} />
           </Form.Group>
           <Storage onFileUploaded={fileUploaded} />
           <CarouselImages items={selectedDocument.imagesUrl} />
