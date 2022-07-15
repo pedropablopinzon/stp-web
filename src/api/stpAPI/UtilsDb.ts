@@ -5,7 +5,7 @@ import { firestoreDb } from '../../firebase';
 import { IInvitation } from '../../interfaces/Invitation.interface';
 import { IResult } from '../../interfaces/Result.interface';
 import { Rol } from '../../types/Rol.types';
-import { addBusinessUser } from './stpFirestoreAPI/BusinessUsers';
+import { addBusinessUser, getBusinessUsersByEmail } from './stpFirestoreAPI/BusinessUsers';
 
 export const getDocumentReference = async (collectionName: string) => {
   return await firestoreDb.collection(collectionName).doc();
@@ -42,21 +42,6 @@ export const readDocument = async (collectionName: string, documentId: string) =
 
 export const fetchDocuments = async (collectionName: string) => {
   const querySnapshot = await firestoreDb.collection(collectionName).where('status', '==', 'ACTIVE').get();
-
-  const documents: any[] = [];
-  querySnapshot.forEach((doc) => {
-    documents.push({ ...doc.data(), documentId: doc.ref.id });
-  });
-  return documents;
-};
-
-export const fetchBusinessUsersByEmail = async (businessId: string, email: string) => {
-  const querySnapshot = await firestoreDb
-    .collection(Collections.businessUsers)
-    .where('status', '==', 'ACTIVE')
-    .where('businessId', '==', businessId)
-    .where('email', '==', email)
-    .get();
 
   const documents: any[] = [];
   querySnapshot.forEach((doc) => {
@@ -124,7 +109,7 @@ export const addInvitation = async (
     return result;
   }
 
-  const businessUsers: any[] = await fetchBusinessUsersByEmail(businessId, email);
+  const businessUsers: any[] = await getBusinessUsersByEmail(businessId, email);
 
   if (businessUsers.length > 0) {
     result.status = false;

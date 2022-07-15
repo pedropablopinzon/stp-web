@@ -85,3 +85,18 @@ export const getBusinessesByUserAdministrativeRoles = async (userId: string) => 
   });
   return documents;
 };
+
+export const getBusinessUsersByEmail = async (businessId: string, email: string) => {
+  const querySnapshot = await firestoreDb
+    .collection(Collections.businessUsers)
+    .where('status', '==', 'ACTIVE')
+    .where('businessId', '==', businessId)
+    .where('email', '==', email)
+    .get();
+
+  const documents: any[] = [];
+  querySnapshot.forEach((doc) => {
+    documents.push({ ...doc.data(), documentId: doc.ref.id });
+  });
+  return documents;
+};

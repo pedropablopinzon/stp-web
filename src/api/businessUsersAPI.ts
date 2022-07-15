@@ -28,3 +28,7 @@ export const getBusinessesByUserAPI = (documentId: string) => {
 export const getBusinessesByUserAdministrativeRolesAPI = (userId: string) => {
   return service.getBusinessesByUserAdministrativeRoles(userId);
 };
+
+export const getBusinessUsersByEmailAPI = (businessId: string, email: string) => {
+  return service.getBusinessUsersByEmail(businessId, email);
+};
