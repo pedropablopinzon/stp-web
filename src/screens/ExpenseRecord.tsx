@@ -1,48 +1,38 @@
-import React, { useEffect, useState } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
+import React, { useEffect, useState } from 'react';
+import { Button, Modal, Form } from 'react-bootstrap';
 
-import { addDocument, updateDocument, deleteDocument } from "../modules/db";
-import { addItem, updateItem, deleteItem, sortItems } from "../modules/utils";
-import { useAuth } from "../contexts/AuthContext";
-import { ConfirmDelete } from "../components/ConfirmDelete";
-import { IExpenseRecord } from "../interfaces/expenseRecord.interface";
-import { ExpenseRecordTable } from "../components/tables/ExpenseRecord.table";
-import { db } from "../firebase";
-import { WorkingProject } from "../components/WorkingProject";
-import { Storage } from "../components/Storage";
-import { CarouselImages } from "../components/CarouselImages";
-import { Collections } from "../enums/collections";
+import { addItem, updateItem, deleteItem, sortItems } from '../common/Utils';
+import { useAuth } from '../contexts/AuthContext';
+import { ConfirmDelete } from '../components/ConfirmDelete';
+import { IExpenseRecord } from '../interfaces/ExpenseRecord.interface';
+import { ExpenseRecordTable } from '../components/tables/ExpenseRecord.table';
+import { WorkingProject } from '../components/WorkingProject';
+import { Storage } from '../components/Storage';
+import { CarouselImages } from '../components/CarouselImages';
+import { createExpenseRecordAPI, deleteExpenseRecordAPI, updateExpenseRecordAPI } from '../api/ExpenseRecordAPI';
+import { getExpenseRecord } from '../api/stpAPI/stpFirestoreAPI/ExpenseRecord';
 
 export const ExpenseRecord = () => {
-  const collectionName = Collections.expenseRecord;
-  const title = "Gastos";
-  const titleSingular = "Gasto";
+  const title = 'Gastos';
+  const titleSingular = 'Gasto';
 
   const { currentUser } = useAuth();
   const defaultDocument: IExpenseRecord = {
     documentId: null,
     amount: 0,
-    comment: "",
+    comment: '',
     imagesUrl: [],
-    status: "ACTIVE",
+    status: 'ACTIVE',
   };
 
-  let workingProjectId = localStorage.getItem("workingProjectId");
-  const workingProjectName = localStorage.getItem("workingProjectName");
-  const workingProjectCheckInAt = localStorage.getItem(
-    "workingProjectCheckInAt"
-  );
-  if (!workingProjectId) {
-    workingProjectId = "";
-  }
+  const workingProjectId = localStorage.getItem('workingProjectId') || '';
+  const workingProjectName = localStorage.getItem('workingProjectName') || '';
 
   const [items, setItems] = useState<IExpenseRecord[]>([]);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [showConfirm, setShowConfirm] = useState<boolean>(false);
-  const [selectedDocument, setSelectedDocument] =
-    useState<IExpenseRecord>(defaultDocument);
-  const [deletedDocument, setDeletedDocument] =
-    useState<IExpenseRecord>(defaultDocument);
+  const [selectedDocument, setSelectedDocument] = useState<IExpenseRecord>(defaultDocument);
+  const [deletedDocument, setDeletedDocument] = useState<IExpenseRecord>(defaultDocument);
 
   const handleCloseModal = () => {
     setSelectedDocument(defaultDocument);
@@ -69,44 +59,36 @@ export const ExpenseRecord = () => {
         updatedBy: currentUser.uid,
         updatedByEmail: currentUser.email,
       };
-      updateDocument(collectionName, selectedDocument.documentId, updateData);
+      const result = await updateExpenseRecordAPI(currentUser, selectedDocument.documentId, updateData);
 
-      const updatedItems = updateItem(
-        items,
-        selectedDocument.documentId,
-        updateData,
-        "createdAtNumber",
-        "number",
-        "desc"
-      );
+      const updatedItems = updateItem(items, selectedDocument.documentId, updateData, 'createdAtNumber', 'number', 'desc');
 
       setItems(updatedItems);
     } else {
       const newData: IExpenseRecord = {
-        projectId: workingProjectId!,
-        projectName: workingProjectName!,
+        projectId: workingProjectId,
+        projectName: workingProjectName,
         amount: selectedDocument.amount,
         comment: selectedDocument.comment,
         imagesUrl: selectedDocument.imagesUrl,
-        status: "ACTIVE",
+        status: 'ACTIVE',
         createdAt: new Date(),
         createdAtNumber: new Date().getTime(),
         createdBy: currentUser.uid,
         createdByEmail: currentUser.email,
       };
-      const result = await addDocument(collectionName, newData);
-      newData.documentId = result.id;
+      const result = await createExpenseRecordAPI(currentUser, newData);
 
-      addItem(items, newData, "createdAtNumber", "number", "desc");
+      addItem(items, result, 'createdAtNumber', 'number', 'desc');
 
       setItems(items);
     }
     setShowModal(false);
   };
 
-  const removeDocument = () => {
+  const removeDocument =async () => {
     if (deletedDocument.documentId) {
-      deleteDocument(collectionName, deletedDocument.documentId);
+      const result = await deleteExpenseRecordAPI(currentUser, deletedDocument.documentId);
 
       const newItems = deleteItem(items, deletedDocument.documentId);
 
@@ -121,20 +103,6 @@ export const ExpenseRecord = () => {
     setSelectedDocument({ ...selectedDocument, [name]: value });
   };
 
-  const fetchDocuments = async (collectionName: string) => {
-    const querySnapshot = await db
-      .collection(collectionName)
-      .where("status", "==", "ACTIVE")
-      .where("projectId", "==", workingProjectId)
-      .get();
-
-    const documents: any[] = [];
-    querySnapshot.forEach((doc) => {
-      documents.push({ ...doc.data(), documentId: doc.ref.id });
-    });
-    return documents;
-  };
-
   const fileUploaded = (url: string) => {
     // @ts-ignore
     selectedDocument.imagesUrl.push(url);
@@ -142,8 +110,8 @@ export const ExpenseRecord = () => {
   };
 
   useEffect(() => {
-    fetchDocuments(collectionName).then((data) => {
-      sortItems(data, "createdAtNumber", "desc");
+    getExpenseRecord(workingProjectId).then((data) => {
+      sortItems(data, 'createdAtNumber', 'desc');
       setItems(data);
     });
   }, []);
@@ -183,22 +151,11 @@ export const ExpenseRecord = () => {
         <Modal.Body>
           <Form.Group className="mb-3">
             <Form.Label>Monto</Form.Label>
-            <Form.Control
-              type="number"
-              name="amount"
-              value={selectedDocument.amount}
-              onChange={onInputChange}
-            />
+            <Form.Control type="number" name="amount" value={selectedDocument.amount} onChange={onInputChange} />
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Comentario</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              name="comment"
-              value={selectedDocument.comment}
-              onChange={onInputChange}
-            />
+            <Form.Control as="textarea" rows={3} name="comment" value={selectedDocument.comment} onChange={onInputChange} />
           </Form.Group>
           <Storage onFileUploaded={fileUploaded} />
           <CarouselImages items={selectedDocument.imagesUrl} />

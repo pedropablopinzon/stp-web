@@ -1,26 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import { useParams } from 'react-router-dom';
 
-import { addDocument, updateDocument, deleteDocument, fetchBusinessUsers, getBusiness } from '../modules/db';
-import { sortItemsString, addItem, updateItem, deleteItem } from '../modules/utils';
+import { createBusinessUserAPI, deleteBusinessUserAPI, getBusinessUsersAPI, updateBusinessUserAPI } from '../api/BusinessUsersAPI';
+import { readBusinessAPI } from '../api/BusinessesAPI';
+import { sortItemsString, addItem, updateItem, deleteItem } from '../common/Utils';
 import { useAuth } from '../contexts/AuthContext';
+import { IBusinessUser } from '../interfaces/BusinessUser.interface';
+import { IResult } from '../interfaces/Result.interface';
+import { IBusiness } from '../interfaces/Business.interface';
+import { Rol } from '../types/Rol.types';
 import { ConfirmDelete } from '../components/ConfirmDelete';
-import { Collections } from '../enums/collections';
-import { IBusinessUser } from '../interfaces/businessUser.interface';
 import { BusinessUsersTable } from '../components/tables/BusinessUsers.table';
 import { SelectRol } from '../components/SelectRol';
-import { Rol } from '../types/rol.types';
-import { IBusiness } from '../interfaces/business.interface';
 import { AddInvitation } from '../components/AddInvitation';
 import { Notification } from '../components/Notification';
-import { IResult } from '../interfaces/result.interface';
 
 export const BusinessUsers = () => {
   // @ts-ignore
   const { businessId } = useParams();
 
-  const collectionName = Collections.businessUsers;
   const title = 'Usuarios';
   const titleSingular = 'Usuario';
 
@@ -50,7 +49,6 @@ export const BusinessUsers = () => {
   const [selectedDocument, setSelectedDocument] = useState<IBusinessUser>(defaultDocument);
   const [deletedDocument, setDeletedDocument] = useState<IBusinessUser>(defaultDocument);
   const [selectedRolId, setSelectedRolId] = useState<Rol>('OWNER');
-  const [showAddInvitation, setShowAddInvitation] = useState<boolean>(false);
   const [selectedDocumentAddInvitation, setSelectedDocumentAddInvitation] = useState<IBusiness>(defaultBusinessDocument);
   const [showNotification, setShowNotification] = useState<IResult>(defaultResult);
 
@@ -59,14 +57,7 @@ export const BusinessUsers = () => {
     setShowModal(false);
   };
 
-  const handleCloseAddInvitation = (result: any) => {
-    // setSelectedDocumentAddInvitation(defaultDocument);
-    setShowAddInvitation(false);
-  };
-
   const handleOnSendInvitation = (result: IResult) => {
-    // setSelectedDocumentAddInvitation(defaultDocument);
-    setShowAddInvitation(false);
     setShowNotification(result);
 
     const timeout = setTimeout(() => {
@@ -80,19 +71,19 @@ export const BusinessUsers = () => {
   };
 
   const handleShowModal = () => {
-    setShowAddInvitation(true);
+    // @ts-ignore
+    childRefAddInvitation.current.show();
   };
 
   const saveDocument = async () => {
-    if (selectedDocument.documentId) {
+   if (selectedDocument.documentId) {
       const updateData: IBusinessUser = {
-        // userName: selectedDocument.userName,
-        rolId: selectedDocument.rolId,
+        rolId: selectedRolId,
         updatedAt: new Date(),
         updatedBy: currentUser.uid,
         updatedByEmail: currentUser.email,
       };
-      updateDocument(collectionName, selectedDocument.documentId, updateData);
+      const result = await updateBusinessUserAPI(currentUser, selectedDocument.documentId, updateData);
 
       const updatedItems = updateItem(items, selectedDocument.documentId, updateData, 'userName');
 
@@ -108,19 +99,19 @@ export const BusinessUsers = () => {
         createdBy: currentUser.uid,
         createdByEmail: currentUser.email,
       };
-      const result = await addDocument(collectionName, newData);
-      newData.documentId = result.id;
 
-      addItem(items, newData, 'userName');
+      const result = await createBusinessUserAPI(currentUser, newData);
+
+      addItem(items, result, 'userName');
 
       setItems(items);
     }
     setShowModal(false);
   };
 
-  const removeDocument = () => {
+  const removeDocument = async () => {
     if (deletedDocument.documentId) {
-      deleteDocument(collectionName, deletedDocument.documentId);
+      const result = await deleteBusinessUserAPI(currentUser, deletedDocument.documentId);
 
       const newItems = deleteItem(items, deletedDocument.documentId);
 
@@ -141,10 +132,10 @@ export const BusinessUsers = () => {
 
   useEffect(() => {
     if (businessId.length > 0) {
-      fetchBusinessUsers(businessId).then((data) => {
+      getBusinessUsersAPI(businessId).then((data) => {
         sortItemsString(data, 'userName');
         setItems(data);
-        getBusiness(businessId).then((data: any) => {
+        readBusinessAPI(currentUser, businessId).then((data: any) => {
           if (data) {
             setSelectedDocumentAddInvitation(data);
           }
@@ -171,6 +162,8 @@ export const BusinessUsers = () => {
     }
   }, [selectedRolId]);
 
+  const childRefAddInvitation = useRef();
+
   return (
     <>
       <h1>
@@ -178,7 +171,7 @@ export const BusinessUsers = () => {
       </h1>
 
       <Button variant="primary" onClick={handleShowModal} disabled={businessId.length === 0}>
-       Invitar Usuario
+        Invitar Usuario
       </Button>
 
       <Modal show={showModal} onHide={handleCloseModal}>
@@ -223,10 +216,10 @@ export const BusinessUsers = () => {
       </Modal>
 
       <AddInvitation
-        show={showAddInvitation}
-        onHide={handleCloseAddInvitation}
+        ref={childRefAddInvitation}
         business={selectedDocumentAddInvitation}
         onSendInvitation={handleOnSendInvitation}
+        subtitle={selectedDocumentAddInvitation.name}
       />
 
       <Notification

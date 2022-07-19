@@ -1,16 +1,29 @@
-import React, { useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useState } from 'react';
 import { Button, Form, Modal } from 'react-bootstrap';
 
+import { addInvitationAPI } from '../api/InvitationsAPI';
 import { useAuth } from '../contexts/AuthContext';
-import { IBusiness } from '../interfaces/business.interface';
-import { IResult } from '../interfaces/result.interface';
-import { addInvitation } from '../modules/db';
-import { Rol } from '../types/rol.types';
+import { IBusiness } from '../interfaces/Business.interface';
+import { IResult } from '../interfaces/Result.interface';
+import { Rol } from '../types/Rol.types';
 import { SelectRol } from './SelectRol';
 
-export const AddInvitation = (props: { show: boolean; onHide: Function; business?: IBusiness; onSendInvitation: Function }) => {
+export const AddInvitation = forwardRef((props: { business?: IBusiness; onSendInvitation: Function; subtitle?: string }, ref) => {
+  useImperativeHandle(ref, () => ({
+    show() {
+      setShowModal(true);
+    },
+  }));
+
   const { currentUser } = useAuth();
 
+  useImperativeHandle(ref, () => ({
+    show() {
+      setShowModal(true);
+    },
+  }));
+
+  const [showModal, setShowModal] = useState<boolean>(false);
   const [email, setEmail] = useState<string>('');
   const [selectedRolId, setSelectedRolId] = useState<Rol>('OWNER');
 
@@ -22,24 +35,25 @@ export const AddInvitation = (props: { show: boolean; onHide: Function; business
 
   const sendInvitation = async () => {
     // @ts-ignore
-    const result: IResult = await addInvitation(currentUser, email, selectedRolId, props.business.documentId, props.business.name);
+    const result: IResult = await addInvitationAPI(currentUser, email, selectedRolId, props.business.documentId, props.business.name);
     setEmail('');
     props.onSendInvitation(result);
+    setShowModal(false);
   };
 
   const onSelectedRol = (value: Rol) => {
     setSelectedRolId(value);
   };
 
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <>
-      <Modal
-        show={props.show}
-        // @ts-ignore
-        onHide={props.onHide}
-      >
+      <Modal show={showModal} onHide={handleCloseModal}>
         <Modal.Header closeButton>
-          <Modal.Title>Invitar</Modal.Title>
+          <Modal.Title>Invitar - {props.subtitle}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group className="mb-3">
@@ -63,4 +77,4 @@ export const AddInvitation = (props: { show: boolean; onHide: Function; business
       </Modal>
     </>
   );
-};
+});

@@ -2,16 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Card, Button, Table } from 'react-bootstrap';
 import { useHistory } from 'react-router-dom';
 
-import { db } from '../firebase';
+import { getProjectsAPI } from '../api/ProjectsAPI';
+import { createLogCheckInOutAPI, updateLogCheckInOutAPI, getLogsByUserAPI } from '../api/LogCheckInOutAPI';
 import { useAuth } from '../contexts/AuthContext';
-import { addDocument, fetchProjects, updateDocument } from '../modules/db';
-import { ILogCheckInOut } from '../interfaces/logCheckInOut.interface';
-import { IProject } from '../interfaces/project.interface';
-import { fixDate, sortItemsString, showDetailedData } from '../modules/utils';
-import { Collections } from '../enums/collections';
+import { sortItemsString, showDetailedData } from '../common/Utils';
+import { ILogCheckInOut } from '../interfaces/LogCheckInOut.interface';
+import { IProject } from '../interfaces/Project.interface';
 
 export const CheckInOut = () => {
-  const collectionName = Collections.logCheckInOut;
   const history = useHistory();
   const { currentUser } = useAuth();
   const workingBusinessId: string = localStorage.getItem('workingBusinessId') || '';
@@ -23,27 +21,9 @@ export const CheckInOut = () => {
   const [selectedProject, setSelectedProject] = useState<IProject | null>(null);
   const [selectedProjectId, setSelectedProjectId] = useState<string>('selectProject');
 
-  const fetchLogs = async (projectId: string, userId: string) => {
-    const querySnapshot = await db
-      .collection(collectionName)
-      .where('projectId', '==', projectId)
-      .where('userId', '==', userId)
-      .where('checkOut', '==', false)
-      .get();
-
-    const logs: ILogCheckInOut[] = [];
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      data.checkInAt = fixDate(data.checkInAt);
-      data.checkOutAt = fixDate(data.checkOutAt);
-      logs.push({ ...data, documentId: doc.ref.id });
-    });
-    return logs;
-  };
-
   useEffect(() => {
     if (workingBusinessId.length > 0) {
-      fetchProjects(workingBusinessId).then((data) => {
+      getProjectsAPI(workingBusinessId).then((data) => {
         sortItemsString(data, 'name');
         setProjects(data);
         if (workingProjectId.length > 0) {
@@ -54,7 +34,7 @@ export const CheckInOut = () => {
   }, []);
 
   const checkIn = async () => {
-    const data: ILogCheckInOut = {
+    const newData: ILogCheckInOut = {
       // @ts-ignore
       projectId: selectedProject.documentId,
       // @ts-ignore
@@ -71,22 +51,22 @@ export const CheckInOut = () => {
       checkInAt: new Date(),
     };
 
-    const result = await addDocument(collectionName, data);
+    const result = await createLogCheckInOutAPI(currentUser, newData);
 
-    localStorage.setItem('workingLogCheckInOutId', result.id);
+    localStorage.setItem('workingLogCheckInOutId', result.documentId || '');
     // @ts-ignore
-    localStorage.setItem('workingProjectId', data.projectId);
+    localStorage.setItem('workingProjectId', newData.projectId);
     // @ts-ignore
-    localStorage.setItem('workingProjectName', data.projectName);
+    localStorage.setItem('workingProjectName', newData.projectName);
     // @ts-ignore
-    localStorage.setItem('workingProjectCheckInAt', data.checkInAt);
+    localStorage.setItem('workingProjectCheckInAt', newData.checkInAt);
 
     // @ts-ignore
-    fetchLogs(selectedProject.documentId, currentUser.uid).then((data) => setLogs(data));
+    getLogsByUserAPI(selectedProject.documentId, currentUser.uid).then((data) => setLogs(data));
   };
 
   const checkOut = async () => {
-    const data: ILogCheckInOut = {
+    const updateData: ILogCheckInOut = {
       checkOut: true,
       updatedAt: new Date(),
       updatedBy: currentUser.uid,
@@ -95,7 +75,7 @@ export const CheckInOut = () => {
     };
 
     // @ts-ignore
-    await updateDocument(collectionName, logs[0].documentId, data);
+    const result = await updateLogCheckInOutAPI(currentUser, logs[0].documentId, updateData);
 
     localStorage.setItem('workingProjectId', '');
     localStorage.setItem('workingProjectName', '');
@@ -113,7 +93,7 @@ export const CheckInOut = () => {
   useEffect(() => {
     if (selectedProjectId.length > 0) {
       // @ts-ignore
-      fetchLogs(selectedProjectId, currentUser.uid).then((data) => {
+      getLogsByUserAPI(selectedProjectId, currentUser.uid).then((data) => {
         setLogs(data);
         if (data.length > 0) {
           if (workingProjectId.length === 0) {
