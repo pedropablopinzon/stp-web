@@ -1,16 +1,34 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Form, Button, Card, Alert } from 'react-bootstrap';
-import { useAuth } from '../contexts/AuthContext';
 import { Link, useHistory } from 'react-router-dom';
+import { MdEmail } from 'react-icons/md';
+import { AiFillGoogleCircle } from 'react-icons/ai';
+
+import { useAuth } from '../contexts/AuthContext';
+import firebaseApp, { signInWithGoogle } from '../firebase';
 
 export default function Signup() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
-  const { signup } = useAuth();
+  const { signupEmail } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const history = useHistory();
+
+  const [userProvider, setUserProvider] = useState(null);
+
+  useEffect(() => {
+    firebaseApp.auth().onAuthStateChanged((user: any) => {
+      setUserProvider(user);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (userProvider) {
+      history.push('/home');
+    }
+  }, [userProvider]);
 
   async function handleSubmit(e: any) {
     e.preventDefault();
@@ -24,7 +42,7 @@ export default function Signup() {
       setError('');
       setLoading(true);
       // @ts-ignore
-      await signup(emailRef.current.value, passwordRef.current.value);
+      await signupEmail(emailRef.current.value, passwordRef.current.value);
       history.push('/');
     } catch {
       setError('Failed to create an account');
@@ -68,7 +86,12 @@ export default function Signup() {
               />
             </Form.Group>
             <Button disabled={loading} className="w-100" type="submit">
+              <MdEmail className="mr-2" />
               Sign Up
+            </Button>
+            <Button className="w-100 mt-2" onClick={signInWithGoogle}>
+              <AiFillGoogleCircle className="mr-2" />
+              <i className="fab fa-google"></i>Sign In with Google
             </Button>
           </Form>
         </Card.Body>
